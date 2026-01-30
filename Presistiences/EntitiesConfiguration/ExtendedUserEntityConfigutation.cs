@@ -1,0 +1,22 @@
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace AI_genda_API.Presistiences.EntitiesConfiguration;
+
+public class ExtendedUserEntityConfigutation : IEntityTypeConfiguration<ExtendedUser>
+{
+    public void Configure(EntityTypeBuilder<ExtendedUser> builder)
+    {
+     
+       builder.Property(eu => eu.FirstName)
+              .HasMaxLength(20);
+       builder.Property(eu => eu.SecondName)
+              .HasMaxLength(20);
+
+        builder.
+            OwnsMany(x => x.RefreshTokens)
+            .ToTable("RefreshTokens") 
+            .WithOwner().HasForeignKey("UserId");
+        
+            
+    }
+}
