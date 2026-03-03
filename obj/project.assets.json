@@ -4886,11 +4886,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Api_Projects\\Project\\AI_genda_API\\AI_genda_API.csproj",
+      "projectUniqueName": "D:\\Api_Projects\\Project\\AI_genda_API2\\AI_genda_API.csproj",
       "projectName": "AI_genda_API",
-      "projectPath": "D:\\Api_Projects\\Project\\AI_genda_API\\AI_genda_API.csproj",
+      "projectPath": "D:\\Api_Projects\\Project\\AI_genda_API2\\AI_genda_API.csproj",
       "packagesPath": "C:\\Users\\LAPTOP WORLD\\.nuget\\packages\\",
-      "outputPath": "D:\\Api_Projects\\Project\\AI_genda_API\\obj\\",
+      "outputPath": "D:\\Api_Projects\\Project\\AI_genda_API2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4996,7 +4996,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

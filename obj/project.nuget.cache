@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hyjasnCorLE=",
+  "dgSpecHash": "PHfDksRSwK0=",
   "success": true,
-  "projectFilePath": "D:\\Api_Projects\\Project\\AI_genda_API\\AI_genda_API.csproj",
+  "projectFilePath": "D:\\Api_Projects\\Project\\AI_genda_API2\\AI_genda_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LAPTOP WORLD\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\LAPTOP WORLD\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

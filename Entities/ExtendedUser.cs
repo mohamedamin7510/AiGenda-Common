@@ -7,5 +7,10 @@ public class ExtendedUser:IdentityUser
 {
     public string? FirstName { get; set; }
     public string? SecondName { get; set; }
+
+    public int WorkSpaceUserId { get; set; }
+    public WorkspaceUser WorkSpaceUser { get; set; }
     public List<RefreshToken> RefreshTokens { get; set; } = new(); 
+
+ 
 }

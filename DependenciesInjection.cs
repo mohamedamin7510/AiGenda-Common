@@ -1,6 +1,7 @@
 ﻿
 using AI_genda_API.Services.AuthService;
 using AI_genda_API.Services.FolderService;
+using AI_genda_API.Services.WorkSpaceService;
 
 namespace AI_genda_API;
 
@@ -9,17 +10,21 @@ public static class DependenciesInjection
 
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
     {
-        //short Services 
+        // direct adding 
         services.AddOpenApi()
               .AddControllers();
         services.AddScoped<IAuthService, AuthServic>();
         services.AddCorsMethod(configuration);
-        services.AddScoped<IFolderService , FolderService>();
+        services.AddScoped<IWorkSpaceService , WorkSpaceService>();
+        services.AddScoped<ISpaceService, SpaceService>();
 
-        // tall services 
+
+
+
+        // functions 
         services.AddMapsterGlobalConfiguration(configuration);
         services.RegisterAppContext(configuration);
-        services.RegisterIdentityServices();
+       // services.RegisterIdentityServices();
         services.AddValidatorsFromAssemblyContaining<Program>().AddFluentValidationAutoValidation();
         services.AddAuthenticationServices(configuration);
         services.AddOptionclassBinding(configuration);
@@ -88,9 +93,9 @@ public static class DependenciesInjection
 
 
     }
-    private static void RegisterIdentityServices (this IServiceCollection services)
+    private static void RegisterIdentityServices(this IServiceCollection services)
     {
-        services.AddIdentity<ExtendedUser , IdentityRole>().AddEntityFrameworkStores<AppContext>(); 
+        services.AddIdentity<ExtendedUser, IdentityRole>().AddEntityFrameworkStores<AppContext>();
     }
 
     private static void RegisterAppContext(this IServiceCollection services, IConfiguration configuration)

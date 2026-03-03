@@ -22,7 +22,111 @@ namespace AI_genda_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AI_genda_API.Entities.Folder", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Descreption")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("IconHexa")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastActivity")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WorkSpaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("WorkSpaceId");
+
+                    b.ToTable("Spaces");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Descreption")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SpaceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tittle")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("SpaceId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,15 +141,21 @@ namespace AI_genda_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("IconPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue(" ");
-
-                    b.Property<int?>("ParentFolderId")
-                        .HasColumnType("int");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -57,61 +167,25 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("ParentFolderId");
-
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Folders");
+                    b.ToTable("WorkSpaces");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("WrokSpaceID")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("WrokSpaceID", "UserID");
 
-                    b.Property<int>("ParentFolderId")
-                        .HasColumnType("int");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentFolderId");
-
-                    b.ToTable("Note");
-                });
-
-            modelBuilder.Entity("AI_genda_API.Entities.task", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsTaskFinished")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<int>("ParentFolderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentFolderId");
-
-                    b.ToTable("Tasks");
+                    b.ToTable("WorkspaceUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -333,20 +407,50 @@ namespace AI_genda_API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int>("WorkSpaceUserId")
+                        .HasColumnType("int");
+
                     b.HasDiscriminator().HasValue("ExtendedUser");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.Folder", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
                 {
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AI_genda_API.Entities.Folder", "ParentFolder")
-                        .WithMany("ChildFolders")
-                        .HasForeignKey("ParentFolderId");
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.HasOne("AI_genda_API.Entities.WorkSpace", "WorkSpace")
+                        .WithMany("Spaces")
+                        .HasForeignKey("WorkSpaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+
+                    b.Navigation("WorkSpace");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.Space", "Space")
+                        .WithMany("Tasks")
+                        .HasForeignKey("SpaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
                         .WithMany()
@@ -354,31 +458,45 @@ namespace AI_genda_API.Migrations
 
                     b.Navigation("CreatedBy");
 
-                    b.Navigation("ParentFolder");
+                    b.Navigation("Space");
 
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
                 {
-                    b.HasOne("AI_genda_API.Entities.Folder", "Folder")
-                        .WithMany("Notes")
-                        .HasForeignKey("ParentFolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Folder");
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.task", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceUser", b =>
                 {
-                    b.HasOne("AI_genda_API.Entities.Folder", "Folder")
-                        .WithMany("Tasks")
-                        .HasForeignKey("ParentFolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
+                        .WithOne("WorkSpaceUser")
+                        .HasForeignKey("AI_genda_API.Entities.WorkspaceUser", "UserID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Folder");
+                    b.HasOne("AI_genda_API.Entities.WorkSpace", "WorkSpaces")
+                        .WithMany("workspaceUsers")
+                        .HasForeignKey("WrokSpaceID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkSpaces");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -469,13 +587,22 @@ namespace AI_genda_API.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.Folder", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
                 {
-                    b.Navigation("ChildFolders");
-
-                    b.Navigation("Notes");
-
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
+                {
+                    b.Navigation("Spaces");
+
+                    b.Navigation("workspaceUsers");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
+                {
+                    b.Navigation("WorkSpaceUser")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

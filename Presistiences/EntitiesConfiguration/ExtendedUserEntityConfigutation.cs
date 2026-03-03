@@ -9,6 +9,7 @@ public class ExtendedUserEntityConfigutation : IEntityTypeConfiguration<Extended
      
        builder.Property(eu => eu.FirstName)
               .HasMaxLength(20);
+
        builder.Property(eu => eu.SecondName)
               .HasMaxLength(20);
 
@@ -16,7 +17,8 @@ public class ExtendedUserEntityConfigutation : IEntityTypeConfiguration<Extended
             OwnsMany(x => x.RefreshTokens)
             .ToTable("RefreshTokens") 
             .WithOwner().HasForeignKey("UserId");
-        
+
+ 
             
     }
 }

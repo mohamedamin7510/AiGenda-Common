@@ -1,4 +1,4 @@
-﻿global using Mapster;
+﻿
 
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -19,14 +19,15 @@ global using System.Text;
 global using FluentValidation;
 global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 global using MapsterMapper;
+global using Mapster;
 
 
 
 global using AI_genda_API.Entities;
-global using AI_genda_API.Contracts.Tasks;
-global using AI_genda_API.Services;
 global using AI_genda_API.Contracts.Authentication;
 global using System.ComponentModel.DataAnnotations;
 global using  AI_genda_API.Authentication;
 global using  Microsoft.Extensions.Options;
 global using AppContext = AI_genda_API.Presistience.AppContext;
+global using AI_genda_API.Abstractions;
+global using Task = AI_genda_API.Entities.Task;

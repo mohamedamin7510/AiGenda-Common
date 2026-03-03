@@ -2,14 +2,19 @@
 
 namespace AI_genda_API.Entities;
 
-public class task
+public class Task:AuditLogging
 {
-    public int Id { get; set; }
-    public string Content { get; set; } = string.Empty;
-    public bool IsTaskFinished { get; set; } = false;
+    public string Id { get; set; }= Guid.NewGuid().ToString();
+    public string Tittle { get; set; }
+    public string? Descreption { get; set; } = default!;
 
-    public int ParentFolderId { get; set; }
-    [ForeignKey("ParentFolderId")]
-    public virtual Folder Folder { get; set; } 
+    public bool IsActive { get; set; } = true;
+    public string Status { get; set; }
+    public string SpaceId { get; set; }
 
+    [ForeignKey("SpaceId")]
+    public Space Space { get; set; }
+
+    //todo: Complete the resident columns 
+    //todo: Assignee users one-to-many relationship  with the user
 }
