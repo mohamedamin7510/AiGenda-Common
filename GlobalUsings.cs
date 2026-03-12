@@ -10,6 +10,7 @@ global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Cors;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Identity.UI.Services;
 global using System.Reflection;
 global using JwtBearerDefaults = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults;
 global using System.Text;
@@ -23,6 +24,7 @@ global using Mapster;
 
 
 
+
 global using AI_genda_API.Entities;
 global using AI_genda_API.Contracts.Authentication;
 global using System.ComponentModel.DataAnnotations;
@@ -31,3 +33,10 @@ global using  Microsoft.Extensions.Options;
 global using AppContext = AI_genda_API.Presistience.AppContext;
 global using AI_genda_API.Abstractions;
 global using Task = AI_genda_API.Entities.Task;
+global using AI_genda_API.Errors;
+global using AI_genda_API.Api.Settings;
+global using AI_genda_API.Services.AuthService;
+global using AI_genda_API.Services.EmailService;
+global using AI_genda_API.Services.FolderService;
+global using AI_genda_API.Services.SpaceService;
+global using BucketSurvey.Api.Contract.Authentication;

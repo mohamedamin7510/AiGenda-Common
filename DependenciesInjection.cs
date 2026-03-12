@@ -1,7 +1,6 @@
-﻿
-using AI_genda_API.Services.AuthService;
-using AI_genda_API.Services.FolderService;
-using AI_genda_API.Services.WorkSpaceService;
+﻿using AI_genda_API.Services.ProfileSettingService;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
 
 namespace AI_genda_API;
 
@@ -17,17 +16,23 @@ public static class DependenciesInjection
         services.AddCorsMethod(configuration);
         services.AddScoped<IWorkSpaceService , WorkSpaceService>();
         services.AddScoped<ISpaceService, SpaceService>();
-
+        services.AddScoped<IEmailSender, EmailService>();
+        services.AddScoped<IProfileSettingService, ProfileSettingService>();
+        services.AddOptions<MailSettings>().
+            BindConfiguration(nameof(MailSettings))
+                    .ValidateDataAnnotations().
+                     ValidateOnStart();
 
 
 
         // functions 
         services.AddMapsterGlobalConfiguration(configuration);
         services.RegisterAppContext(configuration);
-       // services.RegisterIdentityServices();
+        services.RegisterIdentityServices();
         services.AddValidatorsFromAssemblyContaining<Program>().AddFluentValidationAutoValidation();
         services.AddAuthenticationServices(configuration);
         services.AddOptionclassBinding(configuration);
+        services.AddJobs(configuration);
 
         return services;
     }
@@ -60,26 +65,49 @@ public static class DependenciesInjection
     private static void AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJWTProvider, JWTProvider>();
+
         services.AddAuthorization();
+
          var jwtSettings = configuration.GetSection(JWTOptions.SectionName).Get<JWTOptions>();
-        services.AddAuthentication(opts => {
-            opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; }
+
+        services.AddAuthentication(opts =>
+            { 
+                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+            }
+
         ).AddJwtBearer(options =>
         {
             options.SaveToken= true;
+
             options.TokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateIssuerSigningKey = true,
+
                 ValidateIssuer = true,
+
                 ValidateAudience = true,
+
                 ValidateLifetime = true,
                 
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings!.SymmetricKey)),
-                ValidIssuer =  jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
 
+                ValidIssuer =  jwtSettings.Issuer,
+
+                ValidAudience = jwtSettings.Audience,
             };
+        });
+
+
+        services.Configure<IdentityOptions>(Option =>
+        {
+
+            Option.SignIn.RequireConfirmedEmail = true;
+
+            Option.User.RequireUniqueEmail = true;
+
+            Option.Password.RequiredLength = 8;
 
         });
     }
@@ -93,9 +121,11 @@ public static class DependenciesInjection
 
 
     }
+
     private static void RegisterIdentityServices(this IServiceCollection services)
     {
-        services.AddIdentity<ExtendedUser, IdentityRole>().AddEntityFrameworkStores<AppContext>();
+        services.AddIdentity<ExtendedUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppContext>().AddDefaultTokenProviders();
     }
 
     private static void RegisterAppContext(this IServiceCollection services, IConfiguration configuration)
@@ -104,6 +134,25 @@ public static class DependenciesInjection
         services.AddDbContext<AppContext>(e => e.UseSqlServer(connstring));
     }
 
+    private static IServiceCollection AddJobs(this IServiceCollection services, IConfiguration configuration)
+    {
+
+
+        // Add Hangfire services.
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        // Add the processing server as IHostedService
+        services.AddHangfireServer();
+
+        // Add framework services.
+        services.AddMvc();
+
+        return services;
+    }
 
 
 }

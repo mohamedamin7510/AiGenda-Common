@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Reflection;
-using System.Threading;
-
-
-namespace AI_genda_API.Presistience;
+﻿namespace AI_genda_API.Presistience;
 
 
 public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor ) : IdentityDbContext(dbContextOptions)
@@ -25,7 +20,7 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Property(x => x.CreatedById).CurrentValue = ClaimId;
+                entry.Property(x => x.CreatedById).CurrentValue = ClaimId!;
             }
             else if (entry.State == EntityState.Modified)
             {

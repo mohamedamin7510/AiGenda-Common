@@ -1,6 +1,6 @@
 ﻿using AI_genda_API.Contracts.Space;
 
-namespace AI_genda_API.Services.WorkSpaceService;
+namespace AI_genda_API.Services.SpaceService;
 
 public interface ISpaceService
 {

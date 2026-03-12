@@ -1,8 +1,6 @@
-﻿using AI_genda_API.Services.AuthService;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace AI_genda_API.Controllers;
 
-namespace AI_genda_API.Controllers;
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -10,36 +8,79 @@ public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _AuthService = authService;
 
-    [HttpPost]
+    [HttpPost("")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginReq loginReq, CancellationToken cancellationToken = default)
     {
-        var authResponse = await _AuthService.GetTokenAsync(loginReq.Email, loginReq.Password, cancellationToken);
+        var Response = await _AuthService.GetTokenAsync(loginReq ,  cancellationToken);
 
-        return authResponse is null ? BadRequest("The Password or email is wrong.") : Ok(authResponse);
+        return Response!.IsSuccess ? Ok(Response.Value): Response.ToProblem();
     }
 
 
-    [HttpPut]
-    [Route("refresh")]
+    [HttpPut("refresh")]
     public async Task<IActionResult> GetRefreshTokenAsync([FromBody] ReFTokenReq Tokens ,CancellationToken cancellationToken)
     {
-       var response = await  _AuthService.GetRefreshTokenAsync(Tokens.RefreshToken, Tokens.Token!,cancellationToken=default);
+       var response = await  _AuthService.GetRefreshTokenAsync(Tokens,cancellationToken=default);
 
 
         return response is null ? BadRequest("InvalidToken!") : Ok(response);
     }
+   
 
-    [HttpPut]
-    [Route("revoke-refresh-token")]
+    [HttpPut("revoke-refresh-token")]
     public async Task<IActionResult> RevokeRefreshTokenAsync([FromBody] ReFTokenReq Tokens, CancellationToken cancellationToken)
     {
-        var RevokingResult = await _AuthService.RevokeRefreshTokenAsync(Tokens.RefreshToken, Tokens.Token!, cancellationToken = default);
+        var RevokingResult = await _AuthService.RevokeRefreshTokenAsync(Tokens, cancellationToken = default);
 
-        return RevokingResult ? Ok("Revoked Successefuly!") : BadRequest("Failed Revoking!");
+        return RevokingResult.IsSuccess ? Ok("Revoked Successefuly!") : RevokingResult.ToProblem();
+    }
+    
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register ([FromBody] RegisterRequest request ,  CancellationToken cancellationToken)
+    {
+        var result = await _AuthService.ResgisterAsync(request , cancellationToken);
+
+        return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 
 
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        var resutl = await _AuthService.ConfirmEmailAsync(request, cancellationToken);
 
+        return resutl.IsSuccess ? Ok()
+            : resutl.ToProblem();
+    }
+
+
+    [HttpPost("resend-confirm-email")]
+    public async Task<IActionResult> ResendConfirmEmail([FromBody] ResendConfirmEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        var resutl = await _AuthService.ResendConfirmEmailAsync(request, cancellationToken);
+
+        return resutl.IsSuccess ? Ok()
+            : resutl.ToProblem();
+    }
+
+
+   [HttpPost("forget-password")]
+    public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        var resutl = await _AuthService.SendResetPassCodeAsync(request, cancellationToken);
+
+        return resutl.IsSuccess ? Created() : resutl.ToProblem();
+    }
+
+
+    [HttpPut("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        var resutl = await _AuthService.ResetPasswordAsync(request, cancellationToken);
+
+        return resutl.IsSuccess ? NoContent() : resutl.ToProblem();
+    }
 
 
 

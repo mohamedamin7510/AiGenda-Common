@@ -5,9 +5,14 @@ using System.Collections.Generic;
 
 namespace AI_genda_API.Services.FolderService;
 
-public class WorkSpaceService(AppContext context) : IWorkSpaceService
+public class WorkSpaceService(AppContext context, 
+    IHttpContextAccessor httpContextAccessor
+    
+    
+    ) : IWorkSpaceService
 {
     private readonly AppContext _Context = context;
+    private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
 
     public async Task<Result<IEnumerable<WorkSpaceResponse>?>> GetAllAsync(CancellationToken cancellationToken = default!)
     {
@@ -33,6 +38,16 @@ public class WorkSpaceService(AppContext context) : IWorkSpaceService
 
     public async Task<Result<WorkSpaceResponse>> AddAsync(WorkSpaceRequest Requset, CancellationToken cancellationToken = default!)
     {
+
+        var UserId = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);// More Secured Way
+      
+        var user = _Context.Users.SingleOrDefault(x => x.Id == UserId);
+
+        if (_Context.WorkSpaces.Count() >= 5 &&  user!.SubscriptionType == "Free")
+        {
+             return Result.Faluire<WorkSpaceResponse>(UserErrors.SubscriptionModel);
+        }
+
         var WorkSpace = Requset.Adapt<WorkSpaceRequest, WorkSpace>();
 
         await _Context.WorkSpaces.AddAsync(WorkSpace, cancellationToken);
@@ -76,6 +91,7 @@ public class WorkSpaceService(AppContext context) : IWorkSpaceService
 
     //   return Result.Success();
     //}
+
 
 
 }

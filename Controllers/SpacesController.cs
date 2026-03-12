@@ -1,4 +1,4 @@
-﻿using AI_genda_API.Services.WorkSpaceService;
+﻿using AI_genda_API.Services.SpaceService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
