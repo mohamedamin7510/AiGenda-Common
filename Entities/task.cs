@@ -15,6 +15,6 @@ public class Task:AuditLogging
     [ForeignKey("SpaceId")]
     public Space Space { get; set; }
 
-    //todo: Complete the resident columns 
-    //todo: Assignee users one-to-many relationship  with the user
+    // todo: Complete the resident columns 
+    // todo: Assignee users one-to-many relationship  with the user
 }

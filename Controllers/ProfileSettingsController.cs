@@ -1,38 +1,44 @@
-﻿using AI_genda_API.Contracts.ProfileSetting;
-using AI_genda_API.Services.ProfileSettingService;
+﻿using AI_genda_API.Services.ProfileSettingService;
+using BucketSurvey.Api.Contract.User;
 
 namespace AI_genda_API.Controllers;
 
 [Route("me")]
 [ApiController]
-public class ProfileSettingsController(IProfileSettingService profileSettingService) : ControllerBase
+[Authorize]
+public class ProfileSettingsController(IProfileSettingService profileSettingService, 
+    UserManager<ExtendedUser> userManager) : ControllerBase
 {
     private readonly IProfileSettingService _ProfileSettingService = profileSettingService;
+    private readonly UserManager<ExtendedUser> _UserManager = userManager;
 
     [HttpGet]
-    public async Task<IActionResult> Get(string userId)
+    public async Task<IActionResult> Get()
     {
-        var result = await _ProfileSettingService.GetAsync(userId);
+        
+        var result = await _ProfileSettingService.GetAsync(User.GetUserId()!);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem(); 
     }
 
-/*    public async Task<ServiceResult<UserDto>> UpdateProfileAsync(string userId, UpdateProfileDto dto)
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] ProfileRequest request,CancellationToken cancellationToken )
     {
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null || user.IsDeleted)
-            return ServiceResult<UserDto>.Fail("User not found.");
+        var result = await _ProfileSettingService.UpdateAsync(User.GetUserId()!, request , cancellationToken);
 
-        user.FullName = dto.FullName;
-        user.Bio = dto.Bio;
-        user.Timezone = dto.Timezone;
-        user.AvatarUrl = dto.AvatarUrl;
-        user.UpdatedAt = DateTime.UtcNow;
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
 
-        await _userManager.UpdateAsync(user);
+    }
 
-        return ServiceResult<UserDto>.Ok(user.Adapt<UserDto>());
-    }*/
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var result = await _ProfileSettingService.ChangePasswordAsync(User.GetUserId()!, request);
+
+        return result.IsSuccess ? NoContent() : result.ToProblem();
+    }
+
+
 
 
 }

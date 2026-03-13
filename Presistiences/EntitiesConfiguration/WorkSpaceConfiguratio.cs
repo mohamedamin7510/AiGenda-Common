@@ -20,7 +20,7 @@ public class WorkSpaceConfiguratio : IEntityTypeConfiguration<WorkSpace>
         builder.Property(x => x.Description)
               .HasMaxLength(300);
 
-        builder.Property(x => x.IconPath)
+        builder.Property(x => x.IconCode)
               .HasMaxLength(500);
     }
 }

@@ -2,7 +2,8 @@
 
 public record WorkSpaceRequest
 (
-      string Name ,
-         string Description ,
-             string? IconPath 
+   string Name, 
+     string? Description ,
+         string? IconCode 
+            
 );

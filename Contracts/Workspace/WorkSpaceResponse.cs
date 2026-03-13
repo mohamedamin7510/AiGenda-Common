@@ -5,7 +5,7 @@ public record WorkSpaceResponse
     int Id,
     string Name , 
     string Description, 
-    string IconPath , 
+    string IconCode , 
     int NumberofMembers ,
     int NumberofTasks
 );

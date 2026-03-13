@@ -32,6 +32,9 @@ public static  class UserErrors
         "This user is actually deleted", StatusCodes.Status404NotFound);
 
 
+    public static Error AddedMemberBefore  =>
+        new Error("User.ActuallyAdded", "This member is added to this workspace before", StatusCodes.Status400BadRequest);
+
 
 
 

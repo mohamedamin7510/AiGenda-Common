@@ -178,7 +178,7 @@ public class AuthServic(
         if (await _UserManager.FindByIdAsync(request.userId) is not { } User)
             return Result.Faluire(UserErrors.InvalidCode);
 
-        //todo: check the logic for this cond again.
+ 
         if (User.EmailConfirmed)
             return Result.Faluire(UserErrors.ActiveConfirmedEmail);
 

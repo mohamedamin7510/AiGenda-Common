@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
+using Task = AI_genda_API.Entities.Task;
 namespace AI_genda_API.Presistiences.EntitiesConfiguration;
 
 public class TaskConfiguration : IEntityTypeConfiguration<Task>

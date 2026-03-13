@@ -2,9 +2,9 @@
 
 namespace AI_genda_API.Presistiences.EntitiesConfiguration;
 
-public class WorkspaceUsersConfiguration : IEntityTypeConfiguration<WorkspaceUser>
+public class WorkspaceUsersConfiguration : IEntityTypeConfiguration<WorkspaceMember>
 {
-    public void Configure(EntityTypeBuilder<WorkspaceUser> builder)
+    public void Configure(EntityTypeBuilder<WorkspaceMember> builder)
     {
         builder.HasKey(x => new {x.WrokSpaceID , x.UserID });
 

@@ -7,13 +7,12 @@ public class ExtendedUser:IdentityUser
 {
     public string FirstName { get; set; }
     public string SecondName { get; set; }
-    public int WorkSpaceUserId { get; set; }
     public string SubscriptionType { get; set; } = "Free";
     public string? JobTitle { get; set; }
     public string? AvatarUrl { get; set; }
     public DateOnly? DateOfBirth { get; set; } = default;
     public bool IsDeleted { get; set; } = false;
-    public WorkspaceUser WorkSpaceUser { get; set; }
+    public WorkspaceMember WorkSpaceUser { get; set; }
     public List<RefreshToken> RefreshTokens { get; set; } = new(); 
 
  

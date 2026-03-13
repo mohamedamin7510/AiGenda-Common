@@ -1,4 +1,5 @@
-﻿namespace AI_genda_API.Presistience;
+﻿using Task = AI_genda_API.Entities.Task;
+namespace AI_genda_API.Presistience;
 
 
 public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor ) : IdentityDbContext(dbContextOptions)
@@ -7,8 +8,10 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
 
     public DbSet<ExtendedUser> Users { get; set; }
     public DbSet<WorkSpace> WorkSpaces { get; set; }
+    public DbSet<WorkspaceMember> WorkspaceMembers { get; set; }
     public DbSet<Space> Spaces{ get; set; }
     public DbSet<Task> Tasks{ get; set; }
+
 
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -31,7 +34,6 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
         }
             return base.SaveChangesAsync(cancellationToken);
     }
-
     public override int SaveChanges()
     {
         var ClaimId = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -66,10 +68,6 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
         {
             fk.DeleteBehavior = DeleteBehavior.Restrict;
         }
-
-
-
-
 
         base.OnModelCreating(modelBuilder);
     }

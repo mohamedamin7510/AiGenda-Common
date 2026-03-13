@@ -4,6 +4,7 @@ using AI_genda_API.Presistience;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AI_genda_API.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20260313112830_improvements in the relationships and adding the some columns in the workspace")]
+    partial class improvementsintherelationshipsandaddingthesomecolumnsintheworkspace
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,7 +175,7 @@ namespace AI_genda_API.Migrations
                     b.ToTable("WorkSpaces");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceUser", b =>
                 {
                     b.Property<int>("WrokSpaceID")
                         .HasColumnType("int");
@@ -180,15 +183,12 @@ namespace AI_genda_API.Migrations
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("WrokSpaceID", "UserID");
 
                     b.HasIndex("UserID")
                         .IsUnique();
 
-                    b.ToTable("WorkspaceMembers");
+                    b.ToTable("workspaceUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -506,11 +506,11 @@ namespace AI_genda_API.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
+            modelBuilder.Entity("AI_genda_API.Entities.WorkspaceUser", b =>
                 {
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
                         .WithOne("WorkSpaceUser")
-                        .HasForeignKey("AI_genda_API.Entities.WorkspaceMember", "UserID")
+                        .HasForeignKey("AI_genda_API.Entities.WorkspaceUser", "UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

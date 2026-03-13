@@ -1,5 +1,10 @@
-﻿namespace AI_genda_API.Contracts.ProfileSetting;
+﻿namespace BucketSurvey.Api.Contract.User;
 
-public class ProfileRequest
-{
-}
+public record ProfileRequest
+(
+    string FirstName,
+        string SecondName ,
+          string JobTitle, 
+             DateOnly DateOfBirth 
+);
+

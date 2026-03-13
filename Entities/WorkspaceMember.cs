@@ -2,16 +2,18 @@
 
 namespace AI_genda_API.Entities;
 
-public class WorkspaceUser
+[Table("WorkspaceMembers")]
+public class WorkspaceMember
 {   
     public int WrokSpaceID { get; set; }
     public string UserID { get; set; }
+    public DateTime JoinedAt { get; set; }
 
 
     [ForeignKey("UserID")]
-    public virtual ExtendedUser User { get; set; } = new();
+    public virtual ExtendedUser? User { get; set; } = new();
 
     [ForeignKey("UserID")]
-    public virtual WorkSpace WorkSpaces { get; set; } = new();
+    public virtual WorkSpace? WorkSpaces { get; set; } = new();
 
 }

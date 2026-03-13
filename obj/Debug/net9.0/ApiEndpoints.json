@@ -181,6 +181,27 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "Update",
+    "RelativePath": "api/WorkSpaces/{Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "rquset",
+        "Type": "AI_genda_API.Contracts.Workspace.WorkSpaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
     "Method": "Delete",
     "RelativePath": "api/WorkSpaces/{Id}",
     "HttpMethod": "DELETE",
@@ -196,17 +217,64 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "AddMember",
+    "RelativePath": "api/WorkSpaces/{Id}/member",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Workspace.InviteMemberRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
     "Method": "Get",
     "RelativePath": "me",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
+    "Method": "Update",
+    "RelativePath": "me",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
     "Parameters": [
       {
-        "Name": "userId",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "BucketSurvey.Api.Contract.User.ProfileRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
+    "Method": "ChangePassword",
+    "RelativePath": "me/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "BucketSurvey.Api.Contract.User.ChangePasswordRequest",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
