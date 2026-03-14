@@ -1,0 +1,2 @@
+wwwroot\.well-known\pki-validation\2B19227A57AC7699F6757254AE8F991D.txt
+D:\Api_Projects\Project\AI_genda_API2\wwwroot\.well-known\pki-validation\2B19227A57AC7699F6757254AE8F991D.txt

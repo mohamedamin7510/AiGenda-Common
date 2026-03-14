@@ -398,3 +398,8 @@ D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\runtimes\browser\lib\net8
 D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Text.Encodings.Web.dll
 D:\Api_Projects\Project\AI_genda_API2\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Logs\Log-.json
+D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\AI_genda_API.staticwebassets.runtime.json
+D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\EmailConfirmation.html
+D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\ResetPassword.html
+D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\WorkspaceMemberInvite.html
+D:\Api_Projects\Project\AI_genda_API2\obj\Debug\net9.0\compressed\nosz2kgoay-{0}-fkf6fwsm6l-fkf6fwsm6l.gz

@@ -141,7 +141,7 @@ public class AuthServic(
         var IsEmailExisted = await _Context.Users.AnyAsync(x=> x.Email == request.Email );
 
         if (IsEmailExisted)
-            Result.Faluire(UserErrors.EmailDuplicated);
+          return Result.Faluire(UserErrors.EmailDuplicated);
 
         var NewUser = new ExtendedUser()
         {
