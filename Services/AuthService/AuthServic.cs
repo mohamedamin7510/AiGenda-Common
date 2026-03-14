@@ -243,6 +243,7 @@ public class AuthServic(
            { " {{URI}}", $"https://origin//resetpass?email={user.Email}&&code={code}"}//todo: Go to Reset Password Page
        });
 
+        //todo: Send Email with Hangfire(BackGround Jobs) for rest password code 
         await _EmailSender.SendEmailAsync(user.Email!, "AiGenda: Reset Password", HtmlBody);
 
         return Result.Success();
@@ -294,8 +295,8 @@ public class AuthServic(
             }
         );
 
-        BackgroundJob.Enqueue(
-            () => _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Email Confirmation", BuilderMessage));
+        //todo: Send Email with Hangfire(BackGround Jobs)
+        _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Email Confirmation", BuilderMessage);
     }
 
 

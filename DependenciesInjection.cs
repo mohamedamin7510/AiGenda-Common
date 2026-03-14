@@ -1,6 +1,6 @@
 ﻿using AI_genda_API.Services.ProfileSettingService;
 using Hangfire;
-using HangfireBasicAuthenticationFilter;
+
 
 namespace AI_genda_API;
 
@@ -10,22 +10,21 @@ public static class DependenciesInjection
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
     {
         // direct adding 
-        services.AddOpenApi()
-              .AddControllers();
+        services.AddOpenApi().AddControllers();
         services.AddScoped<IAuthService, AuthServic>();
-        services.AddCorsMethod(configuration);
         services.AddScoped<IWorkSpaceService , WorkSpaceService>();
         services.AddScoped<ISpaceService, SpaceService>();
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IProfileSettingService, ProfileSettingService>();
         services.AddOptions<MailSettings>().
-            BindConfiguration(nameof(MailSettings))
-                    .ValidateDataAnnotations().
-                     ValidateOnStart();
-
+            BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
+                 
+                  
+        
 
 
         // functions 
+        services.AddCorsMethod(configuration);
         services.AddMapsterGlobalConfiguration(configuration);
         services.RegisterAppContext(configuration);
         services.RegisterIdentityServices();
@@ -39,7 +38,7 @@ public static class DependenciesInjection
 
     private static void AddCorsMethod(this IServiceCollection services , IConfiguration config )
     {
-        var AllowedOrigins = config.GetSection("AllowedOrigins").Get<string[]>();
+        var AllowedOrigins = config.GetSection("AllowedOrigins").Get<string>();
 
         services.AddCors(
             opts =>

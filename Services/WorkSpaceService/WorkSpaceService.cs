@@ -40,6 +40,7 @@ public class WorkSpaceService(AppContext context,
         return Result.Success<IEnumerable<WorkSpaceResponse>?>(response);
     }
 
+    // todo: you need revision the logic because the adding process not happened as expected.
     public async Task<Result<WorkSpaceResponse>> AddAsync(WorkSpaceRequest Requset, CancellationToken cancellationToken = default!)
     {
 
@@ -83,7 +84,7 @@ public class WorkSpaceService(AppContext context,
     {
 
         var workSpace = await _Context.Users.
-            Where(x => x.Id == UserId && x.WorkSpaceUser .WrokSpaceID == Id)
+            Where(x => x.Id == UserId && x.WorkSpaceUser.WrokSpaceID == Id)
             .Select(x => x.WorkSpaceUser.WorkSpaces)
             .SingleOrDefaultAsync(cancellationToken);
 
@@ -143,8 +144,8 @@ public class WorkSpaceService(AppContext context,
             }
         );
 
-        BackgroundJob.Enqueue(
-            () => _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Addtion Service", BuilderMessage));
+        // todo: use background job to send email because the email sending process is time consuming and it will affect the performance of the API if we send email in the same request.
+        await _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Addtion Service", BuilderMessage);
 
 
 

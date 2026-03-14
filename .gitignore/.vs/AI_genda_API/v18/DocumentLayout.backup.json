@@ -3,40 +3,27 @@
   "WorkspaceRootPath": "D:\\Api_Projects\\Project\\AI_genda_API2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\invitememberrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\invitememberrequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\emailservice\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\emailservice\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\invitememberrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\invitememberrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\workspaceservice\\workspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\workspaceservice\\workspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\workspacemember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\workspacemember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LAPTOP WORLD\\AppData\\Roaming\\Microsoft\\UserSecrets\\7a292b51-9ece-4ae7-b8af-7ce5eb5dac7b\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\errors\\usererrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:errors\\usererrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\dependenciesinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:dependenciesinjection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\errors\\workspaceerrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:errors\\workspaceerrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\controllers\\workspacescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:controllers\\workspacescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\workspaceservice\\iworkspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\workspaceservice\\iworkspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\workspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\workspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,21 +33,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "InviteMemberRequestValidator.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberRequestValidator.cs",
-              "RelativeDocumentMoniker": "Contracts\\Workspace\\InviteMemberRequestValidator.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberRequestValidator.cs",
-              "RelativeToolTip": "Contracts\\Workspace\\InviteMemberRequestValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T15:34:32.784Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -75,107 +49,78 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UserErrors.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\UserErrors.cs",
-              "RelativeDocumentMoniker": "Errors\\UserErrors.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\UserErrors.cs",
-              "RelativeToolTip": "Errors\\UserErrors.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwCIAAAAtAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "EmailService.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\EmailService\\EmailService.cs",
+              "RelativeDocumentMoniker": "Services\\EmailService\\EmailService.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\EmailService\\EmailService.cs",
+              "RelativeToolTip": "Services\\EmailService\\EmailService.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAtwCYAAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T13:33:25.783Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "WorkSpaceErrors.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\WorkSpaceErrors.cs",
-              "RelativeDocumentMoniker": "Errors\\WorkSpaceErrors.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\WorkSpaceErrors.cs",
-              "RelativeToolTip": "Errors\\WorkSpaceErrors.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T13:32:38.27Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "InviteMemberRequest.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberRequest.cs",
-              "RelativeDocumentMoniker": "Contracts\\Workspace\\InviteMemberRequest.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberRequest.cs",
-              "RelativeToolTip": "Contracts\\Workspace\\InviteMemberRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T12:38:17.248Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "WorkspaceMember.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkspaceMember.cs",
-              "RelativeDocumentMoniker": "Entities\\WorkspaceMember.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkspaceMember.cs",
-              "RelativeToolTip": "Entities\\WorkspaceMember.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T12:19:58.528Z",
+              "WhenOpened": "2026-03-14T11:45:03.798Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "WorkSpaceService.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\WorkSpaceService.cs",
-              "RelativeDocumentMoniker": "Services\\WorkSpaceService\\WorkSpaceService.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\WorkSpaceService.cs",
-              "RelativeToolTip": "Services\\WorkSpaceService\\WorkSpaceService.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAowIYAAABYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T10:01:46.168Z",
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAABMAAAAAAAAAAADwvyYAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-14T09:50:22.788Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IWorkSpaceService.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\IWorkSpaceService.cs",
-              "RelativeDocumentMoniker": "Services\\WorkSpaceService\\IWorkSpaceService.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\IWorkSpaceService.cs",
-              "RelativeToolTip": "Services\\WorkSpaceService\\IWorkSpaceService.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAcwA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-13T09:59:25.023Z",
+              "DocumentIndex": 3,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\LAPTOP WORLD\\AppData\\Roaming\\Microsoft\\UserSecrets\\7a292b51-9ece-4ae7-b8af-7ce5eb5dac7b\\secrets.json",
+              "ToolTip": "C:\\Users\\LAPTOP WORLD\\AppData\\Roaming\\Microsoft\\UserSecrets\\7a292b51-9ece-4ae7-b8af-7ce5eb5dac7b\\secrets.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-13T23:48:55.946Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "WorkSpacesController.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Controllers\\WorkSpacesController.cs",
-              "RelativeDocumentMoniker": "Controllers\\WorkSpacesController.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Controllers\\WorkSpacesController.cs",
-              "RelativeToolTip": "Controllers\\WorkSpacesController.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAA5wEgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-12T23:24:30.016Z",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-13T23:30:41.718Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "WorkSpace.cs",
-              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkSpace.cs",
-              "RelativeDocumentMoniker": "Entities\\WorkSpace.cs",
-              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkSpace.cs",
-              "RelativeToolTip": "Entities\\WorkSpace.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAgAAAAuAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "DependenciesInjection.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\DependenciesInjection.cs",
+              "RelativeDocumentMoniker": "DependenciesInjection.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\DependenciesInjection.cs",
+              "RelativeToolTip": "DependenciesInjection.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-12T22:50:02.873Z",
+              "WhenOpened": "2026-03-13T21:10:44.706Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T21:10:11.424Z"
             }
           ]
         }
