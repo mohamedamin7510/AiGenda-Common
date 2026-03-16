@@ -403,3 +403,4 @@ D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\EmailConfirmati
 D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\ResetPassword.html
 D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\WorkspaceMemberInvite.html
 D:\Api_Projects\Project\AI_genda_API2\obj\Debug\net9.0\compressed\nosz2kgoay-{0}-fkf6fwsm6l-fkf6fwsm6l.gz
+D:\Api_Projects\Project\AI_genda_API2\bin\Debug\net9.0\Templates\ChangeEmail.html

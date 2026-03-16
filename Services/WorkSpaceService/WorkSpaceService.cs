@@ -1,12 +1,10 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Hangfire;
+using Microsoft.Data.SqlClient;
 
 namespace AI_genda_API.Services.FolderService;
 
-public class WorkSpaceService(AppContext context, 
-    IHttpContextAccessor httpContextAccessor,
-    IEmailSender emailSender
-    
-    ) : IWorkSpaceService 
+public class WorkSpaceService(AppContext context, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender ) 
+    : IWorkSpaceService 
 {
     private readonly AppContext _Context = context;
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
@@ -73,12 +71,14 @@ public class WorkSpaceService(AppContext context,
         return Result.Success(response);
     }
 
-    public async Task<Result<WorkspaceDashboardResponse>> GetWorkspaceDashboardAsync(
-       int Id,string UserId, CancellationToken cancellationToken = default)      
+    public async Task<Result<WorkspaceDashboardResponse>> GetWorkspaceDashboardAsync(int Id,string UserId, CancellationToken cancellationToken = default) 
+           
     {
         // Validate workspace existence
 
-        // Validate user access to workspace
+        // Validate userId access to workspace
+
+        // validate user that request the dashboard is the member of the workspace or not or who created it (two status)
 
         // Fetch statistics
 
@@ -268,12 +268,11 @@ public class WorkSpaceService(AppContext context,
                         {"{{WorkSpaceName}}", Workspace.Name},
                         {"{{FullName}}", InvitedUser.FirstName + " "+ InvitedUser.SecondName },
                         {"{{AddedUserName}}", User.FirstName + " "+ User.SecondName },
-                        { "{{action_url}}", $"{origin}/Authentication/Add-member?" } //todo: redirect to this workspace
+                        { "{{action_url}}", $"https://{origin}/WorkSpace/Add-member?workspaceId={Workspace.Id}&&UserId={User.Id}" } 
             }
         );
 
-        // todo: use background job to send email because the email sending process is time consuming and it will affect the performance of the API if we send email in the same request.
-        await _EmailSender.SendEmailAsync(User.Email!, Message, BuilderMessage);
+      BackgroundJob.Enqueue(()=> _EmailSender.SendEmailAsync(User.Email!, Message, BuilderMessage));
 
     }
 }

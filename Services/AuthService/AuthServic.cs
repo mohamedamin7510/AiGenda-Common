@@ -240,11 +240,10 @@ public class AuthServic(
        {
            {"{{CODE}}",code },
            {"{{FullName}}" , user.FirstName + " " + user.SecondName},
-           { " {{URI}}", $"https://origin//resetpass?email={user.Email}&&code={code}"}//todo: Go to Reset Password Page
+           { " {{URI}}", $"https://{origin}/Auth/reset-pss/?email={user.Email}&&code={code}"}
        });
 
-        //todo: Send Email with Hangfire(BackGround Jobs) for rest password code 
-        await _EmailSender.SendEmailAsync(user.Email!, "AiGenda: Reset Password", HtmlBody);
+      BackgroundJob.Enqueue(()=>  _EmailSender.SendEmailAsync(user.Email!, "✅ AiGenda Team: Reset Password", HtmlBody));
 
         return Result.Success();
     }
@@ -291,12 +290,14 @@ public class AuthServic(
         new Dictionary<string, string>
             {
                         {"{{name}}", User.FirstName + " "+ User.SecondName },
-                        { "{{action_url}}", $"{origin}/Authentication/confirm-email?userid={User.Id}&&code={code}" } //todo: email URL
+                        {"{{code}}", code },
+                        { "{{action_url}}", $"https://{origin}/Auth/confirm-email?userid={User.Id}&&code={code}" }
             }
         );
 
-        //todo: Send Email with Hangfire(BackGround Jobs)
-        _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Email Confirmation", BuilderMessage);
+    
+        BackgroundJob.
+            Enqueue(() => _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Email Confirmation", BuilderMessage));
     }
 
 

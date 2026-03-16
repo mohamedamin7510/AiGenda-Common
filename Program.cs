@@ -1,4 +1,5 @@
 using AI_genda_API;
+using AI_genda_API.Hubs;
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Serilog;
@@ -46,6 +47,8 @@ app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseAuthorization();
+
+//app.MapHub<ChatHub>("hubs/chat");
 
 app.MapControllers();
 

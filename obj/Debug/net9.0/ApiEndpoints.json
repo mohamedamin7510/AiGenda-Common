@@ -291,7 +291,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
     "Method": "Get",
     "RelativePath": "me",
     "HttpMethod": "GET",
@@ -301,7 +301,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
     "Method": "Update",
     "RelativePath": "me",
     "HttpMethod": "PUT",
@@ -317,7 +317,23 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AI_genda_API.Controllers.ProfileSettingsController",
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
+    "Method": "ConfirmChangeEmail",
+    "RelativePath": "me/change-email",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Profile.changeEmailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
     "Method": "ChangePassword",
     "RelativePath": "me/change-password",
     "HttpMethod": "PUT",
@@ -327,6 +343,22 @@
       {
         "Name": "request",
         "Type": "BucketSurvey.Api.Contract.User.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
+    "Method": "ChangeEmail",
+    "RelativePath": "me/confirm-change-email",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Profile.ConfirmChangeEmailRequest",
         "IsRequired": true
       }
     ],

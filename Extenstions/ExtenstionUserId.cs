@@ -1,4 +1,6 @@
-﻿namespace AI_genda_API.Api.Extenstions;
+﻿using System.Security.Claims;
+
+namespace BucketSurvey.Api.Extenstions;
 
 public static class ExtenstionUserId
 {

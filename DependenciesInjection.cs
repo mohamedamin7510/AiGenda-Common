@@ -15,12 +15,13 @@ public static class DependenciesInjection
         services.AddScoped<IWorkSpaceService , WorkSpaceService>();
         services.AddScoped<ISpaceService, SpaceService>();
         services.AddScoped<IEmailSender, EmailService>();
-        services.AddScoped<IProfileSettingService, ProfileSettingService>();
+        services.AddScoped<IProfileService, ProfileService>();
         services.AddOptions<MailSettings>().
             BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
-                 
-                  
-        
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+
+
 
 
         // functions 
