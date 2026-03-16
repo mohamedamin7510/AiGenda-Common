@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AI_genda_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08e83607d03d22b1811af2e52c27b2fd4c781aec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d420bb3a49ec0ba47b6bbea74ef48da8d3c903d")]
 [assembly: System.Reflection.AssemblyProductAttribute("AI_genda_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AI_genda_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

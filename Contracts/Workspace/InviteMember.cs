@@ -1,6 +1,6 @@
 ﻿namespace AI_genda_API.Contracts.Workspace;
 
-public record InviteMemberRequest
+public record InviteMember
 (
       string email 
 );

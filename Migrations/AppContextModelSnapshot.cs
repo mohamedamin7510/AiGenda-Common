@@ -57,6 +57,13 @@ namespace AI_genda_API.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -95,6 +102,13 @@ namespace AI_genda_API.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SpaceId")
                         .IsRequired()
@@ -157,11 +171,21 @@ namespace AI_genda_API.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedById")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -185,8 +209,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasKey("WrokSpaceID", "UserID");
 
-                    b.HasIndex("UserID")
-                        .IsUnique();
+                    b.HasIndex("UserID");
 
                     b.ToTable("WorkspaceMembers");
                 });
@@ -509,13 +532,13 @@ namespace AI_genda_API.Migrations
             modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
                 {
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
-                        .WithOne("WorkSpaceUser")
-                        .HasForeignKey("AI_genda_API.Entities.WorkspaceMember", "UserID")
+                        .WithMany("WorkSpaceMembers")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("AI_genda_API.Entities.WorkSpace", "WorkSpaces")
-                        .WithMany("workspaceUsers")
+                        .WithMany("workspaceMembers")
                         .HasForeignKey("WrokSpaceID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -622,13 +645,12 @@ namespace AI_genda_API.Migrations
                 {
                     b.Navigation("Spaces");
 
-                    b.Navigation("workspaceUsers");
+                    b.Navigation("workspaceMembers");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
                 {
-                    b.Navigation("WorkSpaceUser")
-                        .IsRequired();
+                    b.Navigation("WorkSpaceMembers");
                 });
 #pragma warning restore 612, 618
         }

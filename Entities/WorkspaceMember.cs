@@ -11,9 +11,9 @@ public class WorkspaceMember
 
 
     [ForeignKey("UserID")]
-    public virtual ExtendedUser? User { get; set; } = new();
+    public virtual ExtendedUser? User { get; set; }
 
-    [ForeignKey("UserID")]
-    public virtual WorkSpace? WorkSpaces { get; set; } = new();
+    [ForeignKey("WrokSpaceID")]
+    public virtual WorkSpace? WorkSpaces { get; set; }
 
 }

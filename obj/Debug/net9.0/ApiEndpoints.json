@@ -139,16 +139,6 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
-    "Method": "GetAll",
-    "RelativePath": "api/WorkSpaces",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
     "Method": "Add",
     "RelativePath": "api/WorkSpaces",
     "HttpMethod": "POST",
@@ -165,6 +155,16 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "GetAll",
+    "RelativePath": "api/WorkSpaces",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
     "Method": "GetById",
     "RelativePath": "api/WorkSpaces/{Id}",
     "HttpMethod": "GET",
@@ -172,8 +172,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Id",
-        "Type": "",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -218,6 +218,22 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "GetWorkspaceDashboardData",
+    "RelativePath": "api/WorkSpaces/{Id}/dashboard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
     "Method": "AddMember",
     "RelativePath": "api/WorkSpaces/{Id}/member",
     "HttpMethod": "POST",
@@ -231,7 +247,44 @@
       },
       {
         "Name": "request",
-        "Type": "AI_genda_API.Contracts.Workspace.InviteMemberRequest",
+        "Type": "AI_genda_API.Contracts.Workspace.InviteMember",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "RemoveMember",
+    "RelativePath": "api/WorkSpaces/{Id}/remove",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Workspace.InviteMember",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "Restore",
+    "RelativePath": "api/WorkSpaces/{Id}/restore",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

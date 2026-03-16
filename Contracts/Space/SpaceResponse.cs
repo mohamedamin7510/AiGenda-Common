@@ -4,5 +4,5 @@ public record SpaceResponse
 (
     int id , 
     string Name,
-    string IconHexa
+    string IconCode
 );

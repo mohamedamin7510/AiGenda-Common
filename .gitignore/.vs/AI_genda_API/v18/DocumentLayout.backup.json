@@ -3,8 +3,88 @@
   "WorkspaceRootPath": "D:\\Api_Projects\\Project\\AI_genda_API2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\workspaceservice\\workspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\workspaceservice\\workspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\errors\\workspacemembererrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:errors\\workspacemembererrors.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\controllers\\workspacescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:controllers\\workspacescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\invitemembervalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\invitemembervalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\workspaceservice\\iworkspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\workspaceservice\\iworkspaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\extendeduser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\extendeduser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\workspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\workspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\workspacemember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\workspacemember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\presistiences\\entitiesconfiguration\\workspacemembersconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:presistiences\\entitiesconfiguration\\workspacemembersconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\workspacedashboardresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\workspacedashboardresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\space\\spaceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\space\\spaceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\workspacerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\workspacerequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\contracts\\workspace\\workspaceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:contracts\\workspace\\workspaceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\entities\\enums\\workspacevisibility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:entities\\enums\\workspacevisibility.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\ai_genda_api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:ai_genda_api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\services\\authservice\\authservic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:services\\authservice\\authservic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|d:\\api_projects\\project\\ai_genda_api2\\migrations\\20260315104834_fix the relationships in the user-wsmember table then added deleting logging.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}|AI_genda_API.csproj|solutionrelative:migrations\\20260315104834_fix the relationships in the user-wsmember table then added deleting logging.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,12 +94,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
@@ -30,16 +106,268 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ExtendedUser.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\ExtendedUser.cs",
+              "RelativeDocumentMoniker": "Entities\\ExtendedUser.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\ExtendedUser.cs",
+              "RelativeToolTip": "Entities\\ExtendedUser.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAzwAwAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T21:10:12.989Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "WorkspaceMembersConfiguration.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Presistiences\\EntitiesConfiguration\\WorkspaceMembersConfiguration.cs",
+              "RelativeDocumentMoniker": "Presistiences\\EntitiesConfiguration\\WorkspaceMembersConfiguration.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Presistiences\\EntitiesConfiguration\\WorkspaceMembersConfiguration.cs",
+              "RelativeToolTip": "Presistiences\\EntitiesConfiguration\\WorkspaceMembersConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T20:50:19.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SpaceResponse.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Space\\SpaceResponse.cs",
+              "RelativeDocumentMoniker": "Contracts\\Space\\SpaceResponse.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Space\\SpaceResponse.cs",
+              "RelativeToolTip": "Contracts\\Space\\SpaceResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T18:46:14.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "WorkSpaceDashBoardResponse.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceDashBoardResponse.cs",
+              "RelativeDocumentMoniker": "Contracts\\Workspace\\WorkSpaceDashBoardResponse.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceDashBoardResponse.cs",
+              "RelativeToolTip": "Contracts\\Workspace\\WorkSpaceDashBoardResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T17:56:06.977Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AI_genda_API",
+              "Title": "WorkSpaceService.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\WorkSpaceService.cs",
+              "RelativeDocumentMoniker": "Services\\WorkSpaceService\\WorkSpaceService.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\WorkSpaceService.cs",
+              "RelativeToolTip": "Services\\WorkSpaceService\\WorkSpaceService.cs",
+              "ViewState": "AgIAAJAAAAAAAAAAAAA1wNcAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T21:45:17.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WorkSpacesController.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Controllers\\WorkSpacesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\WorkSpacesController.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Controllers\\WorkSpacesController.cs",
+              "RelativeToolTip": "Controllers\\WorkSpacesController.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAwwF0AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T21:43:56.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "WorkspaceMemberErrors.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\WorkspaceMemberErrors.cs",
+              "RelativeDocumentMoniker": "Errors\\WorkspaceMemberErrors.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Errors\\WorkspaceMemberErrors.cs",
+              "RelativeToolTip": "Errors\\WorkspaceMemberErrors.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAABuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T22:45:47.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "InviteMemberValidator.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberValidator.cs",
+              "RelativeDocumentMoniker": "Contracts\\Workspace\\InviteMemberValidator.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\InviteMemberValidator.cs",
+              "RelativeToolTip": "Contracts\\Workspace\\InviteMemberValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T21:43:40.139Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IWorkSpaceService.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\IWorkSpaceService.cs",
+              "RelativeDocumentMoniker": "Services\\WorkSpaceService\\IWorkSpaceService.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\WorkSpaceService\\IWorkSpaceService.cs",
+              "RelativeToolTip": "Services\\WorkSpaceService\\IWorkSpaceService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T10:28:25.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "WorkSpace.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkSpace.cs",
+              "RelativeDocumentMoniker": "Entities\\WorkSpace.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkSpace.cs",
+              "RelativeToolTip": "Entities\\WorkSpace.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T21:09:50.112Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "WorkspaceMember.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkspaceMember.cs",
+              "RelativeDocumentMoniker": "Entities\\WorkspaceMember.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\WorkspaceMember.cs",
+              "RelativeToolTip": "Entities\\WorkspaceMember.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T10:34:30.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GlobalUsings.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\GlobalUsings.cs",
+              "RelativeDocumentMoniker": "GlobalUsings.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\GlobalUsings.cs",
+              "RelativeToolTip": "GlobalUsings.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T18:50:27.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "WorkSpaceRequestValidator.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceRequestValidator.cs",
+              "RelativeDocumentMoniker": "Contracts\\Workspace\\WorkSpaceRequestValidator.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceRequestValidator.cs",
+              "RelativeToolTip": "Contracts\\Workspace\\WorkSpaceRequestValidator.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBQAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T11:29:54.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "WorkSpaceResponse.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceResponse.cs",
+              "RelativeDocumentMoniker": "Contracts\\Workspace\\WorkSpaceResponse.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Contracts\\Workspace\\WorkSpaceResponse.cs",
+              "RelativeToolTip": "Contracts\\Workspace\\WorkSpaceResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T11:29:57.77Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "20260315104834_Fix the relationships in the User-WSmember Table then added deleting logging.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Migrations\\20260315104834_Fix the relationships in the User-WSmember Table then added deleting logging.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260315104834_Fix the relationships in the User-WSmember Table then added deleting logging.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Migrations\\20260315104834_Fix the relationships in the User-WSmember Table then added deleting logging.cs",
+              "RelativeToolTip": "Migrations\\20260315104834_Fix the relationships in the User-WSmember Table then added deleting logging.cs",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T10:48:35.411Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "WorkSpaceVisibility.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\Enums\\WorkSpaceVisibility.cs",
+              "RelativeDocumentMoniker": "Entities\\Enums\\WorkSpaceVisibility.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Entities\\Enums\\WorkSpaceVisibility.cs",
+              "RelativeToolTip": "Entities\\Enums\\WorkSpaceVisibility.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAQAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T10:06:22.314Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T21:08:39.838Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "AI_genda_API.csproj",
               "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\AI_genda_API.csproj",
               "RelativeDocumentMoniker": "AI_genda_API.csproj",
               "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\AI_genda_API.csproj",
               "RelativeToolTip": "AI_genda_API.csproj",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACMAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-03-14T20:37:39.683Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T21:04:49.01Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AuthServic.cs",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\AuthService\\AuthServic.cs",
+              "RelativeDocumentMoniker": "Services\\AuthService\\AuthServic.cs",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\Services\\AuthService\\AuthServic.cs",
+              "RelativeToolTip": "Services\\AuthService\\AuthServic.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAjwJAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T21:03:43.722Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-14T21:00:16.403Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\Api_Projects\\Project\\AI_genda_API2\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-14T20:58:02.598Z"
             }
           ]
         }

@@ -9,7 +9,7 @@ public class WorkSpaceConfiguratio : IEntityTypeConfiguration<WorkSpace>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasMany(x => x.workspaceUsers)
+        builder.HasMany(x => x.workspaceMembers)
             .WithOne(y => y.WorkSpaces)
             .HasForeignKey(x=>x.WrokSpaceID);
 

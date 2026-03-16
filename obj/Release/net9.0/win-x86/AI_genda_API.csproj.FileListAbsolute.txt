@@ -208,3 +208,8 @@ D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\refint\AI_genda
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\AI_genda_API.pdb
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\AI_genda_API.genruntimeconfig.cache
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\ref\AI_genda_API.dll
+D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\EmailConfirmation.html
+D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\ResetPassword.html
+D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\WorkspaceMemberInvite.html
+D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\AI_genda_API.staticwebassets.runtime.json
+D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\compressed\nosz2kgoay-{0}-fkf6fwsm6l-fkf6fwsm6l.gz

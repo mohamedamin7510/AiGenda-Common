@@ -12,8 +12,9 @@ public class ExtendedUser:IdentityUser
     public string? AvatarUrl { get; set; }
     public DateOnly? DateOfBirth { get; set; } = default;
     public bool IsDeleted { get; set; } = false;
-    public WorkspaceMember WorkSpaceUser { get; set; }
-    public List<RefreshToken> RefreshTokens { get; set; } = new(); 
+
+    public List<WorkspaceMember> WorkSpaceMembers { get; set; } = [];
+    public List<RefreshToken> RefreshTokens { get; set; } = []; 
 
  
 }

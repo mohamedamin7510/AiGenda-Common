@@ -23,7 +23,7 @@ public class AuthController(IAuthService authService) : ControllerBase
        var response = await  _AuthService.GetRefreshTokenAsync(Tokens,cancellationToken=default);
 
 
-        return response is null ? BadRequest("InvalidToken!") : Ok(response);
+        return response is null ? BadRequest("InvalidToken!") : Ok(response.Value);
     }
    
 
