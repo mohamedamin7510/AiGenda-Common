@@ -3,7 +3,7 @@ using AI_genda_API.Hubs;
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
 using Serilog;
-// ahmed noser and saleh were here
+// HELLO
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDependencies(builder.Configuration);
