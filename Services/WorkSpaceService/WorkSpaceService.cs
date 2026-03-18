@@ -268,7 +268,7 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
                         {"{{WorkSpaceName}}", Workspace.Name},
                         {"{{FullName}}", InvitedUser.FirstName + " "+ InvitedUser.SecondName },
                         {"{{AddedUserName}}", User.FirstName + " "+ User.SecondName },
-                        { "{{action_url}}", $"https://{origin}/WorkSpace/Add-member?workspaceId={Workspace.Id}&&UserId={User.Id}" } 
+                        { "{{action_url}}", $"{origin}/WorkSpace/Add-member?workspaceId={Workspace.Id}&&UserId={User.Id}" } 
             }
         );
 

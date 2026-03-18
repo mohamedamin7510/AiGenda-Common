@@ -240,7 +240,7 @@ public class AuthServic(
        {
            {"{{CODE}}",code },
            {"{{FullName}}" , user.FirstName + " " + user.SecondName},
-           { " {{URI}}", $"https://{origin}/Auth/reset-pss/?email={user.Email}&&code={code}"}
+           { "{{URI}}", $"{origin}/Auth/reset-pss/?email={user.Email}&&code={code}"}
        });
 
       BackgroundJob.Enqueue(()=>  _EmailSender.SendEmailAsync(user.Email!, "✅ AiGenda Team: Reset Password", HtmlBody));
@@ -291,7 +291,7 @@ public class AuthServic(
             {
                         {"{{name}}", User.FirstName + " "+ User.SecondName },
                         {"{{code}}", code },
-                        { "{{action_url}}", $"https://{origin}/Auth/confirm-email?userid={User.Id}&&code={code}" }
+                        { "{{action_url}}", $"{origin}/Auth/confirm-email?userid={User.Id}&&code={code}" }
             }
         );
 

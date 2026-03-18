@@ -82,7 +82,7 @@ public class ProfileService(UserManager<ExtendedUser> userManager, IEmailSender 
             { "{{firstName}}", user.FirstName + " " + user.SecondName },
             { "{{newemail}}", request.newemail },
             { "{{code}}", code },
-            { "{{URI}}",$"https://{origin}/Auth/change-email?userid={user.Id}&&code={code}&&newemail={request.newemail}"}
+            { "{{URI}}",$"{origin}/Auth/change-email?userid={user.Id}&&code={code}&&newemail={request.newemail}"}
         });
 
 

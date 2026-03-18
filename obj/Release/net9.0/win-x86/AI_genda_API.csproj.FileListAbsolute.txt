@@ -213,3 +213,4 @@ D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\Reset
 D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\WorkspaceMemberInvite.html
 D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\AI_genda_API.staticwebassets.runtime.json
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\compressed\nosz2kgoay-{0}-fkf6fwsm6l-fkf6fwsm6l.gz
+D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\win-x86\Templates\ChangeEmail.html

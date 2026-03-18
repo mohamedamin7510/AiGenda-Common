@@ -3,6 +3,7 @@ D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\apps
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\appsettings.json
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\dotnet-tools.json
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\Logs\Log-.json
+D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\Templates\ChangeEmail.html
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\Templates\EmailConfirmation.html
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\Templates\ResetPassword.html
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\win-x86\PubTmp\Out\Templates\WorkspaceMemberInvite.html
