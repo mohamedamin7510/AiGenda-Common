@@ -7,3 +7,18 @@ public enum WorkSpaceVisibility
     Public = 2
 
 }
+public enum TaskStatuss
+{
+    Todo = 0,
+    Ongoing = 1,
+    Completed = 2,
+    Cancelled = 3
+}
+
+public enum TaskPriority
+{
+    Low = 0,
+    Medium = 1,
+    High = 2,
+    Critical = 3
+}

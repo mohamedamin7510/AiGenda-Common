@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using Microsoft.Data.SqlClient;
+using AI_genda_API.Contracts.Analytics;
 
 namespace AI_genda_API.Services.FolderService;
 

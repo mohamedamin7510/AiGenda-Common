@@ -1,9 +1,6 @@
-﻿namespace AI_genda_API.Contracts.Space;
-
-public record SpaceRequest
-(
-    string Name , 
-    string Descreption,
-    string IconHexa , 
-    bool IsPublic 
+﻿public record SpaceRequest(
+    string Name,
+    string Description,
+    string IconHexa,
+    bool IsPublic = true
 );
