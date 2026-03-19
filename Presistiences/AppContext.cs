@@ -1,5 +1,4 @@
-﻿using Task = AI_genda_API.Entities.Task;
-namespace AI_genda_API.Presistience;
+﻿namespace AI_genda_API.Presistience;
 
 
 public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor ) : IdentityDbContext(dbContextOptions)
@@ -9,8 +8,9 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
     public DbSet<ExtendedUser> Users { get; set; }
     public DbSet<WorkSpace> WorkSpaces { get; set; }
     public DbSet<WorkspaceMember> WorkspaceMembers { get; set; }
-    public DbSet<Space> Spaces{ get; set; }
-    public DbSet<Task> Tasks{ get; set; }
+    public DbSet<Space> Spaces { get; set; }
+    public DbSet<SpaceTask> Tasks { get; set; }
+    public DbSet<TaskAssignee> TaskAssignees { get; set; }
 
 
 

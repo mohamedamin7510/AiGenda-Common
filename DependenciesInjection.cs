@@ -1,4 +1,5 @@
 ﻿using AI_genda_API.Services.ProfileSettingService;
+using AI_genda_API.Services.TaskService;
 using Hangfire;
 
 
@@ -14,12 +15,14 @@ public static class DependenciesInjection
         services.AddScoped<IAuthService, AuthServic>();
         services.AddScoped<IWorkSpaceService , WorkSpaceService>();
         services.AddScoped<ISpaceService, SpaceService>();
+        services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddOptions<MailSettings>().
             BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
+
 
 
 

@@ -2,9 +2,9 @@
 
 namespace AI_genda_API.Entities;
 
-public class Task:AuditLogging
+public class Task : AuditLogging
 {
-    public string Id { get; set; }= Guid.NewGuid().ToString();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Tittle { get; set; }
     public string? Descreption { get; set; } = default!;
 
