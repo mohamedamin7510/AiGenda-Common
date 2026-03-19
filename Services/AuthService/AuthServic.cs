@@ -136,12 +136,12 @@ public class AuthServic(
         return Result.Success(); 
     }
 
-    public async Task<Result> ResgisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task<Result<RegisterResponse>> ResgisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var IsEmailExisted = await _Context.Users.AnyAsync(x=> x.Email == request.Email );
 
         if (IsEmailExisted)
-          return Result.Faluire(UserErrors.EmailDuplicated);
+          return Result.Faluire<RegisterResponse>(UserErrors.EmailDuplicated);
 
         var NewUser = new ExtendedUser()
         {
@@ -162,13 +162,15 @@ public class AuthServic(
 
             _Logger.LogInformation("Confirmation Code : {code}",ReadyToken);
 
-            SendEmailConfirmation(NewUser, ReadyToken); 
+            SendEmailConfirmation(NewUser, ReadyToken);
 
-            return Result.Success(); 
+            var response = NewUser.Adapt<ExtendedUser, RegisterResponse>();
+
+            return Result.Success(response); 
 
         }
 
-        return Result.Faluire<AuthResponse>
+        return Result.Faluire<RegisterResponse>
            (new Error("Register.Failed", "The Registeration is not completed ", StatusCodes.Status400BadRequest));
     }
 

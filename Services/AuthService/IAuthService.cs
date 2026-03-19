@@ -9,7 +9,7 @@ public interface IAuthService
 
    public Task<Result> RevokeRefreshTokenAsync(ReFTokenReq request, CancellationToken? cancellationToken = default);
    
-   public Task<Result> ResgisterAsync(RegisterRequest request, CancellationToken cancellationToken);
+   public Task<Result<RegisterResponse>> ResgisterAsync(RegisterRequest request, CancellationToken cancellationToken);
   
    public Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request, CancellationToken cancellationToken);
   

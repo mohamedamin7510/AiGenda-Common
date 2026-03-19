@@ -41,7 +41,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         var result = await _AuthService.ResgisterAsync(request , cancellationToken);
 
-        return result.IsSuccess ? NoContent() : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
