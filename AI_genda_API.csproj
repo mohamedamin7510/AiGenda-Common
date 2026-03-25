@@ -35,4 +35,13 @@
         </Content>
     </ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Authentication\Filters\" />
+	  <Folder Include="Logs\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include=".github\copilot-instructions.md" />
+	</ItemGroup>
+
 </Project>

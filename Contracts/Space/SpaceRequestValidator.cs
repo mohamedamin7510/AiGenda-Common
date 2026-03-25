@@ -12,8 +12,10 @@ public class SpaceRequestValidator : AbstractValidator<SpaceRequest>
             .NotEmpty()
             .MaximumLength(300);
 
-        RuleFor(x => x.IconHexa)
+        RuleFor(x => x.IconCode)
             .NotEmpty()
             .MaximumLength(500);
+
+
     }
 }

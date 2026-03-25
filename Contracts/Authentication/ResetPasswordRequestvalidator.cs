@@ -1,4 +1,6 @@
-﻿namespace BucketSurvey.Api.Contract.Authentication;
+﻿using AI_genda_API.Abstractions.Const;
+
+namespace BucketSurvey.Api.Contract.Authentication;
 
 public class ResetPasswordRequestvalidator:AbstractValidator<ResetPasswordRequest>
 {

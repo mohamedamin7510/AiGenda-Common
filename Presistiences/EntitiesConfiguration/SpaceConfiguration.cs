@@ -11,18 +11,17 @@ public class SpaceConfiguration : IEntityTypeConfiguration<Space>
 
         builder.HasOne(x => x.WorkSpace)
             .WithMany(x => x.Spaces)
-            .HasForeignKey(x => x.WorkSpaceId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(x => x.WorkSpaceId);
+           
 
         builder.Property(x => x.Name)
             .HasMaxLength(60);
 
-        builder.Property(x => x.Descreption)
+        builder.Property(x => x.Description)
               .HasMaxLength(300);
 
-        builder.Property(x => x.IconHexa)
+        builder.Property(x => x.IconCode)
               .HasMaxLength(500);
-
 
     }
 }

@@ -22,6 +22,179 @@ namespace AI_genda_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AI_genda_API.Entities.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b2153bc2-8cba-45ad-a733-3f24eab7b299",
+                            ConcurrencyStamp = "9ea95a74-301a-472f-a408-68121faa3a98",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "936d1473-fbe5-4d0e-b3bd-eec2c90261d7",
+                            ConcurrencyStamp = "6303a117-de04-41f9-b31f-d554e84808b9",
+                            IsDefault = true,
+                            IsDeleted = false,
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecondName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubscriptionType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ExtenededUser_DueDate_Past", "[DateOfBirth] < CAST(GETDATE() AS date)");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ce7b85e7-0058-40a4-b306-8974504ac779",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a1c5dbdd-930a-45b6-adf4-231f5f19ad8b",
+                            DateOfBirth = new DateOnly(2005, 1, 28),
+                            Email = "maming7510@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Mohamed",
+                            IsDisabled = false,
+                            JobTitle = "SoftWare Enginner",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MAMING7510@GMAIL.COM",
+                            NormalizedUserName = "MAMING7510@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAmeuZnmVQNw+PV3BycAkds2w/Yy4u8M0USBsM+jjBwwfbaflBjAkKcwwxEsbbMLqQ==",
+                            PhoneNumber = "01015899741",
+                            PhoneNumberConfirmed = true,
+                            SecondName = "Amin",
+                            SecurityStamp = "08E186A1F3DF472F925BB6A21CC00562",
+                            SubscriptionType = 1,
+                            TwoFactorEnabled = false,
+                            UserName = "maming7510@gmail.com"
+                        });
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
                 {
                     b.Property<string>("Id")
@@ -34,11 +207,11 @@ namespace AI_genda_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Descreption")
+                    b.Property<string>("Description")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("IconHexa")
+                    b.Property<string>("IconCode")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -81,7 +254,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("WorkSpaceId");
 
-                    b.ToTable("Spaces");
+                    b.ToTable("Spaces", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
@@ -96,12 +269,18 @@ namespace AI_genda_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Descreption")
+                    b.Property<string>("Description")
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("RemovedAt")
                         .HasColumnType("datetime2");
@@ -114,11 +293,10 @@ namespace AI_genda_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Tittle")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -137,7 +315,25 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.TaskAssignee", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TaskId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "TaskId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("TaskAssignees", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
@@ -193,7 +389,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("WorkSpaces");
+                    b.ToTable("WorkSpaces", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
@@ -204,41 +400,21 @@ namespace AI_genda_API.Migrations
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("datetime2");
+
+                    b.PrimitiveCollection<string>("Permissions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("WrokSpaceID", "UserID");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("WorkspaceMembers");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("WorkspaceMembers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -264,80 +440,169 @@ namespace AI_genda_API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Permissions",
+                            ClaimValue = "workspaces:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "Permissions",
+                            ClaimValue = "workspaces:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "Permissions",
+                            ClaimValue = "workspaces:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "Permissions",
+                            ClaimValue = "workspaces:delete",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "Permissions",
+                            ClaimValue = "spaces:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "Permissions",
+                            ClaimValue = "spaces:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClaimType = "Permissions",
+                            ClaimValue = "spaces:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ClaimType = "Permissions",
+                            ClaimValue = "spaces:delete",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ClaimType = "Permissions",
+                            ClaimValue = "tasks:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ClaimType = "Permissions",
+                            ClaimValue = "tasks:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ClaimType = "Permissions",
+                            ClaimValue = "tasks:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ClaimType = "Permissions",
+                            ClaimValue = "tasks:delete",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ClaimType = "Permissions",
+                            ClaimValue = "notes:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ClaimType = "Permissions",
+                            ClaimValue = "notes:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ClaimType = "Permissions",
+                            ClaimValue = "notes:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClaimType = "Permissions",
+                            ClaimValue = "notes:delete",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:read",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:add",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:update",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:changepermissions",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -400,6 +665,13 @@ namespace AI_genda_API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "ce7b85e7-0058-40a4-b306-8974504ac779",
+                            RoleId = "b2153bc2-8cba-45ad-a733-3f24eab7b299"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -423,43 +695,39 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
                 {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("AvatarUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateOnly?>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobTitle")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("SecondName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("SubscriptionType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.ToTable(t =>
+                    b.OwnsMany("AI_genda_API.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
-                            t.HasCheckConstraint("CK_ExtenededUser_DueDate_Past", "[DateOfBirth] < CAST(GETDATE() AS date)");
+                            b1.Property<string>("UserId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ExpiredAt")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime?>("RevokedAt")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("refreshToken")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("UserId", "Id");
+
+                            b1.ToTable("RefreshTokens", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
                         });
 
-                    b.HasDiscriminator().HasValue("ExtendedUser");
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
@@ -512,6 +780,25 @@ namespace AI_genda_API.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("AI_genda_API.Entities.TaskAssignee", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Task", "Task")
+                        .WithMany("TaskAssignees")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
                 {
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
@@ -550,7 +837,7 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("AI_genda_API.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -559,7 +846,7 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -568,7 +855,7 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -577,13 +864,13 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("AI_genda_API.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -592,7 +879,7 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -601,39 +888,7 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
                 {
-                    b.OwnsMany("AI_genda_API.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<string>("UserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("CreatedAt")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiredAt")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime?>("RevokedAt")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("refreshToken")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId", "Id");
-
-                            b1.ToTable("RefreshTokens", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("WorkSpaceMembers");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
@@ -641,16 +896,16 @@ namespace AI_genda_API.Migrations
                     b.Navigation("Tasks");
                 });
 
+            modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
+                {
+                    b.Navigation("TaskAssignees");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
                 {
                     b.Navigation("Spaces");
 
                     b.Navigation("workspaceMembers");
-                });
-
-            modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
-                {
-                    b.Navigation("WorkSpaceMembers");
                 });
 #pragma warning restore 612, 618
         }

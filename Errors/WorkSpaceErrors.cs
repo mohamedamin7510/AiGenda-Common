@@ -3,5 +3,7 @@
 public class WorkSpaceErrors
 {
     public static Error WorkSpaceNotFound => 
-        new Error("WorkSpace.NotFound", "This WorkSpace is not existed", StatusCodes.Status404NotFound); 
+        new Error("WorkSpace.NotFound", "This workspace is not existed", StatusCodes.Status404NotFound); 
+    public static Error TargetWorkSpaceNotFound => 
+        new Error("WorkSpace.NotFound", "This target workspace is not existed", StatusCodes.Status404NotFound); 
 }

@@ -1,7 +1,10 @@
-﻿namespace AI_genda_API.Presistience;
+﻿using Task = AI_genda_API.Entities.Task;
+
+namespace AI_genda_API.Presistience;
 
 
-public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor ) : IdentityDbContext(dbContextOptions)
+public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor )
+    : IdentityDbContext<ExtendedUser,ApplicationRole,string>(dbContextOptions)
 {
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
 
@@ -9,7 +12,7 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
     public DbSet<WorkSpace> WorkSpaces { get; set; }
     public DbSet<WorkspaceMember> WorkspaceMembers { get; set; }
     public DbSet<Space> Spaces { get; set; }
-    public DbSet<SpaceTask> Tasks { get; set; }
+    public DbSet<Task> Tasks { get; set; } 
     public DbSet<TaskAssignee> TaskAssignees { get; set; }
 
 
@@ -61,7 +64,7 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
 
 
         var CascadeFks = modelBuilder.Model
-      .GetEntityTypes().SelectMany(f => f.GetForeignKeys())
+            .GetEntityTypes().SelectMany(f => f.GetForeignKeys())
             .Where(x => x.DeleteBehavior == DeleteBehavior.Cascade && !x.IsOwnership);
 
         foreach (var fk in CascadeFks)

@@ -1,6 +1,5 @@
-﻿using AI_genda_API.Entities.Enums;
-using TaskStatus = AI_genda_API.Entities.Enums.TaskStatuss;
-using TaskPriority = AI_genda_API.Entities.Enums.TaskPriority;
+﻿using TaskStatus = AI_genda_API.Abstractions.Enums.TaskStatuss;
+using TaskPriority = AI_genda_API.Abstractions.Enums.TaskPriority;
 
 namespace AI_genda_API.Contracts.Task;
 

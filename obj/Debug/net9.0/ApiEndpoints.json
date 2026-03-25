@@ -128,13 +128,88 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "ContainingType": "AI_genda_API.Controllers.RolesController",
     "Method": "GetAll",
-    "RelativePath": "api/Spaces",
+    "RelativePath": "api/Roles",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "hasincluded",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.RolesController",
+    "Method": "Add",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Roles.RoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.RolesController",
+    "Method": "Get",
+    "RelativePath": "api/Roles/{Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.RolesController",
+    "Method": "Update",
+    "RelativePath": "api/Roles/{Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Roles.RoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.RolesController",
+    "Method": "ToggleStatus",
+    "RelativePath": "api/Roles/{Id}/toggle-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -255,6 +330,69 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "GetMembers",
+    "RelativePath": "api/WorkSpaces/{Id}/members",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "GetMemberPermissions",
+    "RelativePath": "api/WorkSpaces/{Id}/members/{MemberUserId}/permissions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "MemberUserId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "UpdateMemberPermissions",
+    "RelativePath": "api/WorkSpaces/{Id}/members/{MemberUserId}/permissions",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "MemberUserId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Workspace.UpdateWorkspaceMemberPermissionsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
     "Method": "RemoveMember",
     "RelativePath": "api/WorkSpaces/{Id}/remove",
     "HttpMethod": "DELETE",
@@ -291,6 +429,433 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "Add",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "SpaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "GetAll",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "GetById",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/{Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "Update",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/{Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "SpaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "Delete",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/{Id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "Move",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/{Id}/move",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Space.MoveSpaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "Restore",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/{Id}/restore",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "Add",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Task.TaskRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "GetAll",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "GetById",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "Update",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Task.TaskRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "Delete",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "AssignMember",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}/assign",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Task.AssignTaskRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "Restore",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}/restore",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}/status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Task.UpdateTaskStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.TasksController",
+    "Method": "UnAssignMember",
+    "RelativePath": "api/workspaces/{WorkspaceId}/spaces/{SpaceId}/Tasks/{Id}/unassign",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "SpaceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "AI_genda_API.Contracts.Task.AssignTaskRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.SpacesController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/workspaces/{WorkspaceId}/Spaces/deleted",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WorkspaceId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.WorkSpacesController",
+    "Method": "GetAllDeleted",
+    "RelativePath": "api/WorkSpaces/deleted",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AI_genda_API.Controllers.ProfilesController",
     "Method": "Get",
     "RelativePath": "me",
@@ -314,6 +879,42 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
+    "Method": "UploadAvatar",
+    "RelativePath": "me/avatar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
+    "Method": "GetAvatar",
+    "RelativePath": "me/avatar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.ProfilesController",
+    "Method": "DeleteAvatar",
+    "RelativePath": "me/avatar",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

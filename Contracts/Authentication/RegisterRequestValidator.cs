@@ -1,4 +1,6 @@
-﻿namespace AI_genda_API.Contracts.Authentication;
+﻿using AI_genda_API.Abstractions.Const;
+
+namespace AI_genda_API.Contracts.Authentication;
 
 public class RegisterRequestValidator:AbstractValidator<RegisterRequest>
 {

@@ -2,7 +2,7 @@
     string Id,
     string Name,
     string? Description,
-    string IconHexa,
+    string IconCode,
     DateOnly LastActivity,
     bool IsPublic,
     int TotalTasks,

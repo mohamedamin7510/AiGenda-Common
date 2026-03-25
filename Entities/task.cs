@@ -1,20 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using AI_genda_API.Abstractions.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AI_genda_API.Entities;
 
+[Table("Tasks")]
 public class Task : AuditLogging
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Tittle { get; set; }
-    public string? Descreption { get; set; } = default!;
-
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
     public bool IsActive { get; set; } = true;
-    public string Status { get; set; }
-    public string SpaceId { get; set; }
+    public TaskStatuss Status { get; set; } = TaskStatuss.Todo;
+    public TaskPriority Priority { get; set; } = TaskPriority.Medium;
+    public DateTime? DueDate { get; set; }
+    public string SpaceId { get; set; } = string.Empty;
 
     [ForeignKey("SpaceId")]
-    public Space Space { get; set; }
-
-    // todo: Complete the resident columns 
-    // todo: Assignee users one-to-many relationship  with the user
+    public virtual Space Space { get; set; } = null!;
+    public virtual List<TaskAssignee> TaskAssignees { get; set; } = [];
 }

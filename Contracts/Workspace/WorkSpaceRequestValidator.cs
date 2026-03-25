@@ -19,8 +19,8 @@ public class WorkSpaceRequestValidator : AbstractValidator<WorkSpaceRequest>
             .MaximumLength(500);
 
         RuleFor(x => x.Visibility)
-            .NotEmpty()
-            .Must(x => x == 0 || (int)x == 1 || (int)x == 2)
+            .NotNull()
+            .Must(x => (int)x == 0 || (int)x == 1 || (int)x == 2)
             .WithMessage("0:Private - 1:Team - 2:Public --- Match these numbers only");          
     }
 

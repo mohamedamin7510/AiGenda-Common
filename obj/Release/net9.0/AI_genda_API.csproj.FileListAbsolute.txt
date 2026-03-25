@@ -227,3 +227,4 @@ D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\Templates\WorkspaceMemb
 D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\AI_genda_API.staticwebassets.runtime.json
 D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\compressed\nosz2kgoay-{0}-fkf6fwsm6l-fkf6fwsm6l.gz
 D:\Api_Projects\Project\AI_genda_API2\bin\Release\net9.0\Templates\ChangeEmail.html
+D:\Api_Projects\Project\AI_genda_API2\obj\Release\net9.0\compressed\ejvq0dt0te-{0}-419erkmtzo-419erkmtzo.gz

@@ -1,4 +1,6 @@
-﻿namespace BucketSurvey.Api.Contract.User;
+﻿using AI_genda_API.Abstractions.Const;
+
+namespace BucketSurvey.Api.Contract.User;
 
 public class ChangePasswordRequestValidator: AbstractValidator<ChangePasswordRequest>
 {

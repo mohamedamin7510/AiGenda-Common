@@ -1,6 +1,8 @@
-﻿using AI_genda_API.Services.ProfileSettingService;
+﻿using AI_genda_API.Services.ProfileService;
+using AI_genda_API.Services.RoleService;
 using AI_genda_API.Services.TaskService;
-using Hangfire;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using AI_genda_API.Abstractions.Filters;
 
 
 namespace AI_genda_API;
@@ -18,6 +20,7 @@ public static class DependenciesInjection
         services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IRoleService, RoleService>();
         services.AddOptions<MailSettings>().
             BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
         services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -70,6 +73,10 @@ public static class DependenciesInjection
         services.AddScoped<IJWTProvider, JWTProvider>();
 
         services.AddAuthorization();
+
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+        
+        services.AddScoped<IAuthorizationHandler, WorkspacePermissionAuthorizationHandler>();
 
          var jwtSettings = configuration.GetSection(JWTOptions.SectionName).Get<JWTOptions>();
 
@@ -127,14 +134,16 @@ public static class DependenciesInjection
 
     private static void RegisterIdentityServices(this IServiceCollection services)
     {
-        services.AddIdentity<ExtendedUser, IdentityRole>()
+        services.AddIdentity<ExtendedUser, ApplicationRole>()
             .AddEntityFrameworkStores<AppContext>().AddDefaultTokenProviders();
     }
 
     private static void RegisterAppContext(this IServiceCollection services, IConfiguration configuration)
     {
         var connstring = configuration["ConnectionStrings:connectionstring"];
-        services.AddDbContext<AppContext>(e => e.UseSqlServer(connstring));
+        services.AddDbContext<AppContext>(
+            e => e.UseSqlServer(connstring).ConfigureWarnings(w =>
+             w.Ignore(RelationalEventId.PendingModelChangesWarning)));
     }
 
     private static IServiceCollection AddJobs(this IServiceCollection services, IConfiguration configuration)

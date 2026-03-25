@@ -1,5 +1,4 @@
-﻿using BucketSurvey.Api.Contract.Authentication;
-using BucketSurvey.Api.Helpers;
+﻿using AI_genda_API.Abstractions.Const;
 using Hangfire;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Cryptography;
@@ -40,7 +39,9 @@ public class AuthServic(
         if (SigninResult.Succeeded)
         {
 
-            var GeneratedTokenInfo = _JWTProvider.GenerateToken(user);
+            (IEnumerable<string> roles , IEnumerable<string> permissions) = await GetRolesPermission(user);
+
+            var GeneratedTokenInfo = _JWTProvider.GenerateToken(user, roles, permissions);
 
             var GeneratedrefreshToken = GenerateRefreshToken();
 
@@ -86,9 +87,11 @@ public class AuthServic(
 
         reftoken.RevokedAt = DateTime.UtcNow;
 
-       await _UserManager.UpdateAsync(user);
-        
-        var GeneratedTokenInfo = _JWTProvider.GenerateToken(user);
+        await _UserManager.UpdateAsync(user);
+
+        (IEnumerable<string> roles, IEnumerable<string> permissions) = await GetRolesPermission(user);
+
+        var GeneratedTokenInfo = _JWTProvider.GenerateToken(user , roles , permissions);
 
         var GeneratedrefreshToken = GenerateRefreshToken();
 
@@ -156,11 +159,14 @@ public class AuthServic(
 
         if (result.Succeeded)
         {
+        
             var Code = await _UserManager.GenerateEmailConfirmationTokenAsync(NewUser);
 
             var ReadyToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(Code));
 
             _Logger.LogInformation("Confirmation Code : {code}",ReadyToken);
+
+            await _UserManager.AddToRoleAsync(NewUser, DefaultRoles.Member);
 
             SendEmailConfirmation(NewUser, ReadyToken);
 
@@ -282,6 +288,8 @@ public class AuthServic(
 
 
 
+
+
     private string GenerateRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
     private void SendEmailConfirmation(ExtendedUser User, string code)
     {
@@ -300,6 +308,20 @@ public class AuthServic(
     
         BackgroundJob.
             Enqueue(() => _EmailSender.SendEmailAsync(User.Email!, "️✅ AiGenda Team: Email Confirmation", BuilderMessage));
+    }
+
+    private async Task<(IEnumerable<string> roles, IEnumerable<string> permissions)> GetRolesPermission(ExtendedUser user)
+    {
+        var roles = await _UserManager.GetRolesAsync(user);
+
+        var permissions =
+            await (from r in _Context.Roles
+                   join rp in _Context.RoleClaims on r.Id equals rp.RoleId
+                   where roles.Contains(r.Name!)
+                   select rp.ClaimValue
+                   )
+                   .ToListAsync();
+        return (roles, permissions);
     }
 
 

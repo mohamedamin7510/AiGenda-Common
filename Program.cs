@@ -1,26 +1,23 @@
-using AI_genda_API;
-using Hangfire;
 
-using HangfireBasicAuthenticationFilter;
-using Serilog;
-// HELLO
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDependencies(builder.Configuration);
 
-builder.Host.UseSerilog((context, config) =>
-{
-    config.ReadFrom.Configuration(context.Configuration);
-});
+builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
+    LoggerConfiguration.ReadFrom.Configuration(HostBuilderContext.Configuration)
+);
+
+
+
 
 
 var app = builder.Build();
 
-
  app.MapOpenApi();
 
- app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "Ai genda"));
-
+ app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "AiGenda"));
 
 app.UseHangfireDashboard("/jobs",
 
@@ -38,6 +35,7 @@ app.UseHangfireDashboard("/jobs",
     }
 
     );
+
 
 app.UseSerilogRequestLogging();
 

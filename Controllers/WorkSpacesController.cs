@@ -1,25 +1,35 @@
-﻿using AI_genda_API.Contracts.Workspace;
+﻿using AI_genda_API.Abstractions.Const;
+using AI_genda_API.Abstractions.Filters;
 
 namespace AI_genda_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize( Roles = DefaultRoles.Member)]
+
 
 public class WorkSpacesController(IWorkSpaceService workSpaceService) : ControllerBase
 {
     private readonly IWorkSpaceService _WorkSpaceService = workSpaceService;
 
 
-    #region Basic CRUD Operations 
-
+  
     [HttpPost]
+    [HasPermission(Permissions.AddWorkSpaces)]
     public async Task<IActionResult> Add([FromBody] WorkSpaceRequest Requset, CancellationToken cancellationToken = default!)
     {
-        var response = await _WorkSpaceService.AddAsync(User.GetUserId()!, Requset, cancellationToken);
+        var result = await _WorkSpaceService.AddAsync(User.GetUserId()!, Requset, cancellationToken);
 
-        return CreatedAtAction(nameof(GetById),
-            new { Id = response.Value.Id }, response.Value);
+        return result.IsSuccess ? CreatedAtAction(nameof(GetById),new { Id = result.Value.Id }, result.Value) : result.ToProblem();          
+    }
+
+    [HttpPost("{Id}/member")]
+    [HasPermission(Permissions.AddWorkSpaces)]
+    public async Task<IActionResult> AddMember([FromRoute] int Id, InviteMember request, CancellationToken cancellationToken = default!)
+    {
+        var res = await _WorkSpaceService.AddMemberAsync(Id, User.GetUserId()!, request, cancellationToken);
+
+        return res.IsSuccess ? NoContent() : res.ToProblem();
     }
 
 
@@ -28,11 +38,12 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
     {
         var result = await _WorkSpaceService.GetAllAsync(cancellationToken);
 
-        return Ok(result!.Value);
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
     [HttpGet("{Id}")]
+    [HasPermission(Permissions.GetWorkSpaces)]
     public async Task<IActionResult> GetById([FromRoute]int id , CancellationToken CancelationToken)
     {
         var userId = User.GetUserId();
@@ -47,6 +58,7 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
   
 
     [HttpGet("{Id}/dashboard")]
+    [HasPermission(Permissions.GetWorkSpaces)]
     public async Task<IActionResult> GetWorkspaceDashboardData([FromRoute] int Id, CancellationToken cancellationToken = default!)
     {
         var userId = User.GetUserId();
@@ -56,27 +68,39 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
-    
 
-    [HttpPut("{Id}")]
-    public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] WorkSpaceRequest rquset,
-        CancellationToken cancellationToken = default!)
+    [HttpGet("{Id}/members")]
+    [HasPermission(Permissions.GetWorkSpaces)]
+    public async Task<IActionResult> GetMembers([FromRoute] int Id, CancellationToken cancellationToken = default!)
     {
-        var result = await _WorkSpaceService.UpdateAsync( Id ,User.GetUserId()!,rquset, cancellationToken);
+        var result = await _WorkSpaceService.GetMembersAsync(Id, User.GetUserId()!, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
-    [HttpDelete("{Id}")]
-    public async Task<IActionResult> Delete([FromRoute] int Id, CancellationToken cancellationToken = default!)
-    {
-        var res = await _WorkSpaceService.DeleteAsync(Id, cancellationToken);
 
-        return res.IsSuccess ? NoContent() : res.ToProblem();
+    [HttpGet("{Id}/members/{MemberUserId}/permissions")]
+    [HasPermission(Permissions.GetWorkSpaces)]
+    public async Task<IActionResult> GetMemberPermissions([FromRoute] int Id, [FromRoute] string MemberUserId, CancellationToken cancellationToken = default!)
+    {
+        var result = await _WorkSpaceService.GetMemberPermissionsAsync(Id, User.GetUserId()!, MemberUserId, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+    [HttpPut("{Id}")]
+    [HasPermission(Permissions.UpdateWorkSpaces)]
+    public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] WorkSpaceRequest rquset,
+        CancellationToken cancellationToken = default!)
+    {
+        var result = await _WorkSpaceService.UpdateAsync( Id ,User.GetUserId()!,rquset, cancellationToken);
+
+        return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 
     [HttpPut("{Id}/restore")]
+    [HasPermission(Permissions.DeleteWorkSpaces)]
     public async Task<IActionResult> Restore([FromRoute] int Id, CancellationToken cancellationToken = default!)
     {
         var result = await _WorkSpaceService.RestoreAsync(Id, cancellationToken);
@@ -85,19 +109,30 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
     }
 
 
-
-    #endregion
-
-    [HttpPost("{Id}/member")]
-    public async Task<IActionResult> AddMember([FromRoute] int Id, InviteMember request,CancellationToken cancellationToken = default!)
+    [HttpPut("{Id}/members/{MemberUserId}/permissions")]
+    [HasPermission(Permissions.UpdateWorkSpaces)]
+    public async Task<IActionResult> UpdateMemberPermissions([FromRoute] int Id, [FromRoute] string MemberUserId,
+      [FromBody] UpdateWorkspaceMemberPermissionsRequest request, CancellationToken cancellationToken = default!)
     {
-        var res = await _WorkSpaceService.AddMemberAsync(Id, User.GetUserId()!, request, cancellationToken);
+        var result = await _WorkSpaceService.UpdateMemberPermissionsAsync(Id, User.GetUserId()!, MemberUserId, request, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+
+    [HttpDelete("{Id:int}")]
+    [HasPermission(Permissions.DeleteWorkSpaces)]
+    public async Task<IActionResult> Delete([FromRoute] int Id, CancellationToken cancellationToken = default!)
+    {
+        var res = await _WorkSpaceService.DeleteAsync(Id, cancellationToken);
 
         return res.IsSuccess ? NoContent() : res.ToProblem();
     }
 
+  
 
-    [HttpDelete("{Id}/remove")]
+    [HttpDelete("{Id:int}/remove")]
+    [HasPermission(Permissions.DeleteWorkSpaces)]
     public async Task<IActionResult> RemoveMember([FromRoute] int Id, InviteMember request, CancellationToken cancellationToken = default!)
     {
         var res = await _WorkSpaceService.RemoveMemberAsync( Id , User.GetUserId()!, request, cancellationToken);
@@ -106,6 +141,16 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
     }
 
 
+
+    [HttpGet("deleted")]
+    public async Task<IActionResult> GetAllDeleted(CancellationToken cancellationToken = default!)
+    {
+        var result = await _WorkSpaceService.GetAllDeletedAsync(User.GetUserId()!, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+  
+  
 
 
 

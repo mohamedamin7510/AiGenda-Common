@@ -24,7 +24,7 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         if (!spaceExists)
             return Result.Faluire<TaskResponse>(SpaceErrors.SpaceNotFound);
 
-        var task = new SpaceTask
+        var task = new Entities.Task
         {
             Title = request.Title,
             Description = request.Description,

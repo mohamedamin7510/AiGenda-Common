@@ -1,6 +1,7 @@
-﻿public record SpaceRequest(
+﻿public record SpaceRequest
+ (
     string Name,
-    string Description,
-    string IconHexa,
-    bool IsPublic = true
+        string Description,
+            string IconCode,
+                  bool IsPublic 
 );

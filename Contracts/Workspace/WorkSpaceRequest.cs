@@ -1,4 +1,4 @@
-﻿using AI_genda_API.Entities.Enums;
+﻿using AI_genda_API.Abstractions.Enums;
 
 namespace AI_genda_API.Contracts.Workspace;
 

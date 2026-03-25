@@ -7,7 +7,10 @@ public class WorkspaceMember
 {   
     public int WrokSpaceID { get; set; }
     public string UserID { get; set; }
+    public bool IsOwner { get; set; } = false;
     public DateTime JoinedAt { get; set; }
+    public List<string> Permissions { get; set; }
+    
 
 
     [ForeignKey("UserID")]
