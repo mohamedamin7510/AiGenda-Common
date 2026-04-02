@@ -1,7 +1,6 @@
 ﻿using AI_genda_API.Contracts.Profile;
 using AI_genda_API.Contracts.ProfileSetting;
 using BucketSurvey.Api.Contract.User;
-using Hangfire;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace AI_genda_API.Services.ProfileService;
@@ -78,7 +77,7 @@ public class ProfileService( UserManager<ExtendedUser> userManager, IEmailSender
 
         var htmlMessage = EmailBodyBuilder.GenerateEmailBody("ChangeEmail", new Dictionary<string, string>
         {
-            { "{{firstName}}", user.FirstName + " " + user.SecondName },
+            { "{{name}}", user.FirstName + " " + user.SecondName },
             { "{{newemail}}", request.newemail },
             { "{{code}}", code },
             { "{{URI}}",$"{origin}/Auth/change-email?userid={user.Id}&&code={code}&&newemail={request.newemail}"}

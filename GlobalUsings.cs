@@ -51,5 +51,8 @@ global using AI_genda_API.Extenstions;
 global using AI_genda_API;
 global using AI_genda_API.Contracts.Roles;
 global using AI_genda_API.Services.RoleService;
+global using AI_genda_API.Authentication.Filters;
+
+
 
 

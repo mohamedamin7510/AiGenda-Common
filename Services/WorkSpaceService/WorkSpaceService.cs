@@ -213,7 +213,7 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         var normalizedEmail = request.email.Trim().ToUpper();
 
         var invitedUser = await _Context.Users
-            .Where(x => x.NormalizedEmail == normalizedEmail)
+            .Where(x => x.NormalizedEmail == normalizedEmail && !x.IsDisabled)
             .AsNoTracking()
             .SingleOrDefaultAsync(cancellationToken);
 

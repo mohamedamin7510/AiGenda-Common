@@ -1,5 +1,4 @@
 ﻿using AI_genda_API.Abstractions.Const;
-using AI_genda_API.Abstractions.Filters;
 
 namespace AI_genda_API.Controllers;
 
@@ -15,7 +14,6 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
 
   
     [HttpPost]
-    [HasPermission(Permissions.AddWorkSpaces)]
     public async Task<IActionResult> Add([FromBody] WorkSpaceRequest Requset, CancellationToken cancellationToken = default!)
     {
         var result = await _WorkSpaceService.AddAsync(User.GetUserId()!, Requset, cancellationToken);

@@ -184,7 +184,7 @@ namespace AI_genda_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAMING7510@GMAIL.COM",
                             NormalizedUserName = "MAMING7510@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAmeuZnmVQNw+PV3BycAkds2w/Yy4u8M0USBsM+jjBwwfbaflBjAkKcwwxEsbbMLqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAFi3h+9zCnoc4G+4V/UW9XyJIj5N3yZn4dGvSY77ogcO8eWuswjkvwnv6ma3Y93Fg==",
                             PhoneNumber = "01015899741",
                             PhoneNumberConfirmed = true,
                             SecondName = "Amin",
@@ -254,7 +254,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("WorkSpaceId");
 
-                    b.ToTable("Spaces", (string)null);
+                    b.ToTable("Spaces");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
@@ -315,7 +315,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.TaskAssignee", b =>
@@ -333,7 +333,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("TaskAssignees", (string)null);
+                    b.ToTable("TaskAssignees");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
@@ -389,7 +389,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("WorkSpaces", (string)null);
+                    b.ToTable("WorkSpaces");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
@@ -414,7 +414,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("WorkspaceMembers", (string)null);
+                    b.ToTable("WorkspaceMembers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

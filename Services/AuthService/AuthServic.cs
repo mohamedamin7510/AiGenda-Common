@@ -1,5 +1,5 @@
 ﻿using AI_genda_API.Abstractions.Const;
-using Hangfire;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Cryptography;
 
@@ -9,10 +9,11 @@ public class AuthServic(
      UserManager<ExtendedUser> userManager,
      IJWTProvider jWTProvider,
      SignInManager<ExtendedUser> signInManager,
-     AppContext context, 
-    IEmailSender emailSender, 
-     ILogger<AuthServic> logger, 
-     IHttpContextAccessor httpContextAccessor
+     AppContext context,
+     IEmailSender emailSender,
+     ILogger<AuthServic> logger,
+     IHttpContextAccessor httpContextAccessor,
+     IConfiguration configuration
     ) : IAuthService
 {
 
@@ -21,12 +22,13 @@ public class AuthServic(
     private readonly IEmailSender _EmailSender = emailSender;
     private readonly ILogger<AuthServic> _Logger = logger;
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
+    private readonly IConfiguration _Configuration = configuration;
 
     private UserManager<ExtendedUser> _UserManager { get; } = userManager;
     private readonly IJWTProvider _JWTProvider = jWTProvider;
-    private readonly int _RefreshTokenExpiryDate = 14; 
+    private readonly int _RefreshTokenExpiryDate = 14;
 
-    public async Task<Result<AuthResponse>?> GetTokenAsync( LoginReq request ,  CancellationToken? cancellationToken = default)
+    public async Task<Result<AuthResponse>?> GetTokenAsync(LoginReq request, CancellationToken? cancellationToken = default)
     {
 
         var user = await _UserManager.FindByEmailAsync(request.Email);
@@ -34,12 +36,12 @@ public class AuthServic(
         if (user is null)
             return Result.Faluire<AuthResponse>(UserErrors.EmailnotFounded);
 
-        var SigninResult = await _SignInManager.PasswordSignInAsync(user , request.Password , false , false);
-       
+        var SigninResult = await _SignInManager.PasswordSignInAsync(user, request.Password, false, true);
+
         if (SigninResult.Succeeded)
         {
 
-            (IEnumerable<string> roles , IEnumerable<string> permissions) = await GetRolesPermission(user);
+            (IEnumerable<string> roles, IEnumerable<string> permissions) = await GetRolesPermission(user);
 
             var GeneratedTokenInfo = _JWTProvider.GenerateToken(user, roles, permissions);
 
@@ -62,9 +64,10 @@ public class AuthServic(
                 ));
         }
 
+        var error = SigninResult.IsLockedOut ? UserErrors.UserLockedOut :
+            SigninResult.IsNotAllowed ? UserErrors.EmailNotConfirmed : UserErrors.Invalidcredentails;
 
-        return SigninResult.IsNotAllowed ? Result.Faluire<AuthResponse>(UserErrors.EmailNotConfirmed) 
-            : Result.Faluire<AuthResponse>(UserErrors.Invalidcredentails);
+        return Result.Faluire<AuthResponse>(error);
     }
 
     public async Task<Result<AuthResponse>?> GetRefreshTokenAsync(ReFTokenReq request, CancellationToken? cancellationToken = null)
@@ -77,13 +80,16 @@ public class AuthServic(
 
         var user = await _UserManager.FindByIdAsync(userid);
 
-        if (user is null) 
-            return Result.Faluire<AuthResponse>(UserErrors.InvalidToken); 
+        if (user is null)
+            return Result.Faluire<AuthResponse>(UserErrors.InvalidToken);
+
+        if (user.LockoutEnd > DateTime.UtcNow)
+            return Result.Faluire<AuthResponse>(UserErrors.UserLockedOut);
 
         var reftoken = user.RefreshTokens.FirstOrDefault(x => x.refreshToken == request.RefreshToken && x.IsActive);
 
         if (reftoken is null)
-            return Result.Faluire<AuthResponse>(UserErrors.InvalidToken); 
+            return Result.Faluire<AuthResponse>(UserErrors.InvalidToken);
 
         reftoken.RevokedAt = DateTime.UtcNow;
 
@@ -91,7 +97,7 @@ public class AuthServic(
 
         (IEnumerable<string> roles, IEnumerable<string> permissions) = await GetRolesPermission(user);
 
-        var GeneratedTokenInfo = _JWTProvider.GenerateToken(user , roles , permissions);
+        var GeneratedTokenInfo = _JWTProvider.GenerateToken(user, roles, permissions);
 
         var GeneratedrefreshToken = GenerateRefreshToken();
 
@@ -113,7 +119,7 @@ public class AuthServic(
             ExpiryDate: ReftokenExpiryDate
             ));
     }
-   
+
     public async Task<Result> RevokeRefreshTokenAsync(ReFTokenReq request, CancellationToken? cancellationToken = default)
     {
 
@@ -124,47 +130,47 @@ public class AuthServic(
 
         var user = await _UserManager.FindByIdAsync(userid);
 
-        if (user is null) 
+        if (user is null)
             return Result.Faluire(UserErrors.InvalidToken);
 
         var reftoken = user.RefreshTokens.FirstOrDefault(x => x.refreshToken == request.RefreshToken && x.IsActive);
 
-        if (reftoken is null) return 
+        if (reftoken is null) return
                 Result.Faluire(UserErrors.InvalidToken);
 
         reftoken.RevokedAt = DateTime.UtcNow;
 
-        await  _UserManager.UpdateAsync(user);
- 
-        return Result.Success(); 
+        await _UserManager.UpdateAsync(user);
+
+        return Result.Success();
     }
 
     public async Task<Result<RegisterResponse>> ResgisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
-        var IsEmailExisted = await _Context.Users.AnyAsync(x=> x.Email == request.Email );
+        var IsEmailExisted = await _Context.Users.AnyAsync(x => x.Email == request.Email);
 
         if (IsEmailExisted)
-          return Result.Faluire<RegisterResponse>(UserErrors.EmailDuplicated);
+            return Result.Faluire<RegisterResponse>(UserErrors.EmailDuplicated);
 
         var NewUser = new ExtendedUser()
         {
             FirstName = request.FirstName,
             SecondName = request.LastName,
-            Email = request.Email , 
-            UserName = request.Email ,
+            Email = request.Email,
+            UserName = request.Email,
             PasswordHash = request.Password
         };
 
-        var result = await _UserManager.CreateAsync(NewUser , request.Password);
+        var result = await _UserManager.CreateAsync(NewUser, request.Password);
 
         if (result.Succeeded)
         {
-        
+
             var Code = await _UserManager.GenerateEmailConfirmationTokenAsync(NewUser);
 
             var ReadyToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(Code));
 
-            _Logger.LogInformation("Confirmation Code : {code}",ReadyToken);
+            _Logger.LogInformation("Confirmation Code : {code}", ReadyToken);
 
             await _UserManager.AddToRoleAsync(NewUser, DefaultRoles.Member);
 
@@ -172,7 +178,7 @@ public class AuthServic(
 
             var response = NewUser.Adapt<ExtendedUser, RegisterResponse>();
 
-            return Result.Success(response); 
+            return Result.Success(response);
 
         }
 
@@ -186,7 +192,7 @@ public class AuthServic(
         if (await _UserManager.FindByIdAsync(request.userId) is not { } User)
             return Result.Faluire(UserErrors.InvalidCode);
 
- 
+
         if (User.EmailConfirmed)
             return Result.Faluire(UserErrors.ActiveConfirmedEmail);
 
@@ -224,7 +230,7 @@ public class AuthServic(
 
         _Logger.LogInformation("Confirmation Code: {code}", code);
 
-         SendEmailConfirmation(User, code);
+        SendEmailConfirmation(User, code);
 
         return Result.Success();
     }
@@ -251,7 +257,7 @@ public class AuthServic(
            { "{{URI}}", $"{origin}/Auth/reset-pss/?email={user.Email}&&code={code}"}
        });
 
-      BackgroundJob.Enqueue(()=>  _EmailSender.SendEmailAsync(user.Email!, "✅ AiGenda Team: Reset Password", HtmlBody));
+        BackgroundJob.Enqueue(() => _EmailSender.SendEmailAsync(user.Email!, "✅ AiGenda Team: Reset Password", HtmlBody));
 
         return Result.Success();
     }
@@ -285,12 +291,86 @@ public class AuthServic(
         return Result.Faluire(new Error(error!.Code, error.Description, StatusCodes.Status401Unauthorized));
     }
 
+    public async Task<Result<AuthResponse>> GoogleLoginAsync(GoogleLoginRequest request, CancellationToken cancellationToken = default)
+    {
+
+        var AllowedClientIds = _Configuration.GetSection("Authentication:Google:AllowedClientIds").Get<string[]>();
+
+        GoogleJsonWebSignature.Payload payload = null!;
+
+        try
+        {
+            payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken,
+
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = AllowedClientIds
+                });
+        }
+        catch
+        {
+            return Result.Faluire<AuthResponse>(UserErrors.InvalidToken);
+        }
 
 
+        if (payload.Email is null || !payload.EmailVerified)
+            return Result.Faluire<AuthResponse>(UserErrors.Invalidcredentails);
 
+
+        var user = await _UserManager.FindByLoginAsync(ExternalProviders.GoogleProvider, payload.Subject);
+
+        if (user is null)
+        {
+            user = await _UserManager.FindByEmailAsync(payload.Email);
+
+            if (user is null)
+            {
+                user = new ExtendedUser
+                {
+                    Email = payload.Email,
+                    UserName = payload.Email,
+                    FirstName = payload.GivenName ?? "Google",
+                    SecondName = payload.FamilyName ?? "User",
+                    EmailConfirmed = true
+                };
+
+                var CreatedUserResult = await _UserManager.CreateAsync(user);
+
+                if (!CreatedUserResult.Succeeded)
+                {
+                    var error = CreatedUserResult.Errors.First()!;
+
+                    return Result.Faluire<AuthResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+                }
+
+                await _UserManager.AddToRoleAsync(user, DefaultRoles.Member);
+            }
+
+
+            var LoginRecord = new UserLoginInfo(ExternalProviders.GoogleProvider, payload.Subject, ExternalProviders.GoogleProvider);
+
+            var AddLoginResult = await _UserManager.AddLoginAsync(user, LoginRecord);
+
+            if (!AddLoginResult.Succeeded)
+            {
+                var error = AddLoginResult.Errors.First()!;
+
+                return Result.Faluire<AuthResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+            }
+
+        }
+
+       if (user.LockoutEnd > DateTime.UtcNow  )
+            return Result.Faluire<AuthResponse>(UserErrors.UserLockedOut);
+
+        var response = await LoginWithGoogleExternalApiAsync(user, cancellationToken);
+
+        return Result.Success(response);
+    }
 
 
     private string GenerateRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
     private void SendEmailConfirmation(ExtendedUser User, string code)
     {
         var origin = _HttpContextAccessor.HttpContext?.Request.Headers.Origin;
@@ -322,6 +402,39 @@ public class AuthServic(
                    )
                    .ToListAsync();
         return (roles, permissions);
+    }
+
+
+    private async Task<AuthResponse> LoginWithGoogleExternalApiAsync(ExtendedUser  user, CancellationToken cancellationToken)
+    {
+
+        (var userRoles, var permissions) = await GetRolesPermission(user);
+
+        var tokenInfo = _JWTProvider.GenerateToken(user, userRoles, permissions!);
+
+        var refreshToken = GenerateRefreshToken();
+
+        var refreshTokenExpiry = DateTime.UtcNow.AddDays(_RefreshTokenExpiryDate);
+
+        user.RefreshTokens.Add(new RefreshToken
+        {
+            refreshToken = refreshToken,
+            ExpiredAt = refreshTokenExpiry
+        });
+
+        await _UserManager.UpdateAsync(user);
+
+        var response = new AuthResponse(
+            user.Id,
+            user.Email!,
+            user.FirstName!,
+            user.SecondName!,
+            tokenInfo.Token,
+            tokenInfo.Expiresin * 60,
+            refreshToken,
+            refreshTokenExpiry);
+
+        return response;
     }
 
 

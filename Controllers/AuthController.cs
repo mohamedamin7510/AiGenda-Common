@@ -84,4 +84,14 @@ public class AuthController(IAuthService authService) : ControllerBase
 
 
 
+    [HttpPost("google")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request, CancellationToken cancellationToken = default)
+    {
+        var result = await _AuthService.GoogleLoginAsync(request , cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
+
+
 }
