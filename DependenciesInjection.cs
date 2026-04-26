@@ -3,6 +3,8 @@ using AI_genda_API.Services.RoleService;
 using AI_genda_API.Services.TaskService;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using AI_genda_API.Abstractions.Filters;
+using AI_genda_API.Services.AppConnectionService;
+using AI_genda_API.Services.AppConnectionService.Connectors;
 
 
 namespace AI_genda_API;
@@ -13,7 +15,65 @@ public static class DependenciesInjection
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
     {
         // direct adding 
-        services.AddOpenApi().AddControllers();
+        services.AddOpenApi();
+        services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Enter your Bearer token",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT"
+            });
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+            {
+                {
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                        {
+                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<AI_genda_API.Abstractions.Filters.AiResponseWrapperFilter>();
+        })
+        .ConfigureApiBehaviorOptions(options =>
+        {
+            // Override how ASP.NET Core handles automatic 400 Bad Request validation errors
+            var originalFactory = options.InvalidModelStateResponseFactory;
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                if (context.HttpContext.Request.Path.Value?.StartsWith("/api/ai", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // Strict AI Contract for bad model states
+                    var errors = context.ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    var message = errors.Count > 0 ? string.Join(" | ", errors) : "Validation failed.";
+
+                    return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new
+                    {
+                        status = "error",
+                        message = message
+                    });
+                }
+
+                // Fallback to the original framework implementation for standard API endpoints
+                return originalFactory(context);
+            };
+        });
+
         services.AddScoped<IAuthService, AuthServic>();
         services.AddScoped<IWorkSpaceService , WorkSpaceService>();
         services.AddScoped<ISpaceService, SpaceService>();
@@ -21,6 +81,16 @@ public static class DependenciesInjection
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IRoleService, RoleService>();
+
+        // App Connection Services (Google Calendar integration)
+        services.AddHttpClient();
+        services.AddScoped<IAppConnectorFactory, AppConnectorFactory>();
+        services.AddScoped<IAppConnectionService, AppConnectionService>();
+
+        // AI Agent Token & Crypto Services (Secure Storage and Silent Refreshes)
+        services.AddScoped<AI_genda_API.Services.TokenManagement.ITokenEncryptionService, AI_genda_API.Services.TokenManagement.TokenEncryptionService>();
+        services.AddScoped<AI_genda_API.Services.TokenManagement.ITokenManagerService, AI_genda_API.Services.TokenManagement.TokenManagerService>();
+
         services.AddOptions<MailSettings>().
             BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
         services.AddExceptionHandler<GlobalExceptionHandler>();

@@ -1,5 +1,6 @@
-
-
+using AI_genda_API.Abstractions.Enums;
+using AI_genda_API.Services.AppConnectionService;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,18 +10,13 @@ builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
     LoggerConfiguration.ReadFrom.Configuration(HostBuilderContext.Configuration)
 );
 
-
-
-
-
 var app = builder.Build();
 
- app.MapOpenApi();
-
- app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "AiGenda"));
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHangfireDashboard("/jobs",
-
     new DashboardOptions()
     {
         Authorization =
@@ -33,9 +29,14 @@ app.UseHangfireDashboard("/jobs",
         ],
         DashboardTitle = "AiGenda-Jobs-DashBoard"
     }
+);
 
-    );
-
+// Register recurrent sync jobs
+var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();
+recurringJobManager.AddOrUpdate<IAppConnectionService>(
+    "sync-google-calendar-daily",
+    service => service.SyncAllActiveConnectionsAsync(null, CancellationToken.None),
+    Cron.Daily());
 
 app.UseSerilogRequestLogging();
 

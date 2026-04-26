@@ -15,42 +15,57 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
     public DbSet<Task> Tasks { get; set; } 
     public DbSet<TaskAssignee> TaskAssignees { get; set; }
 
+    public DbSet<AppConnection> AppConnections { get; set; }
+    public DbSet<LinkedData> LinkedData { get; set; }
+
 
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var ClaimId = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var ClaimId = _HttpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var Entries = ChangeTracker.Entries<AuditLogging>();
         foreach (var entry in Entries)
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Property(x => x.CreatedById).CurrentValue = ClaimId!;
+                if (string.IsNullOrEmpty(entry.Entity.CreatedById) && ClaimId != null)
+                {
+                    entry.Property(x => x.CreatedById).CurrentValue = ClaimId;
+                }
             }
             else if (entry.State == EntityState.Modified)
             {
-                entry.Property(x => x.UpdatedById).CurrentValue = ClaimId;
+                if (ClaimId != null) 
+                {
+                    entry.Property(x => x.UpdatedById).CurrentValue = ClaimId;
+                }
                 entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
             }
 
         }
-            return base.SaveChangesAsync(cancellationToken);
+        return base.SaveChangesAsync(cancellationToken);
     }
     public override int SaveChanges()
     {
-        var ClaimId = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var ClaimId = _HttpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var Entries = ChangeTracker.Entries<AuditLogging>();
         foreach (var entry in Entries)
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Property(x => x.CreatedById).CurrentValue = ClaimId;
+                if (string.IsNullOrEmpty(entry.Entity.CreatedById) && ClaimId != null)
+                {
+                    entry.Property(x => x.CreatedById).CurrentValue = ClaimId;
+                }
             }
             else if (entry.State == EntityState.Modified)
             {
-                entry.Property(x => x.UpdatedById).CurrentValue = ClaimId;
+                if (ClaimId != null)
+                {
+                    entry.Property(x => x.UpdatedById).CurrentValue = ClaimId;
+                }
                 entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
             }
 
