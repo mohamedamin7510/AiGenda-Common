@@ -27,6 +27,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" Version="1.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.2" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -37,7 +38,7 @@
     </ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Logs\" />
+	  <Folder Include="wwwroot\uploads\avatars\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,6 +1,3 @@
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDependencies(builder.Configuration);
@@ -9,18 +6,15 @@ builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
     LoggerConfiguration.ReadFrom.Configuration(HostBuilderContext.Configuration)
 );
 
-
-
-
-
 var app = builder.Build();
 
- app.MapOpenApi();
+app.UseExceptionHandler();
 
- app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "AiGenda"));
+app.MapOpenApi();
+
+app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "AiGenda"));
 
 app.UseHangfireDashboard("/jobs",
-
     new DashboardOptions()
     {
         Authorization =
@@ -32,23 +26,13 @@ app.UseHangfireDashboard("/jobs",
             }
         ],
         DashboardTitle = "AiGenda-Jobs-DashBoard"
-    }
-
-    );
-
+    });
 
 app.UseSerilogRequestLogging();
-
 app.UseHttpsRedirection();
-
 app.UseCors();
-
 app.UseAuthorization();
-
-//app.MapHub<ChatHub>("hubs/chat");
-
 app.UseStaticFiles();
-
 app.MapControllers();
 
 app.Run();

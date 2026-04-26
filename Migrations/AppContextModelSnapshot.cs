@@ -184,7 +184,7 @@ namespace AI_genda_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAMING7510@GMAIL.COM",
                             NormalizedUserName = "MAMING7510@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAFi3h+9zCnoc4G+4V/UW9XyJIj5N3yZn4dGvSY77ogcO8eWuswjkvwnv6ma3Y93Fg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELoC3Ftr7L/ETjjZyLUxdqudicv4FkYoy7kjq8JONDzz1URghftfhl4WkiDDSJje9Q==",
                             PhoneNumber = "01015899741",
                             PhoneNumberConfirmed = true,
                             SecondName = "Amin",
@@ -193,6 +193,212 @@ namespace AI_genda_API.Migrations
                             TwoFactorEnabled = false,
                             UserName = "maming7510@gmail.com"
                         });
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.FocusSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AmbientSound")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("BlockNotifications")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BreakAfter")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("CompletedSubtasks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("InitialCompletedSubtasks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InitialTotalSubtasks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Interruptions")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PausedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SpaceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalPausedSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalSubtasks")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpaceId");
+
+                    b.ToTable("FocusSessions");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.HandDrawNoteContent", b =>
+                {
+                    b.Property<string>("NoteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DrawingJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtractedText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NoteId");
+
+                    b.ToTable("HandDrawNoteContents");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.ImageNoteContent", b =>
+                {
+                    b.Property<string>("NoteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("OcrText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NoteId");
+
+                    b.ToTable("ImageNoteContents");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SpaceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("SpaceId", "RemovedAt", "CreatedAt");
+
+                    b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.NoteAsset", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AssetType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("NoteId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("SizeInBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StorageUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NoteId", "AssetType");
+
+                    b.ToTable("NoteAssets");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
@@ -255,6 +461,54 @@ namespace AI_genda_API.Migrations
                     b.HasIndex("WorkSpaceId");
 
                     b.ToTable("Spaces");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.SubTask", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TaskId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("SubTasks");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
@@ -334,6 +588,41 @@ namespace AI_genda_API.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("TaskAssignees");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.TextNoteContent", b =>
+                {
+                    b.Property<string>("NoteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("HtmlContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlainText")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RichTextJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NoteId");
+
+                    b.ToTable("TextNoteContents");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.VoiceNoteContent", b =>
+                {
+                    b.Property<string>("NoteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TranscriptText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NoteId");
+
+                    b.ToTable("VoiceNoteContents");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
@@ -730,6 +1019,75 @@ namespace AI_genda_API.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
+            modelBuilder.Entity("AI_genda_API.Entities.FocusSession", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Space", "Space")
+                        .WithMany("FocusSessions")
+                        .HasForeignKey("SpaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Space");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.HandDrawNoteContent", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Note", "Note")
+                        .WithOne("HandDrawContent")
+                        .HasForeignKey("AI_genda_API.Entities.HandDrawNoteContent", "NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.ImageNoteContent", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Note", "Note")
+                        .WithOne("ImageContent")
+                        .HasForeignKey("AI_genda_API.Entities.ImageNoteContent", "NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.Space", "Space")
+                        .WithMany("Notes")
+                        .HasForeignKey("SpaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Space");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.NoteAsset", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Note", "Note")
+                        .WithMany("Assets")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Note");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
                 {
                     b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
@@ -753,6 +1111,31 @@ namespace AI_genda_API.Migrations
                     b.Navigation("UpdatedBy");
 
                     b.Navigation("WorkSpace");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.SubTask", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.Task", "Task")
+                        .WithMany("SubTasks")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
@@ -797,6 +1180,28 @@ namespace AI_genda_API.Migrations
                     b.Navigation("Task");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.TextNoteContent", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Note", "Note")
+                        .WithOne("TextContent")
+                        .HasForeignKey("AI_genda_API.Entities.TextNoteContent", "NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.VoiceNoteContent", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.Note", "Note")
+                        .WithOne("VoiceContent")
+                        .HasForeignKey("AI_genda_API.Entities.VoiceNoteContent", "NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Note");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
@@ -891,13 +1296,32 @@ namespace AI_genda_API.Migrations
                     b.Navigation("WorkSpaceMembers");
                 });
 
+            modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
+                {
+                    b.Navigation("Assets");
+
+                    b.Navigation("HandDrawContent");
+
+                    b.Navigation("ImageContent");
+
+                    b.Navigation("TextContent");
+
+                    b.Navigation("VoiceContent");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
                 {
+                    b.Navigation("FocusSessions");
+
+                    b.Navigation("Notes");
+
                     b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
                 {
+                    b.Navigation("SubTasks");
+
                     b.Navigation("TaskAssignees");
                 });
 

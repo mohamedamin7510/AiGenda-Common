@@ -2,6 +2,9 @@
 using AI_genda_API.Services.TaskService;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using AI_genda_API.Authentication.Filters;
+using AI_genda_API.Services.SubTaskService;
+using AI_genda_API.Services.NoteService;
+using AI_genda_API.Services.FocusSessionService;
 
 
 namespace AI_genda_API;
@@ -20,8 +23,10 @@ public static class Dependenciynjections
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IRoleService, RoleService>();
-        services.AddOptions<MailSettings>().
-            BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
+        services.AddScoped<ISubTaskService, SubTaskService>();
+        services.AddScoped<INoteService, NoteService>();
+        services.AddScoped<IFocusSessionService, FocusSessionService>();
+        services.AddOptions<MailSettings>().BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
 
@@ -124,10 +129,10 @@ public static class Dependenciynjections
     private static void AddMapsterGlobalConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         var config = TypeAdapterConfig.GlobalSettings;
+
         config.Scan(Assembly.GetAssembly(typeof(Program))!);
 
         services.AddSingleton<IMapper>(new Mapper(config));
-
 
     }
 

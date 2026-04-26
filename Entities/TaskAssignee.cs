@@ -6,8 +6,11 @@ namespace AI_genda_API.Entities;
 public class TaskAssignee
 {
     public string TaskId { get; set; } 
-    public string UserId { get; set; } 
+    public string UserId { get; set; }
     public DateTime AssignedAt { get; set; }
+
+
+
 
     [ForeignKey("TaskId")]
     public virtual Task? Task { get; set; }

@@ -2,10 +2,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace AI_genda_API.Authentication.Filters;
 
-public sealed class WorkspacePermissionAuthorizationHandler(
-    AppContext context,
-    IHttpContextAccessor httpContextAccessor)
-    : AuthorizationHandler<PermissionRequirement>
+public sealed class WorkspacePermissionAuthorizationHandler(AppContext context, IHttpContextAccessor httpContextAccessor) : AuthorizationHandler<PermissionRequirement>
 {
     private readonly AppContext _Context = context;
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
@@ -18,6 +15,7 @@ public sealed class WorkspacePermissionAuthorizationHandler(
             return;
 
         var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         if (string.IsNullOrWhiteSpace(userId))
             return;
 
@@ -72,6 +70,7 @@ public sealed class WorkspacePermissionAuthorizationHandler(
     private static bool IsPermissionCompatibleWithEndpoint(HttpContext httpContext, string permission)
     {
         var action = httpContext.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
+
         var controller = action?.ControllerName;
 
         if (string.IsNullOrWhiteSpace(controller))
@@ -81,9 +80,11 @@ public sealed class WorkspacePermissionAuthorizationHandler(
         {
             "WorkSpaces" => permission.StartsWith("workspaces:", StringComparison.OrdinalIgnoreCase) ||
                             permission.StartsWith("users:", StringComparison.OrdinalIgnoreCase),
-            "Spaces"     => permission.StartsWith("spaces:", StringComparison.OrdinalIgnoreCase),
-            "Tasks"      => permission.StartsWith("tasks:", StringComparison.OrdinalIgnoreCase),
-            _            => true
+            "Spaces" => permission.StartsWith("spaces:", StringComparison.OrdinalIgnoreCase),
+            "Tasks" => permission.StartsWith("tasks:", StringComparison.OrdinalIgnoreCase),
+            _ => true
         };
     }
+
+
 }

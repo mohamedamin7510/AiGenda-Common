@@ -1,6 +1,4 @@
-﻿
-
-global using Microsoft.AspNetCore.Identity;
+﻿global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
@@ -22,7 +20,7 @@ global using Mapster;
 global using Hangfire;
 global using HangfireBasicAuthenticationFilter;
 global using Serilog;
-
+global using System.Linq.Dynamic.Core;
 
 
 global using AI_genda_API.Entities;
@@ -40,9 +38,7 @@ global using AI_genda_API.Services.FolderService;
 global using AI_genda_API.Services.SpaceService;
 global using BucketSurvey.Api.Contract.Authentication;
 global using BucketSurvey.Api.Extenstions;
-global using AI_genda_API.Contracts.Activity;
-global using AI_genda_API.Contracts.Analytics;
-global using AI_genda_API.Contracts.Focus;
+global using AI_genda_API.Contracts.Dashboard;
 global using AI_genda_API.Contracts.Space;
 global using AI_genda_API.Contracts.Task;
 global using AI_genda_API.Contracts.Workspace;
@@ -52,6 +48,10 @@ global using AI_genda_API;
 global using AI_genda_API.Contracts.Roles;
 global using AI_genda_API.Services.RoleService;
 global using AI_genda_API.Authentication.Filters;
+global using AI_genda_API.Contracts.Common;
+global using AI_genda_API.Contracts.Note;
+global using AI_genda_API.Services.NoteService;
+global using AI_genda_API.Abstractions.Const;
 
 
 

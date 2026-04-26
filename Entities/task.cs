@@ -15,7 +15,12 @@ public class Task : AuditLogging
     public DateTime? DueDate { get; set; }
     public string SpaceId { get; set; } = string.Empty;
 
+
+
+
+
     [ForeignKey("SpaceId")]
     public virtual Space Space { get; set; } = null!;
     public virtual List<TaskAssignee> TaskAssignees { get; set; } = [];
+    public virtual List<SubTask> SubTasks { get; set; } = [];
 }
