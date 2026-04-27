@@ -1,6 +1,4 @@
-﻿using AI_genda_API.Abstractions.Const;
-
-namespace AI_genda_API.Controllers;
+﻿namespace AI_genda_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -32,9 +30,9 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
 
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default!)
+    public async Task<IActionResult> GetAll([FromQuery] FilterRequest filterRequest, CancellationToken cancellationToken = default!)
     {
-        var result = await _WorkSpaceService.GetAllAsync(cancellationToken);
+        var result = await _WorkSpaceService.GetAllAsync(filterRequest, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
@@ -51,17 +49,14 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
 
 
-     }
+    }
 
   
 
-    [HttpGet("{Id}/dashboard")]
-    [HasPermission(Permissions.GetWorkSpaces)]
-    public async Task<IActionResult> GetWorkspaceDashboardData([FromRoute] int Id, CancellationToken cancellationToken = default!)
+    [HttpGet("dashboard")]
+    public async Task<IActionResult> GetWorkspaceDashboardData( CancellationToken cancellationToken = default!)
     {
-        var userId = User.GetUserId();
-
-        var result = await _WorkSpaceService.GetWorkspaceDashboardAsync(Id, userId!, cancellationToken);
+        var result = await _WorkSpaceService.GetWorkspaceDashboardAsync(User.GetUserId()!, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
@@ -109,8 +104,7 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
 
     [HttpPut("{Id}/members/{MemberUserId}/permissions")]
     [HasPermission(Permissions.UpdateWorkSpaces)]
-    public async Task<IActionResult> UpdateMemberPermissions([FromRoute] int Id, [FromRoute] string MemberUserId,
-      [FromBody] UpdateWorkspaceMemberPermissionsRequest request, CancellationToken cancellationToken = default!)
+    public async Task<IActionResult> UpdateMemberPermissions([FromRoute] int Id, [FromRoute] string MemberUserId, [FromBody] UpdateWorkspaceMemberPermissionsRequest request, CancellationToken cancellationToken = default!)
     {
         var result = await _WorkSpaceService.UpdateMemberPermissionsAsync(Id, User.GetUserId()!, MemberUserId, request, cancellationToken);
 
@@ -129,8 +123,7 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
 
   
 
-    [HttpDelete("{Id:int}/remove")]
-    [HasPermission(Permissions.DeleteWorkSpaces)]
+    [HttpDelete("{Id:int}/remove-member")]
     public async Task<IActionResult> RemoveMember([FromRoute] int Id, InviteMember request, CancellationToken cancellationToken = default!)
     {
         var res = await _WorkSpaceService.RemoveMemberAsync( Id , User.GetUserId()!, request, cancellationToken);
@@ -151,5 +144,13 @@ public class WorkSpacesController(IWorkSpaceService workSpaceService) : Controll
   
 
 
+    [HttpGet("{Id:int}/dashboard")]
+    [HasPermission(Permissions.GetWorkSpaces)]
+    public async Task<IActionResult> GetWorkspaceDashboardById([FromRoute] int Id, CancellationToken cancellationToken = default!)
+    {
+        var result = await _WorkSpaceService.GetWorkspaceDashboardByIdAsync(Id, User.GetUserId()!, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
 
 }

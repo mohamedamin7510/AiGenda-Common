@@ -1,10 +1,9 @@
-﻿using AI_genda_API.Abstractions.Const;
-using AI_genda_API.Abstractions.Enums;
+﻿using AI_genda_API.Abstractions.Enums;
+using Task = System.Threading.Tasks.Task;
 
 namespace AI_genda_API.Services.FolderService;
 
-public class WorkSpaceService(AppContext context, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender ) 
-    : IWorkSpaceService 
+public class WorkSpaceService(AppContext context, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender) : IWorkSpaceService
 {
     private readonly AppContext _Context = context;
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
@@ -46,34 +45,50 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         return Result.Success(response);
     }
 
-    public async Task<Result<IEnumerable<WorkSpaceResponse>?>> GetAllAsync(CancellationToken cancellationToken = default!)
+    public async Task<Result<PaginatedList<WorkSpaceResponse>?>> GetAllAsync(FilterRequest request, CancellationToken cancellationToken = default!)
     {
+
+
         var UserId = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        var response = await _Context.WorkSpaces
-            .Where(ws =>
-                ws.RemovedAt == null &&
-                (
-                    ws.CreatedById == UserId ||
-                    ws.workspaceMembers.Any(m => m.UserID == UserId)
-                ))
-            .Select(ws => new WorkSpaceResponse(
-                ws.Id,
-                ws.Name,
-                ws.Description!,
-                ws.IconCode!,
-                ws.Visibility,
-                ws.workspaceMembers.Count(m => m.WrokSpaceID == ws.Id),
-                ws.Spaces
-                    .Where(s => s.IsActive && s.RemovedAt == null)
-                    .SelectMany(s => s.Tasks.Where(t => t.IsActive && t.RemovedAt == null))
-                    .Count(),
-                ws.CreatedById == UserId
-            ))
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var query = _Context.WorkSpaces
+            .Where(ws => ws.RemovedAt == null && ws.workspaceMembers.Any(m => m.UserID == UserId && m.WrokSpaceID == ws.Id));
 
-        return Result.Success<IEnumerable<WorkSpaceResponse>?>(response);
+
+        if (!string.IsNullOrEmpty(request.SearchValue))
+        {
+            var Tokens = request.SearchValue.Tokenize().ToList();
+
+            query = query.Where(x => Tokens.Any(token => x.Name.Contains(token) || x.Description!.Contains(token)));
+        }
+
+
+        if (!string.IsNullOrEmpty(request.SortColumn))
+        {
+            query = query.OrderBy($"{request.SortColumn} {request.SortOrder}");
+        }
+
+
+        var workSpaceResponses = query
+          .Select(ws => new WorkSpaceResponse(
+              ws.Id,
+              ws.Name,
+              ws.Description!,
+              ws.IconCode!,
+              ws.Visibility,
+              ws.workspaceMembers.Count(m => m.WrokSpaceID == ws.Id),
+              ws.Spaces
+                  .Where(s => s.IsActive && s.RemovedAt == null)
+                  .SelectMany(s => s.Tasks.Where(t => t.IsActive && t.RemovedAt == null))
+                  .Count(),
+              ws.CreatedById == UserId
+          ))
+          .AsNoTracking();
+
+        var Response = await PaginatedList<WorkSpaceResponse>.CreateAsync(workSpaceResponses, request.PageNumber, request.PageSize);
+
+
+        return Result.Success<PaginatedList<WorkSpaceResponse>?>(Response);
     }
 
     public async Task<Result<WorkSpaceResponse>> GetByIdAsync(int id, string? userId, CancellationToken cancelationToken)
@@ -110,38 +125,103 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         return Result.Success(response);
     }
 
-    public async Task<Result<WorkspaceDashboardResponse>> GetWorkspaceDashboardAsync(int Id,string UserId, CancellationToken cancellationToken = default) 
-           
+    public async Task<Result<WorkspaceDashboardResponse>> GetWorkspaceDashboardAsync(string UserId, CancellationToken cancellationToken = default)
     {
-        // Validate workspace existence
 
-        // Validate userId access to workspace
 
-        // validate user that request the dashboard is the member of the workspace or not or who created it (two status)
+        var UserIsFounded = await _Context.Users
+            .AnyAsync(u => u.Id == UserId && u.IsDisabled == false, cancellationToken);
 
-        // Fetch statistics
+        if (!UserIsFounded)
+            return Result.Faluire<WorkspaceDashboardResponse>(UserErrors.UserNotFounded);
 
-        // Fetch weekly focus data
 
-        // Fetch recent activities
+        var WeekStart = DateTime.UtcNow.Date.AddDays(-6);
 
-        // Fetch priority tasks
+        var ActiveTasksQuery = _Context.Tasks
+            .Where(t => t.RemovedAt == null && t.Space.WorkSpace.CreatedById == UserId && t.Space.WorkSpace.RemovedAt == null && t.Space.RemovedAt == null);
 
-        // Fetch all spaces in the workspace 
+        var TaskStatistics = await ActiveTasksQuery
+            .GroupBy(_ => 1)
+            .Select(AllItemsAsOne => new
+            {
+                Total = AllItemsAsOne.Count(),
+                Completed = AllItemsAsOne.Count(t => t.Status == TaskStatuss.Completed),
+                InProgress = AllItemsAsOne.Count(t => t.Status == TaskStatuss.Ongoing),
+                Todo = AllItemsAsOne.Count(t => t.Status == TaskStatuss.Todo),
+                Overdue = AllItemsAsOne.Count(t => t.DueDate != null && t.DueDate < DateTime.UtcNow && t.Status != TaskStatuss.Completed)
+            })
+            .SingleOrDefaultAsync(cancellationToken);
 
-        // Map to WorkspaceDashboardResponse
 
-        return Result.Success(new WorkspaceDashboardResponse(
-        new DashboardStatsResponse(0,0,0,0), // Replace with actual stats
-        new WeeklyFocusTimeResponse(new List<FocusDayResponse>()), // Replace with actual focus time data
-        new List<ActivityResponse>(), // Replace with actual recent activities
-        new List<PriorityTaskResponse>(), // Replace with actual priority tasks
-        new List<SpaceResponse>() // Replace with actual spaces
+        var WeeklyFocusSessions = await _Context.FocusSessions
+           .Where(fs => fs.Space.WorkSpace.CreatedById == UserId && fs.Space.WorkSpace.RemovedAt == null && fs.Space.RemovedAt == null
+           && fs.Status == FocusSessionStatus.Completed && fs.EndedAt != null && fs.EndedAt.Value >= WeekStart)
+           .Select(fs => new
+           {
+               fs.StartedAt,
+               fs.EndedAt,
+               fs.TotalPausedSeconds,
+               fs.CompletedSubtasks,
+               fs.InitialCompletedSubtasks
+           })
+           .AsNoTracking()
+           .ToListAsync(cancellationToken);
 
-       ));
+
+        var DailyFocusHours = Enumerable.Range(0, 7)
+            .Select(i => DateTime.UtcNow.Date.AddDays(-(6 - i)))
+            .ToDictionary(d => d, _ => 0d);
+
+        foreach (var s in WeeklyFocusSessions)
+        {
+            var end = s.EndedAt!.Value;
+
+            var hours = (end - s.StartedAt - TimeSpan.FromSeconds(Math.Max(0, s.TotalPausedSeconds))).TotalHours;
+
+            if (hours < 0)
+                hours = 0;
+
+            if (DailyFocusHours.ContainsKey(end.Date))
+                DailyFocusHours[end.Date] += hours;
+        }
+
+
+        var FocusSessionsThisWeek = WeeklyFocusSessions.Count;
+
+        var FocusTimeHours = Math.Round(DailyFocusHours.Values.Sum(), 2);
+
+        var ProductiveSessions = WeeklyFocusSessions.Count(s => s.CompletedSubtasks > s.InitialCompletedSubtasks);
+
+        var FocusCompletionRate = FocusSessionsThisWeek == 0 ? 0 : (int)Math.Round((ProductiveSessions / (double)FocusSessionsThisWeek) * 100);
+
+        var Statisitics = new DashboardStatsResponse(
+            TaskStatistics?.Total ?? 0,
+            TaskStatistics?.Completed ?? 0,
+            TaskStatistics?.InProgress ?? 0,
+            TaskStatistics?.Todo ?? 0,
+            TaskStatistics?.Overdue ?? 0,
+            FocusSessionsThisWeek,
+            FocusTimeHours,
+            FocusCompletionRate,
+             TaskStatistics?.Total == 0 ? 0 :
+                             (int)Math.Round(((TaskStatistics?.Completed ?? 0) / (double)(TaskStatistics?.Total ?? 1)) * 100)
+        );
+
+
+        var WeeklyFocusTime = new WeeklyFocusTimeResponse
+               (
+                DailyFocusHours
+                    .OrderBy(x => x.Key)
+                    .Select(x => new FocusDayResponse(x.Key.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("en-US")), Math.Round(x.Value, 2)))
+                    .ToList()
+               );
+
+
+        return Result.Success(new WorkspaceDashboardResponse(Statisitics, WeeklyFocusTime));
     }
 
-    public async Task<Result<WorkSpaceResponse>> UpdateAsync(int Id,  string UserId ,  WorkSpaceRequest requset, CancellationToken cancellationToken)
+    public async Task<Result<WorkSpaceResponse>> UpdateAsync(int Id, string UserId, WorkSpaceRequest requset, CancellationToken cancellationToken)
     {
 
         var workSpace = await _Context.WorkSpaces.
@@ -162,22 +242,22 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
 
         return Result.Success(response);
     }
-   
+
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken)
     {
 
         var workspace = await _Context.WorkSpaces.SingleOrDefaultAsync(x => x.Id == id && x.RemovedAt == null, cancellationToken);
 
-        if (workspace is  null)
+        if (workspace is null)
             return Result.Faluire(WorkSpaceErrors.WorkSpaceNotFound);
 
-           workspace.IsActive = false; 
-           workspace.RemovedAt = DateTime.UtcNow;
-           workspace.RemovedById = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        workspace.IsActive = false;
+        workspace.RemovedAt = DateTime.UtcNow;
+        workspace.RemovedById = _HttpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-           await _Context.SaveChangesAsync(cancellationToken);
+        await _Context.SaveChangesAsync(cancellationToken);
 
-          return   Result.Success();
+        return Result.Success();
     }
 
     public async Task<Result> RestoreAsync(int id, CancellationToken cancellationToken)
@@ -190,20 +270,20 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         workspace.IsActive = true;
         workspace.RemovedAt = null;
         workspace.RemovedById = null;
-    
+
         await _Context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
 
-    public async Task<Result> AddMemberAsync ( int Id ,string UserId, InviteMember request, CancellationToken cancellationToken)
+    public async Task<Result> AddMemberAsync(int Id, string UserId, InviteMember request, CancellationToken cancellationToken)
     {
         var workspace = await _Context.WorkSpaces
             .Where(x => x.CreatedById == UserId && x.Id == Id && x.RemovedAt == null)
             .AsNoTracking()
             .SingleOrDefaultAsync(cancellationToken);
 
-        
+
         if (workspace is null)
             return Result.Faluire(WorkSpaceErrors.WorkSpaceNotFound);
 
@@ -242,7 +322,7 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
             JoinedAt = DateTime.UtcNow,
             Permissions =
             [
-               Permissions.GetWorkSpaces, 
+               Permissions.GetWorkSpaces,
                Permissions.GetSpaces,
                Permissions.GetTasks,
                Permissions.GetNotes
@@ -258,8 +338,8 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         return Result.Success();
 
 
-      }
-    
+    }
+
     public async Task<Result> RemoveMemberAsync(int Id, string RemoverUserId, InviteMember request, CancellationToken cancellationToken = default!)
     {
 
@@ -303,7 +383,7 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
 
         return Result.Success();
 
-        
+
     }
 
     public async Task<Result<IEnumerable<WorkspaceMemberResponse>>> GetMembersAsync(int Id, string UserId, CancellationToken cancellationToken = default!)
@@ -336,14 +416,14 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
                 m.JoinedAt,
                 m.Permissions
             ))
-            .AsNoTracking()        
+            .AsNoTracking()
             .ToListAsync(cancellationToken);
 
         return Result.Success<IEnumerable<WorkspaceMemberResponse>>(members);
     }
 
-    public async Task<Result<WorkspaceMemberResponse>> UpdateMemberPermissionsAsync(int Id,string OwnerUserId,string MemberUserId,UpdateWorkspaceMemberPermissionsRequest request,CancellationToken cancellationToken = default!)         
-  {
+    public async Task<Result<WorkspaceMemberResponse>> UpdateMemberPermissionsAsync(int Id, string OwnerUserId, string MemberUserId, UpdateWorkspaceMemberPermissionsRequest request, CancellationToken cancellationToken = default!)
+    {
         var workspace = await _Context.WorkSpaces
             .Where(w => w.Id == Id && w.RemovedAt == null)
             .Select(w => new { w.Id, w.CreatedById })
@@ -368,15 +448,15 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
 
         var allowedPermissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-         
+
             Permissions.UpdateSpaces,
             Permissions.AddSpaces,
             Permissions.DeleteSpaces,
-          
+
             Permissions.UpdateTasks,
             Permissions.AddTasks,
             Permissions.DeleteTasks,
-       
+
             Permissions.UpdateNotes,
             Permissions.AddNotes,
             Permissions.DeleteNotes
@@ -420,10 +500,11 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
             .SingleAsync(cancellationToken);
 
         return Result.Success(response);
-}
-   
-   public async Task<Result<WorkspaceMemberPermissionsResponse>> GetMemberPermissionsAsync(int Id,string RequesterUserId,string MemberUserId,CancellationToken cancellationToken = default!)   
-   {
+    }
+
+    public async Task<Result<WorkspaceMemberPermissionsResponse>> GetMemberPermissionsAsync(int Id, string RequesterUserId, string MemberUserId, CancellationToken cancellationToken = default!)
+    {
+
         var workspace = await _Context.WorkSpaces
             .Where(w => w.Id == Id && w.RemovedAt == null)
             .Select(w => new { w.Id, w.CreatedById })
@@ -437,11 +518,11 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         var requesterIsMember = !isOwner && await _Context.WorkspaceMembers
             .AnyAsync(m => m.WrokSpaceID == Id && m.UserID == RequesterUserId, cancellationToken);
 
-      
+
         if (!isOwner && !requesterIsMember)
             return Result.Faluire<WorkspaceMemberPermissionsResponse>(WorkspaceMemberErrors.AccessDenied);
 
-        
+
         if (!isOwner && RequesterUserId != MemberUserId)
             return Result.Faluire<WorkspaceMemberPermissionsResponse>(WorkspaceMemberErrors.AccessDenied);
 
@@ -468,7 +549,7 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
             return Result.Faluire<WorkspaceMemberPermissionsResponse>(WorkspaceMemberErrors.MemberNotFounded);
 
         return Result.Success(memberPermissions);
-   }
+    }
 
     public async Task<Result<IEnumerable<DeletedWorkSpaceResponse>>> GetAllDeletedAsync(string UserId, CancellationToken cancellationToken = default!)
     {
@@ -494,7 +575,201 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
         return Result.Success<IEnumerable<DeletedWorkSpaceResponse>>(response);
     }
 
-    private async  System.Threading.Tasks.Task SendEmailInvite( ExtendedUser User , ExtendedUser InvitedUser , WorkSpace Workspace , string Message)
+    public async Task<Result<WorkspaceByIdDashboardResponse>> GetWorkspaceDashboardByIdAsync(int Id, string UserId, CancellationToken cancellationToken = default)
+    {
+
+        var user = await _Context.Users
+            .Where(u => u.Id == UserId && !u.IsDisabled)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (user is null)
+            return Result.Faluire<WorkspaceByIdDashboardResponse>(UserErrors.UserNotFounded);
+
+        var workspaceExists = await _Context.WorkspaceMembers
+            .AnyAsync(w => w.WrokSpaceID == Id  && w.UserID == UserId , cancellationToken);
+
+        if (!workspaceExists)
+            return Result.Faluire<WorkspaceByIdDashboardResponse>(WorkSpaceErrors.WorkSpaceNotFound);
+
+
+        var CurrentweekStart = DateTime.UtcNow.Date.AddDays(-6);
+
+        var PreviousweekStart = CurrentweekStart.AddDays(-7);
+
+        var TaskStatisitics = await _Context.Tasks
+            .Where(t => t.Space.WorkSpaceId == Id && t.Space.WorkSpace.RemovedAt == null && t.RemovedAt == null && t.Space.RemovedAt == null )
+            .GroupBy(_ => 1)
+            .Select( OneItemelements => new
+            {
+                Total = OneItemelements.Count(),
+                Completed = OneItemelements.Count(t => t.Status == TaskStatuss.Completed),
+                NewToday = OneItemelements.Count(t => t.CreatedAt >= DateTime.UtcNow.Date)
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+
+
+
+        var ActiveSpaces = await _Context.Spaces
+            .CountAsync(s => s.WorkSpaceId == Id && s.RemovedAt == null, cancellationToken);
+
+        var ActiveCollaborators = await _Context.WorkspaceMembers
+            .CountAsync(m => m.WrokSpaceID == Id && !m.User!.IsDisabled, cancellationToken);
+
+
+        var FocusSessions = await _Context.FocusSessions
+            .Where(fs => fs.WorkspaceId == Id
+                && fs.Status == FocusSessionStatus.Completed
+                && fs.EndedAt != null
+                && fs.Space.RemovedAt == null
+                && fs.Space.WorkSpace.RemovedAt == null
+                && fs.EndedAt.Value >= PreviousweekStart)
+            .Select(fs => new
+            {
+                fs.StartedAt,
+                EndedAt = fs.EndedAt!.Value,
+                fs.TotalPausedSeconds
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+
+        var DailyFocusHours = Enumerable.Range(0, 7)
+            .Select(i => CurrentweekStart.AddDays(i))
+            .ToDictionary(d => d, _ => 0d);
+
+        var currentWeekHours = 0d;
+
+        var previousWeekHours = 0d;
+
+        foreach (var s in FocusSessions)
+        {
+            var hours = CalculateFocusHours(s.StartedAt, s.EndedAt, s.TotalPausedSeconds);
+
+            if (s.EndedAt.Date >= CurrentweekStart && s.EndedAt.Date <= DateTime.UtcNow.Date)
+            {
+                currentWeekHours += hours;
+
+                if (DailyFocusHours.ContainsKey(s.EndedAt.Date))
+                    DailyFocusHours[s.EndedAt.Date] += hours;
+            }
+            else if (s.EndedAt.Date >= PreviousweekStart && s.EndedAt.Date < CurrentweekStart)
+            {
+                previousWeekHours += hours;
+            }
+        }
+
+        currentWeekHours = Math.Round(currentWeekHours, 2);
+
+        var averageDailyFocusHours = Math.Round(currentWeekHours / 7d, 1);
+
+        var productivityScore = (TaskStatisitics?.Total ?? 0) == 0 ? 0 : (int)Math.Round((TaskStatisitics!.Completed / (double)TaskStatisitics.Total) * 100);
+           
+        var productivityDeltaPercent = previousWeekHours <= 0
+            ? (currentWeekHours > 0 ? 100 : 0)
+            : (int)Math.Round(((currentWeekHours - previousWeekHours) / previousWeekHours) * 100);
+
+
+        var WeeklyFocusTime = new WeeklyFocusTimeResponse(
+            DailyFocusHours
+                .OrderBy(x => x.Key)
+                .Select(x => new FocusDayResponse(x.Key.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("en-US")),Math.Round(x.Value, 2)))
+                .ToList());
+
+
+        var PriorityTasks = await _Context.Tasks
+            .Where(t => t.Space.WorkSpaceId == Id
+                && t.RemovedAt == null
+                && t.Space.RemovedAt == null
+                && t.Status != TaskStatuss.Completed
+                && t.Status != TaskStatuss.Cancelled)
+            .OrderByDescending(t => t.Priority)
+            .ThenBy(t => t.DueDate ?? DateTime.MaxValue)
+            .ThenByDescending(t => t.CreatedAt)
+            .Take(5)
+            .Select(t => new WorkspaceDashboardPriorityTaskResponse(
+                t.Id,
+                t.Title,
+                t.Priority,
+                t.Status,
+                t.DueDate,
+                t.Space.Name))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+
+        var TaskActivities = await _Context.Tasks
+            .Where(t => t.Space.WorkSpaceId == Id
+                && t.RemovedAt == null
+                && t.Space.RemovedAt == null
+                && t.Status == TaskStatuss.Completed
+                && t.UpdatedAt != null)
+            .OrderByDescending(t => t.UpdatedAt)
+            .Take(10)
+            .Select(t => new WorkspaceRecentActivityResponse($"Task completed in {t.Space.Name}: {t.Title}", t.UpdatedAt!.Value,"success"))                                               
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+
+        var NoteActivities = await _Context.Notes
+            .Where(n => n.Space.WorkSpaceId == Id && n.RemovedAt == null && n.Space.RemovedAt == null)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(10)
+            .Select(n => new WorkspaceRecentActivityResponse(
+                n.Type == NoteType.Image || n.Type == NoteType.Voice? $"File uploaded: {n.Title}": $"New note added: {n.Title}",
+                n.CreatedAt, 
+                n.Type == NoteType.Image || n.Type == NoteType.Voice ? "info" : "primary"))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+
+        var FocusActivities = await _Context.FocusSessions
+            .Where(fs => fs.WorkspaceId == Id
+                && fs.Status == FocusSessionStatus.Completed
+                && fs.EndedAt != null
+                && fs.Space.RemovedAt == null)
+            .OrderByDescending(fs => fs.EndedAt)
+            .Take(10)
+            .Select(fs => new WorkspaceRecentActivityResponse( $"Focus session completed: {fs.TaskName}",fs.EndedAt!.Value,"warning"))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+
+        var RecentActivities = TaskActivities
+            .Concat(NoteActivities)
+            .Concat(FocusActivities)
+            .OrderByDescending(x => x.OccurredAt)
+            .Take(5)
+            .ToList();
+
+
+        var Cards = new WorkspaceDashboardCardsResponse(
+            TaskStatisitics?.Total ?? 0,
+            TaskStatisitics?.NewToday ?? 0,
+            currentWeekHours,
+            averageDailyFocusHours,
+            ActiveSpaces,
+            ActiveCollaborators,
+            productivityScore);
+
+
+        var response = new WorkspaceByIdDashboardResponse(
+            user.FirstName + " " + user.SecondName,
+            productivityDeltaPercent,
+            Cards,
+            WeeklyFocusTime,
+            RecentActivities,
+            PriorityTasks);
+
+
+        return Result.Success(response);
+    }
+
+
+
+
+
+    private async Task SendEmailInvite(ExtendedUser User, ExtendedUser InvitedUser, WorkSpace Workspace, string Message)
     {
         var origin = _HttpContextAccessor.HttpContext?.Request.Headers.Origin;
 
@@ -505,13 +780,20 @@ public class WorkSpaceService(AppContext context, IHttpContextAccessor httpConte
                         {"{{WorkSpaceName}}", Workspace.Name},
                         {"{{FullName}}", InvitedUser.FirstName + " "+ InvitedUser.SecondName },
                         {"{{AddedUserName}}", User.FirstName + " "+ User.SecondName },
-                        { "{{action_url}}", $"{origin}/WorkSpace/Add-member?workspaceId={Workspace.Id}&&UserId={User.Id}" } 
+                        { "{{action_url}}", $"{origin}/WorkSpace/Add-member?workspaceId={Workspace.Id}&&UserId={User.Id}" }
             }
         );
 
-      BackgroundJob.Enqueue(()=> _EmailSender.SendEmailAsync(User.Email!, Message, BuilderMessage));
+        BackgroundJob.Enqueue(() => _EmailSender.SendEmailAsync(User.Email!, Message, BuilderMessage));
 
     }
 
-  
+    private static double CalculateFocusHours(DateTime startedAt, DateTime endedAt, int totalPausedSeconds)
+    {
+        var hours = (endedAt - startedAt - TimeSpan.FromSeconds(Math.Max(0, totalPausedSeconds))).TotalHours;
+
+        return hours < 0 ? 0 : hours;
+    }
+
 }
+

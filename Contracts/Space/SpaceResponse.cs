@@ -2,7 +2,7 @@
 
 public record SpaceResponse
 (
-    int id , 
+    string Id , 
     string Name,
     string IconCode
 );

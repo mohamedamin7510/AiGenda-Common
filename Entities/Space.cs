@@ -13,9 +13,9 @@ public class Space : AuditLogging
     public DateOnly LastActivity { get; set; }
     public int WorkSpaceId { get; set; }
 
-
-
     [ForeignKey("WorkSpaceId")]
-    public virtual WorkSpace WorkSpace { get; set; }
+    public virtual WorkSpace WorkSpace { get; set; } = null!;
     public virtual List<Task> Tasks { get; set; } = [];
+    public virtual List<Note> Notes { get; set; } = [];
+    public virtual List<FocusSession> FocusSessions { get; set; } = [];
 }

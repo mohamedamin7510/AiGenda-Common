@@ -1,10 +1,14 @@
-﻿using Task = AI_genda_API.Entities.Task;
+﻿using System.Reflection;
+using System.Security.Claims;
+using AI_genda_API.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Task = AI_genda_API.Entities.Task;
 
 namespace AI_genda_API.Presistience;
 
-
-public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpContextAccessor httpContextAccessor )
-    : IdentityDbContext<ExtendedUser,ApplicationRole,string>(dbContextOptions)
+public class AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpContextAccessor httpContextAccessor)
+    : IdentityDbContext<ExtendedUser, ApplicationRole, string>(dbContextOptions)
 {
     private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
 
@@ -12,13 +16,18 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
     public DbSet<WorkSpace> WorkSpaces { get; set; }
     public DbSet<WorkspaceMember> WorkspaceMembers { get; set; }
     public DbSet<Space> Spaces { get; set; }
-    public DbSet<Task> Tasks { get; set; } 
+    public DbSet<Task> Tasks { get; set; }
     public DbSet<TaskAssignee> TaskAssignees { get; set; }
-
+    public DbSet<SubTask> SubTasks { get; set; }
+    public DbSet<Note> Notes { get; set; }
+    public DbSet<NoteAsset> NoteAssets { get; set; }
+    public DbSet<TextNoteContent> TextNoteContents { get; set; }
+    public DbSet<VoiceNoteContent> VoiceNoteContents { get; set; }
+    public DbSet<ImageNoteContent> ImageNoteContents { get; set; }
+    public DbSet<HandDrawNoteContent> HandDrawNoteContents { get; set; }
+    public DbSet<FocusSession> FocusSessions { get; set; }
     public DbSet<AppConnection> AppConnections { get; set; }
     public DbSet<LinkedData> LinkedData { get; set; }
-
-
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -36,16 +45,17 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
             }
             else if (entry.State == EntityState.Modified)
             {
-                if (ClaimId != null) 
+                if (ClaimId != null)
                 {
                     entry.Property(x => x.UpdatedById).CurrentValue = ClaimId;
                 }
                 entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
             }
-
         }
+
         return base.SaveChangesAsync(cancellationToken);
     }
+
     public override int SaveChanges()
     {
         var ClaimId = _HttpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -68,15 +78,14 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
                 }
                 entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
             }
-
         }
-        return base.SaveChanges();
 
+        return base.SaveChanges();
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
 
         var CascadeFks = modelBuilder.Model
             .GetEntityTypes().SelectMany(f => f.GetForeignKeys())
@@ -89,8 +98,4 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions , IHttpCon
 
         base.OnModelCreating(modelBuilder);
     }
-
-
-
-
 }

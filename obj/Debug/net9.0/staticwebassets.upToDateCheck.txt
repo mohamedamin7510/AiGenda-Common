@@ -1,5 +1,0 @@
-wwwroot\.well-known\pki-validation\2B19227A57AC7699F6757254AE8F991D.txt
-wwwroot\.well-known\assetlinks.json
-wwwroot\uploads\avatars\694943d7-859a-4014-b31a-cd8b54104811_f67532e47c9345f788a79dcf57a4f81f.jpg
-D:\Api_Projects\Project\AI_genda_API2\wwwroot\.well-known\pki-validation\2B19227A57AC7699F6757254AE8F991D.txt
-D:\Api_Projects\Project\AI_genda_API2\wwwroot\.well-known\assetlinks.json

@@ -1,20 +1,17 @@
-﻿
+﻿using AI_genda_API.Contracts.SubTask;
+using Task = AI_genda_API.Entities.Task;
+
 namespace AI_genda_API.Services.TaskService;
 
-public class TaskService(AppContext context, IHttpContextAccessor httpContextAccessor) : ITaskService
+public class TaskService(AppContext context) : ITaskService
 {
     private readonly AppContext _Context = context;
-    private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
 
-    private async Task<bool> HasAccessAsync(int WorkspaceId, string UserId, CancellationToken cancellationToken)
-    {
-        return await _Context.WorkSpaces.AnyAsync(w => w.Id == WorkspaceId && w.CreatedById == UserId, cancellationToken)
-            || await _Context.WorkspaceMembers.AnyAsync(m => m.WrokSpaceID == WorkspaceId && m.UserID == UserId, cancellationToken);
-    }
 
     public async Task<Result<TaskResponse>> AddAsync(int WorkspaceId, string SpaceId, string UserId, TaskRequest request, CancellationToken cancellationToken = default!)
     {
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire<TaskResponse>(WorkspaceMemberErrors.AccessDenied);
 
@@ -24,7 +21,7 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         if (!spaceExists)
             return Result.Faluire<TaskResponse>(SpaceErrors.SpaceNotFound);
 
-        var task = new Entities.Task
+        var task = new Task
         {
             Title = request.Title,
             Description = request.Description,
@@ -35,6 +32,7 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         };
 
         await _Context.Tasks.AddAsync(task, cancellationToken);
+
         await _Context.SaveChangesAsync(cancellationToken);
 
         var response = new TaskResponse(
@@ -45,26 +43,48 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
             task.Priority,
             task.DueDate,
             task.CreatedAt,
+            [],
             []
         );
 
         return Result.Success(response);
     }
 
-    public async System.Threading.Tasks.Task<Result<IEnumerable<TaskResponse>>> GetAllAsync(int WorkspaceId, string SpaceId, string UserId, CancellationToken cancellationToken = default!)
+    public async Task<Result<PaginatedList<TaskResponse>>> GetAllAsync(int WorkspaceId, string SpaceId, string UserId, FilterRequest filterRequest, CancellationToken cancellationToken = default!)
     {
+
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
-            return Result.Faluire<IEnumerable<TaskResponse>>(WorkspaceMemberErrors.AccessDenied);
+            return Result.Faluire<PaginatedList<TaskResponse>>(WorkspaceMemberErrors.AccessDenied);
 
         var spaceExists = await _Context.Spaces
             .AnyAsync(s => s.Id == SpaceId && s.WorkSpaceId == WorkspaceId && s.IsActive, cancellationToken);
 
         if (!spaceExists)
-            return Result.Faluire<IEnumerable<TaskResponse>>(SpaceErrors.SpaceNotFound);
+            return Result.Faluire<PaginatedList<TaskResponse>>(SpaceErrors.SpaceNotFound);
 
-        var tasks = await _Context.Tasks
-            .Where(t => t.SpaceId == SpaceId && t.RemovedAt == null)
+
+
+        var query = _Context.Tasks
+            .Where(t => t.SpaceId == SpaceId && t.RemovedAt == null);
+
+
+        if (!string.IsNullOrEmpty(filterRequest.SearchValue))
+        {
+            var Tokens = filterRequest.SearchValue.Tokenize().ToList();
+
+            query = query.Where(x => Tokens.Any(token => x.Title.Contains(token) || x.Description!.Contains(token)));
+        }
+
+
+        if (!string.IsNullOrEmpty(filterRequest.SortColumn))
+        {
+            query = query.OrderBy($"{filterRequest.SortColumn} {filterRequest.SortOrder}");
+        }
+
+        var taskResponses = query 
             .Select(t => new TaskResponse(
                 t.Id,
                 t.Title,
@@ -77,17 +97,91 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
                     a.UserId,
                     a.User!.FirstName + " " + a.User.SecondName,
                     a.User.AvatarUrl
-                )).ToList()
+                )).ToList(),
+                t.SubTasks
+                    .Where(st => st.RemovedAt == null)
+                    .Select(st => new SubTaskResponse(
+                        st.Id,
+                        st.Title,
+                        st.IsCompleted,
+                        st.CreatedAt
+                    )).ToList()
+            ))
+            .AsNoTracking();
+
+
+
+        var Response = await PaginatedList<TaskResponse>.CreateAsync(taskResponses, filterRequest.PageNumber, filterRequest.PageSize);
+
+        return Result.Success(Response);
+    }
+
+    public async Task<Result<IEnumerable<RemovedTaskResponse>>> GetAllRemovedAsync(int WorkspaceId, string SpaceId, string UserId, CancellationToken cancellationToken = default!)
+    {
+
+        var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
+        if (!hasAccess)
+            return Result.Faluire<IEnumerable<RemovedTaskResponse>>(WorkspaceMemberErrors.AccessDenied);
+
+        var spaceExists = await _Context.Spaces
+            .AnyAsync(s => s.Id == SpaceId && s.WorkSpaceId == WorkspaceId && s.IsActive, cancellationToken);
+
+        if (!spaceExists)
+            return Result.Faluire<IEnumerable<RemovedTaskResponse>>(SpaceErrors.SpaceNotFound);
+
+        var removedTasks = await _Context.Tasks
+            .Where(t => t.SpaceId == SpaceId && t.RemovedAt != null)
+            .OrderByDescending(t => t.RemovedAt)
+            .Select(t => new RemovedTaskResponse(
+                t.Id,
+                t.Title,
+                t.Description,
+                t.Status,
+                t.Priority,
+                t.DueDate,
+                t.CreatedAt,
+                t.RemovedAt!.Value
             ))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        return Result.Success<IEnumerable<TaskResponse>>(tasks);
+        return Result.Success<IEnumerable<RemovedTaskResponse>>(removedTasks);
     }
 
-    public async System.Threading.Tasks.Task<Result<TaskResponse>> GetByIdAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
+    public async Task<Result<RemovedTaskResponse>> GetRemovedByIdAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
+    {
+
+        var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
+        if (!hasAccess)
+            return Result.Faluire<RemovedTaskResponse>(WorkspaceMemberErrors.AccessDenied);
+
+        var removedTask = await _Context.Tasks
+            .Where(t => t.Id == Id && t.SpaceId == SpaceId && t.RemovedAt != null)
+            .Select(t => new RemovedTaskResponse(
+                t.Id,
+                t.Title,
+                t.Description,
+                t.Status,
+                t.Priority,
+                t.DueDate,
+                t.CreatedAt,
+                t.RemovedAt!.Value
+            ))
+            .AsNoTracking()
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (removedTask is null)
+            return Result.Faluire<RemovedTaskResponse>(TaskErrors.TaskNotFound);
+
+        return Result.Success(removedTask);
+    }
+
+    public async Task<Result<TaskResponse>> GetByIdAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
     {
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire<TaskResponse>(WorkspaceMemberErrors.AccessDenied);
 
@@ -105,7 +199,15 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
                     a.UserId,
                     a.User!.FirstName + " " + a.User.SecondName,
                     a.User.AvatarUrl
-                )).ToList()
+                )).ToList(),
+                t.SubTasks
+                    .Where(st => st.RemovedAt == null)
+                    .Select(st => new SubTaskResponse(
+                        st.Id,
+                        st.Title,
+                        st.IsCompleted,
+                        st.CreatedAt
+                    )).ToList()
             ))
             .AsNoTracking()
             .SingleOrDefaultAsync(cancellationToken);
@@ -116,9 +218,11 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         return Result.Success(task);
     }
 
-    public async System.Threading.Tasks.Task<Result<TaskResponse>> UpdateAsync(int WorkspaceId, string SpaceId, string Id, string UserId, TaskRequest request, CancellationToken cancellationToken = default!)
+    public async Task<Result<TaskResponse>> UpdateAsync(int WorkspaceId, string SpaceId, string Id, string UserId, TaskRequest request, CancellationToken cancellationToken = default!)
     {
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire<TaskResponse>(WorkspaceMemberErrors.AccessDenied);
 
@@ -132,8 +236,6 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         task.Description = request.Description;
         task.Priority = request.Priority;
         task.DueDate = request.DueDate;
-        task.UpdatedById = UserId;
-        task.UpdatedAt = DateTime.UtcNow;
 
         await _Context.SaveChangesAsync(cancellationToken);
 
@@ -145,15 +247,18 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
             task.Priority,
             task.DueDate,
             task.CreatedAt,
+            [],
             []
         );
 
         return Result.Success(response);
     }
 
-    public async System.Threading.Tasks.Task<Result> UpdateStatusAsync(int WorkspaceId, string SpaceId, string Id, string UserId, UpdateTaskStatusRequest request, CancellationToken cancellationToken = default!)
+    public async Task<Result> UpdateStatusAsync(int WorkspaceId, string SpaceId, string Id, string UserId, UpdateTaskStatusRequest request, CancellationToken cancellationToken = default!)
     {
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire(WorkspaceMemberErrors.AccessDenied);
 
@@ -164,16 +269,17 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
             return Result.Faluire(TaskErrors.TaskNotFound);
 
         task.Status = request.Status;
-        task.UpdatedById = UserId;
-        task.UpdatedAt = DateTime.UtcNow;
 
         await _Context.SaveChangesAsync(cancellationToken);
+
         return Result.Success();
     }
 
-    public async System.Threading.Tasks.Task<Result> DeleteAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
+    public async Task<Result> DeleteAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
     {
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire(WorkspaceMemberErrors.AccessDenied);
 
@@ -185,14 +291,19 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
 
         task.RemovedAt = DateTime.UtcNow;
         task.RemovedById = UserId;
+        task.IsActive = false;
 
+        
         await _Context.SaveChangesAsync(cancellationToken);
+
         return Result.Success();
     }
 
-    public async System.Threading.Tasks.Task<Result> RestoreAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
+    public async Task<Result> RestoreAsync(int WorkspaceId, string SpaceId, string Id, string UserId, CancellationToken cancellationToken = default!)
     {
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire(WorkspaceMemberErrors.AccessDenied);
 
@@ -204,14 +315,18 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
 
         task.RemovedAt = null;
         task.RemovedById = null;
+        task.IsActive = true;
 
         await _Context.SaveChangesAsync(cancellationToken);
+
         return Result.Success();
     }
 
-    public async System.Threading.Tasks.Task<Result> AssignMemberAsync(int WorkspaceId, string SpaceId, string Id, string UserId, AssignTaskRequest request, CancellationToken cancellationToken = default!)
+    public async Task<Result> AssignMemberAsync(int WorkspaceId, string SpaceId, string Id, string UserId, AssignTaskRequest request, CancellationToken cancellationToken = default!)
     {
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire(WorkspaceMemberErrors.AccessDenied);
 
@@ -227,10 +342,9 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         if (assignedUser is null)
             return Result.Faluire(UserErrors.EmailnotFounded);
 
+
         var isMember = await _Context.WorkspaceMembers
-            .AnyAsync(m => m.WrokSpaceID == WorkspaceId && m.UserID == assignedUser.Id, cancellationToken)
-            || await _Context.WorkSpaces
-            .AnyAsync(w => w.Id == WorkspaceId && w.CreatedById == assignedUser.Id, cancellationToken);
+            .AnyAsync(m => m.WrokSpaceID == WorkspaceId && m.UserID == assignedUser.Id, cancellationToken);
 
         if (!isMember)
             return Result.Faluire(WorkspaceMemberErrors.MemberNotFounded);
@@ -249,14 +363,18 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
         };
 
         await _Context.TaskAssignees.AddAsync(assignee, cancellationToken);
+
         await _Context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
 
-    public async System.Threading.Tasks.Task<Result> UnAssignMemberAsync(int WorkspaceId, string SpaceId, string Id, string UserId, AssignTaskRequest request, CancellationToken cancellationToken = default!)
+    public async Task<Result> UnAssignMemberAsync(int WorkspaceId, string SpaceId, string Id, string UserId, AssignTaskRequest request, CancellationToken cancellationToken = default!)
     {
+
+
         var hasAccess = await HasAccessAsync(WorkspaceId, UserId, cancellationToken);
+
         if (!hasAccess)
             return Result.Faluire(WorkspaceMemberErrors.AccessDenied);
 
@@ -273,8 +391,20 @@ public class TaskService(AppContext context, IHttpContextAccessor httpContextAcc
             return Result.Faluire(TaskErrors.AssigneeNotFound);
 
         _Context.TaskAssignees.Remove(assignee);
+
         await _Context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
+
+
+
+
+    private async Task<bool> HasAccessAsync(int WorkspaceId, string UserId, CancellationToken cancellationToken)
+    {
+        return await _Context.WorkSpaces.AnyAsync(w => w.Id == WorkspaceId && w.CreatedById == UserId, cancellationToken)
+            || await _Context.WorkspaceMembers.AnyAsync(m => m.WrokSpaceID == WorkspaceId && m.UserID == UserId, cancellationToken);
+    }
+
+
 }
