@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace AI_genda_API.Abstractions.Filters;
+namespace AI_genda_API.Authentication.Filters;
 
 public sealed class WorkspacePermissionAuthorizationHandler(
     AppContext context,

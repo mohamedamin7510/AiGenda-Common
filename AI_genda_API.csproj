@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.73.0.4073" />
     <PackageReference Include="Hangfire" Version="1.8.23" />
     <PackageReference Include="Hangfire.Core" Version="1.8.23" />
@@ -38,7 +39,6 @@
     </ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Authentication\Filters\" />
 	  <Folder Include="Logs\" />
 	</ItemGroup>
 

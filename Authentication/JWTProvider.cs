@@ -22,6 +22,7 @@ public class JWTProvider(IOptions<JWTOptions> JWToptions) : IJWTProvider
         };
 
          var SymmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JWToptions.SymmetricKey));
+
          var SigningCredentials = new SigningCredentials(SymmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
         var jwtSecurityToken = new JwtSecurityToken(

@@ -1,6 +1,6 @@
 using AI_genda_API.Abstractions.Const;
 
-namespace AI_genda_API.Abstractions.Filters;
+namespace AI_genda_API.Authentication.Filters;
 
 public sealed class HasPermissionAttribute : AuthorizeAttribute
 {

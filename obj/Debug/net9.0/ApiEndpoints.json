@@ -49,6 +49,22 @@
   },
   {
     "ContainingType": "AI_genda_API.Controllers.AuthController",
+    "Method": "GoogleLogin",
+    "RelativePath": "api/Auth/google",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "BucketSurvey.Api.Contract.Authentication.GoogleLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AI_genda_API.Controllers.AuthController",
     "Method": "GetRefreshTokenAsync",
     "RelativePath": "api/Auth/refresh",
     "HttpMethod": "PUT",

@@ -267,7 +267,7 @@ namespace AI_genda_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAMING7510@GMAIL.COM",
                             NormalizedUserName = "MAMING7510@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMWSqISbkz5MJ3rUTYPZ2qFXGTSfQmtj40ACojZFyOXQ6GsEZS3S3UGDQaioYR40Sw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAFi3h+9zCnoc4G+4V/UW9XyJIj5N3yZn4dGvSY77ogcO8eWuswjkvwnv6ma3Y93Fg==",
                             PhoneNumber = "01015899741",
                             PhoneNumberConfirmed = true,
                             SecondName = "Amin",

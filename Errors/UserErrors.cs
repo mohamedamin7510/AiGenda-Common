@@ -7,6 +7,8 @@ public static  class UserErrors
     public static Error EmailNotConfirmed = new Error("Email.NotConfirmed ", "This Email is not confirmed", StatusCodes.Status401Unauthorized);
     
     public static readonly Error Invalidcredentails = new( "User.Invalidcredentails", "Sorry can't register because email or password is wrong Or both", StatusCodes.Status401Unauthorized);       
+   
+    public static readonly Error UserLockedOut = new( "User.LockedOut", "You tried more than 5 times , So you blocked now!", StatusCodes.Status423Locked);       
           
     public static readonly Error InvalidToken = new( "User.InvalidToken", "Invalid Token!", StatusCodes.Status401Unauthorized);
       

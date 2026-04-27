@@ -1,4 +1,5 @@
-namespace AI_genda_API.Abstractions.Filters;
+namespace AI_genda_API.Authentication.Filters;
+
 
 public sealed class PermissionPolicyProvider(IOptions<AuthorizationOptions> options)
     : DefaultAuthorizationPolicyProvider(options)

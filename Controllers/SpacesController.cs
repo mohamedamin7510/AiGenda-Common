@@ -1,6 +1,4 @@
 ﻿using AI_genda_API.Abstractions.Const;
-using AI_genda_API.Abstractions.Filters;
-using AI_genda_API.Contracts.Space;
 
 namespace AI_genda_API.Controllers;
 

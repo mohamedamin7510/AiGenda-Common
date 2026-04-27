@@ -1,5 +1,4 @@
 ﻿using AI_genda_API.Services.ProfileService;
-using AI_genda_API.Services.RoleService;
 using AI_genda_API.Services.TaskService;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using AI_genda_API.Abstractions.Filters;
@@ -9,7 +8,7 @@ using AI_genda_API.Services.AppConnectionService.Connectors;
 
 namespace AI_genda_API;
 
-public static class DependenciesInjection
+public static class Dependenciynjections
 {
 
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
