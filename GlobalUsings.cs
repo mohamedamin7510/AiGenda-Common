@@ -14,7 +14,6 @@ global using System.Text;
 
 
 global using FluentValidation;
-global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 global using MapsterMapper;
 global using Mapster;
 global using Hangfire;
@@ -34,7 +33,7 @@ global using AI_genda_API.Errors;
 global using AI_genda_API.Api.Settings;
 global using AI_genda_API.Services.AuthService;
 global using AI_genda_API.Services.EmailService;
-global using AI_genda_API.Services.FolderService;
+global using AI_genda_API.Services.WorkSpaceService;
 global using AI_genda_API.Services.SpaceService;
 global using BucketSurvey.Api.Contract.Authentication;
 global using BucketSurvey.Api.Extenstions;

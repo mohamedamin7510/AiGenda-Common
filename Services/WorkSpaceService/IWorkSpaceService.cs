@@ -1,4 +1,4 @@
-﻿namespace AI_genda_API.Services.FolderService;
+﻿namespace AI_genda_API.Services.WorkSpaceService;
 
 public interface IWorkSpaceService
 {
