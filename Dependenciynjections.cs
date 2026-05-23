@@ -64,6 +64,7 @@ public static class Dependenciynjections
             });
         });
 
+
         services.AddControllers(options =>
         {
             options.Filters.Add<AiResponseWrapperFilter>();
@@ -106,8 +107,21 @@ public static class Dependenciynjections
         services.AddOptions<MailSettings>().BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
 
         // App Connection Services (Google Calendar integration)
-        services.AddHttpClient();
+        services.AddTransient<AI_genda_API.Middlewares.OAuthTokenRefreshHandler>();
+        services.AddHttpClient(); // Normal client for generic operations
+
+        // Setup HttpClient dedicated inherently explicitly for AI Integrated Endpoints implementing strict Auth Refresh mapping
+        services.AddHttpClient("IntegrationClient")
+                .AddHttpMessageHandler<AI_genda_API.Middlewares.OAuthTokenRefreshHandler>();
+
         services.AddScoped<IAppConnectorFactory, AppConnectorFactory>();
+
+        services.AddScoped<AI_genda_API.Services.GitHubIntegrationService.IGitHubIntegrationService, AI_genda_API.Services.GitHubIntegrationService.GitHubIntegrationService>();
+        services.AddScoped<AI_genda_API.Services.GmailIntegrationService.IGmailIntegrationService, AI_genda_API.Services.GmailIntegrationService.GmailIntegrationService>();
+        services.AddScoped<AI_genda_API.Services.GoogleCalendarIntegrationService.IGoogleCalendarIntegrationService, AI_genda_API.Services.GoogleCalendarIntegrationService.GoogleCalendarIntegrationService>();
+
+
+
         services.AddScoped<IAppConnectionService, AppConnectionService>();
 
         // AI Agent Token & Crypto Services (Secure Storage and Silent Refreshes)
@@ -228,4 +242,6 @@ public static class Dependenciynjections
 
         return services;
     }
+
+
 }

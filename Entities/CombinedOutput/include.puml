@@ -1,0 +1,22 @@
+@startuml
+!include .\\AppConnection.puml
+!include .\\ApplicationRole.puml
+!include .\\AuditLogging.puml
+!include .\\ExtendedUser.puml
+!include .\\FocusSession.puml
+!include .\\HandDrawNoteContent.puml
+!include .\\ImageNoteContent.puml
+!include .\\LinkedData.puml
+!include .\\Note.puml
+!include .\\NoteAsset.puml
+!include .\\Notification.puml
+!include .\\RefreshToken.puml
+!include .\\Space.puml
+!include .\\SubTask.puml
+!include .\\task.puml
+!include .\\TaskAssignee.puml
+!include .\\TextNoteContent.puml
+!include .\\VoiceNoteContent.puml
+!include .\\WorkSpace.puml
+!include .\\WorkspaceMember.puml
+@enduml

@@ -2,7 +2,6 @@ using AI_genda_API.Abstractions.Enums;
 using AI_genda_API.Contracts.AppConnections;
 using AI_genda_API.Services.AppConnectionService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace AI_genda_API.Controllers;
 
@@ -14,12 +13,10 @@ namespace AI_genda_API.Controllers;
 [ApiController]
 public class AuthCallbackController(
     IAppConnectionService appConnectionService,
-    IDistributedCache cache,
     IConfiguration configuration,
     ILogger<AuthCallbackController> logger) : ControllerBase
 {
     private readonly IAppConnectionService _appConnectionService = appConnectionService;
-    private readonly IDistributedCache _cache = cache;
     private readonly IConfiguration _configuration = configuration;
     private readonly ILogger<AuthCallbackController> _logger = logger;
 
@@ -33,7 +30,6 @@ public class AuthCallbackController(
         [FromRoute] string provider,
         [FromQuery] string? code = null,
         [FromQuery] string? state = null,
-        [FromQuery] int? workspaceId = null,
         [FromQuery] string? error = null,
         [FromQuery] string? error_description = null,
         CancellationToken cancellationToken = default)
@@ -44,7 +40,7 @@ public class AuthCallbackController(
                 "OAuth callback received. Provider: {Provider}, HasCode: {HasCode}, HasError: {HasError}",
                 provider, !string.IsNullOrEmpty(code), !string.IsNullOrEmpty(error));
 
-            // === STEP 1: Check for OAuth errors from provider ===
+            // Validate any OAuth error responses returned by the provider.
             if (!string.IsNullOrEmpty(error))
             {
                 _logger.LogWarning(
@@ -55,7 +51,7 @@ public class AuthCallbackController(
                 return Redirect(errorUrl);
             }
 
-            // === STEP 2: Validate required parameters ===
+            // Validate required callback parameters.
             if (string.IsNullOrEmpty(code))
             {
                 _logger.LogWarning("OAuth callback missing code parameter. Provider: {Provider}", provider);
@@ -68,65 +64,40 @@ public class AuthCallbackController(
                 return Redirect(BuildErrorUrl("missing_state", "State parameter not provided"));
             }
 
-            // === STEP 3: Validate state parameter (CSRF protection) ===
-            var cachedState = await _cache.GetStringAsync($"oauth_state:{state}", cancellationToken);
-            
-            if (string.IsNullOrEmpty(cachedState))
-            {
-                _logger.LogWarning(
-                    "OAuth state validation failed. Provider: {Provider}, State: {State}",
-                    provider, state);
-
-                return Redirect(BuildErrorUrl("invalid_state", "State parameter validation failed - possible CSRF attack"));
-            }
-
-            // Remove state from cache (can only be used once)
-            await _cache.RemoveAsync($"oauth_state:{state}", cancellationToken);
-
-            // === STEP 4: Parse state to get workspace ID and User ID ===
-            // State format: "{workspaceId}|{userId}|{random}"
-            var stateparts = cachedState.Split('|');
-            if (!int.TryParse(stateparts[0], out var parsedWorkspaceId))
-            {
-                _logger.LogWarning("Failed to parse workspace ID from state. State: {State}", cachedState);
-                return Redirect(BuildErrorUrl("invalid_state", "Failed to parse workspace information"));
-            }
-
-            // === STEP 5: Get user ID from state ===
-            var userId = stateparts.Length > 1 ? stateparts[1] : null;
-            if (string.IsNullOrEmpty(userId))
-            {
-                _logger.LogWarning("User not authenticated. Cannot create app connection.");
-                return Redirect(BuildErrorUrl("not_authenticated", "User not authenticated"));
-            }
-
-            // === STEP 6: Parse provider ===
+            var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+            // Validate the provider name from the route parameter.
             if (!Enum.TryParse<AppProvider>(provider, true, out var appProvider))
             {
                 _logger.LogWarning("Unknown provider in callback. Provider: {Provider}", provider);
-                return Redirect(BuildErrorUrl("unknown_provider", $"Unknown provider: {provider}"));
+                return env.IsDevelopment() 
+                    ? Ok(new { error = "unknown_provider", description = $"Unknown provider: {provider}" })
+                    : Redirect(BuildErrorUrl("unknown_provider", $"Unknown provider: {provider}"));
             }
 
-            // === STEP 7: Exchange code for tokens ===
-            _logger.LogInformation("Exchanging authorization code for tokens. Provider: {Provider}, User: {UserId}",
-                provider, userId);
+            // Validate and decrypt the OAuth state using the shared IDataProtection purpose in the service.
+            _logger.LogInformation("Validating OAuth state and exchanging code. Provider: {Provider}", provider);
+            var result = await _appConnectionService.HandleOAuthCallbackAsync(code, state, BuildRedirectUri(provider));
 
-            var result = await _appConnectionService.CreateConnectionAsync(
-                parsedWorkspaceId,
-                userId,
-                appProvider,
-                code,
-                BuildRedirectUri(provider),
-                cancellationToken: cancellationToken);
-
-            // === STEP 8: Handle result ===
+            // Handle the connection result.
             if (result.IsSuccess)
             {
                 _logger.LogInformation(
-                    "App connection created successfully. Provider: {Provider}, ConnectionId: {ConnectionId}, User: {UserId}",
-                    provider, result.Value.Id, userId);
+                    "App connection created successfully. Provider: {Provider}, ConnectionId: {ConnectionId}",
+                    provider, result.Value.Id);
 
-                // Redirect to frontend with success
+                if (env.IsDevelopment())
+                {
+                    // Return JSON response for clients that expect API output instead of redirects.
+                    return Ok(new 
+                    { 
+                        Message = "Connection successful", 
+                        ConnectionId = result.Value.Id, 
+                        Provider = provider,
+                        Status = "Connected"
+                    });
+                }
+
+                // Redirect to the frontend with a success status.
                 var successUrl = $"{GetFrontendBaseUrl()}/connected-apps?status=success&provider={provider}&connectionId={result.Value.Id}";
                 return Redirect(successUrl);
             }
@@ -136,6 +107,11 @@ public class AuthCallbackController(
                     "Failed to create app connection. Provider: {Provider}, Error: {Error}",
                     provider, result.Error?.Code);
 
+                if (env.IsDevelopment())
+                {
+                    return Ok(new { error = result.Error?.Code, description = result.Error?.Descrption });
+                }
+
                 var errorUrl = BuildErrorUrl("connection_failed", result.Error?.Descrption ?? "Failed to create connection");
                 return Redirect(errorUrl);
             }
@@ -143,13 +119,19 @@ public class AuthCallbackController(
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception in OAuth callback handler. Provider: {Provider}", provider);
+
+            var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+            if (env.IsDevelopment())
+            {
+                 return StatusCode(500, new { error = "server_error", description = ex.Message, stackTrace = ex.StackTrace });
+            }
+
             return Redirect(BuildErrorUrl("server_error", "An unexpected error occurred"));
         }
     }
 
     /// <summary>
-    /// Helper: Build error redirect URL
-    /// Redirects to frontend with error details
+    /// Helper: Build error redirect URL for the frontend.
     /// </summary>
     private string BuildErrorUrl(string errorCode, string errorMessage)
     {
@@ -159,22 +141,22 @@ public class AuthCallbackController(
     }
 
     /// <summary>
-    /// Helper: Get frontend base URL from configuration or environment
+    /// Helper: Resolve the frontend base URL from configuration.
     /// </summary>
     private string GetFrontendBaseUrl()
     {
-        // Try to get from configuration, fallback to development default
+        // Try to get from configuration, fallback to the local development default.
         var frontendUrl = _configuration["Frontend:BaseUrl"];
         if (!string.IsNullOrEmpty(frontendUrl))
             return frontendUrl;
 
-        // Development fallback
+        // Development fallback.
         return "http://localhost:5173";
     }
 
     /// <summary>
-    /// Helper: Build redirect URI for OAuth provider
-    /// Must match exactly what's registered with the provider
+    /// Helper: Build redirect URI for the OAuth provider.
+    /// Must match what is registered with the provider.
     /// </summary>
     private string BuildRedirectUri(string provider)
     {

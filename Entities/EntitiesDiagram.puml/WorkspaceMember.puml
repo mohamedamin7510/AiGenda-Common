@@ -1,0 +1,11 @@
+@startuml
+class WorkspaceMember {
+    + WrokSpaceID : int <<get>> <<set>>
+    + UserID : string <<get>> <<set>>
+    + IsOwner : bool <<get>> <<set>> = false
+    + JoinedAt : DateTime <<get>> <<set>>
+    + Permissions : List<string> <<get>> <<set>>
+    + <<virtual>> User : ExtendedUser? <<get>> <<set>>
+    + <<virtual>> WorkSpaces : WorkSpace? <<get>> <<set>>
+}
+@enduml

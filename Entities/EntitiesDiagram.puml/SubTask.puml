@@ -1,0 +1,10 @@
+@startuml
+class SubTask {
+    + Id : string <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + IsCompleted : bool <<get>> <<set>> = false
+    + TaskId : string <<get>> <<set>>
+    + <<virtual>> Task : Task? <<get>> <<set>>
+}
+AuditLogging <|-- SubTask
+@enduml

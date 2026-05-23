@@ -1,0 +1,22 @@
+@startuml
+class AppConnection {
+    + Id : string <<get>> <<set>>
+    + UserId : string <<get>> <<set>>
+    + WorkSpaceId : int? <<get>> <<set>>
+    + Provider : AppProvider <<get>> <<set>>
+    + ExternalAccountId : string <<get>> <<set>>
+    + AccessToken : string <<get>> <<set>>
+    + RefreshToken : string? <<get>> <<set>>
+    + TokenExpiresAt : DateTime? <<get>> <<set>>
+    + IsActive : bool <<get>> <<set>> = true
+    + SyncFrequency : SyncFrequency <<get>> <<set>>
+    + LastSyncAt : DateTime? <<get>> <<set>>
+    + SyncStatus : SyncStatus <<get>> <<set>>
+    + LastSyncError : string? <<get>> <<set>>
+    + Metadata : string? <<get>> <<set>>
+    + GrantedScopes : string? <<get>> <<set>>
+    + <<virtual>> User : ExtendedUser <<get>> <<set>>
+    + <<virtual>> WorkSpace : WorkSpace? <<get>> <<set>>
+}
+AuditLogging <|-- AppConnection
+@enduml

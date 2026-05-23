@@ -1,11 +1,10 @@
 using AI_genda_API.Abstractions.Const;
-using AI_genda_API.Abstractions.Filters;
 using AI_genda_API.Abstractions.Enums;
+using AI_genda_API.Abstractions.Filters;
 using AI_genda_API.Contracts.AppConnections;
 using AI_genda_API.Services.AppConnectionService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace AI_genda_API.Controllers;
 
@@ -47,36 +46,21 @@ public class AppConnectionsController(IAppConnectionService appConnectionService
     }
 
     /// <summary>
-    /// Starts OAuth flow to connect a new app
+    /// Starts the OAuth flow to connect a new app.
+    /// The OAuth state is generated and protected in the service using IDataProtectionProvider.
     /// </summary>
     [HttpPost("authorize/{provider}")]
     public async Task<IActionResult> GetAuthorizationUrl(
         [FromRoute] string provider,
-        [FromQuery] int? workspaceId = null,
-        [FromServices] Microsoft.Extensions.Caching.Distributed.IDistributedCache cache = null!,
         CancellationToken cancellationToken = default)
     {
         if (!Enum.TryParse<AppProvider>(provider, true, out var appProvider))
             return BadRequest("Invalid provider");
 
-        // Generate secure random state
-        var state = Guid.NewGuid().ToString("N");
         var userId = User.GetUserId()!;
-        var stateValue = workspaceId.HasValue ? $"{workspaceId.Value}|{userId}|{Guid.NewGuid()}" : $"0|{userId}|{Guid.NewGuid()}";
 
-        // Cache the state for CSRF validation and passing workspace ID to the callback
-        await cache.SetStringAsync(
-            $"oauth_state:{state}", 
-            stateValue, 
-            new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            }, 
-            cancellationToken);
-
-        var authUrl = _AppConnectionService.GetAuthorizationUrl(appProvider, state);
-
-        return Ok(new { authorizationUrl = authUrl });
+        var authUrlRs = await _AppConnectionService.GetOAuthConnectUrlAsync(appProvider, userId);
+        return Ok(new { authorizationUrl = authUrlRs.Value });
     }
 
     /// <summary>

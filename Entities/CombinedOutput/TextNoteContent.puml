@@ -1,0 +1,9 @@
+@startuml
+class TextNoteContent {
+    + NoteId : string <<get>> <<set>>
+    + PlainText : string <<get>> <<set>>
+    + HtmlContent : string <<get>> <<set>>
+    + RichTextJson : string? <<get>> <<set>>
+    + <<virtual>> Note : Note <<get>> <<set>>
+}
+@enduml

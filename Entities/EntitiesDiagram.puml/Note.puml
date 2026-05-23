@@ -1,0 +1,17 @@
+@startuml
+class Note {
+    + Id : string <<get>> <<set>>
+    + SpaceId : string <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Type : NoteType <<get>> <<set>>
+    + IsActive : bool <<get>> <<set>> = true
+    + IsPinned : bool <<get>> <<set>>
+    + <<virtual>> Space : Space <<get>> <<set>>
+    + <<virtual>> TextContent : TextNoteContent? <<get>> <<set>>
+    + <<virtual>> VoiceContent : VoiceNoteContent? <<get>> <<set>>
+    + <<virtual>> ImageContent : ImageNoteContent? <<get>> <<set>>
+    + <<virtual>> HandDrawContent : HandDrawNoteContent? <<get>> <<set>>
+    + <<virtual>> Assets : List<NoteAsset> <<get>> <<set>>
+}
+AuditLogging <|-- Note
+@enduml

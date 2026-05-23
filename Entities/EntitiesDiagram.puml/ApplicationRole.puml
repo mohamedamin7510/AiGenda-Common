@@ -1,0 +1,7 @@
+@startuml
+class ApplicationRole {
+    + IsDeleted : bool <<get>> <<set>> = false
+    + IsDefault : bool <<get>> <<set>> = false
+}
+"IdentityRole`1" "<string>" <|-- ApplicationRole
+@enduml

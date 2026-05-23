@@ -48,4 +48,10 @@
 	  <None Include=".github\copilot-instructions.md" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="AI_genda_API.IntegrationTests\**" />
+		<Content Remove="AI_genda_API.IntegrationTests\**" />
+		<EmbeddedResource Remove="AI_genda_API.IntegrationTests\**" />
+		<None Remove="AI_genda_API.IntegrationTests\**" />
+	</ItemGroup>
 </Project>

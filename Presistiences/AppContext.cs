@@ -5,12 +5,22 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Task = AI_genda_API.Entities.Task;
 
+using AI_genda_API.Presistiences.EntitiesConfiguration;
+using Microsoft.AspNetCore.DataProtection;
+
 namespace AI_genda_API.Presistience;
 
-public class AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpContextAccessor httpContextAccessor)
-    : IdentityDbContext<ExtendedUser, ApplicationRole, string>(dbContextOptions)
+public class AppContext : IdentityDbContext<ExtendedUser, ApplicationRole, string>
 {
-    private readonly IHttpContextAccessor _HttpContextAccessor = httpContextAccessor;
+    private readonly IHttpContextAccessor _HttpContextAccessor;
+    private readonly IDataProtectionProvider? _dataProtectionProvider;
+
+    public AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpContextAccessor httpContextAccessor, IDataProtectionProvider? dataProtectionProvider = null) 
+        : base(dbContextOptions)
+    {
+        _HttpContextAccessor = httpContextAccessor;
+        _dataProtectionProvider = dataProtectionProvider;
+    }
 
     public DbSet<ExtendedUser> Users { get; set; }
     public DbSet<WorkSpace> WorkSpaces { get; set; }
@@ -28,6 +38,16 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpCont
     public DbSet<FocusSession> FocusSessions { get; set; }
     public DbSet<AppConnection> AppConnections { get; set; }
     public DbSet<LinkedData> LinkedData { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        if (!optionsBuilder.IsConfigured)
+        {
+            // Do not force SqlServer here to avoid provider conflict
+        }
+    }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -86,6 +106,9 @@ public class AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpCont
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Custom Configuration Injection with DP
+        modelBuilder.ApplyConfiguration(new AppConnectionConfiguration(_dataProtectionProvider));
 
         var CascadeFks = modelBuilder.Model
             .GetEntityTypes().SelectMany(f => f.GetForeignKeys())

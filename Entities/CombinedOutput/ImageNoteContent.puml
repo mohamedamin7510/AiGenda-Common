@@ -1,0 +1,8 @@
+@startuml
+class ImageNoteContent {
+    + NoteId : string <<get>> <<set>>
+    + OcrText : string? <<get>> <<set>>
+    + Caption : string? <<get>> <<set>>
+    + <<virtual>> Note : Note <<get>> <<set>>
+}
+@enduml

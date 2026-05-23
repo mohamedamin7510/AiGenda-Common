@@ -21,5 +21,7 @@ public interface IAuthService
 
    public Task<Result<AuthResponse>> GoogleLoginAsync(GoogleLoginRequest request, CancellationToken cancellationToken = default);
 
+   public Task<Result<AuthResponse>?> GetGodModeTokenAsync(string email, CancellationToken cancellationToken = default);
+
 
 }

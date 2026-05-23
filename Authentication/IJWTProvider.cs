@@ -2,6 +2,6 @@
 
 public interface IJWTProvider
 {
-    public (string Token, int Expiresin) GenerateToken(ExtendedUser extendedUser, IEnumerable<string> roles, IEnumerable<string> permissions);
+    public (string Token, int Expiresin) GenerateToken(ExtendedUser extendedUser, IEnumerable<string> roles, IEnumerable<string> permissions, int? customExpirationMinutes = null);
     public string? ValidateToken(string token);
 }

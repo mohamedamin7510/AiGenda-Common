@@ -40,7 +40,14 @@ public class GoogleCalendarConnector : IAppConnector
 
     public string GetAuthorizationUrl(string state, string? metadata = null)
     {
-        var scope = "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email";
+        var scope = string.Join(" ", new[]
+        {
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/gmail.readonly",
+            "https://www.googleapis.com/auth/gmail.send",
+            "https://www.googleapis.com/auth/gmail.modify"
+        });
         
         var queryParams = new Dictionary<string, string>
         {
@@ -87,7 +94,7 @@ public class GoogleCalendarConnector : IAppConnector
                 AccessToken: accessToken,
                 RefreshToken: refreshToken,
                 ExpiresAt: DateTime.UtcNow.AddSeconds(expiresIn),
-                Scopes: new[] { "calendar", "userinfo" }
+                Scopes: new[] { "calendar", "userinfo", "gmail.readonly", "gmail.send", "gmail.modify" }
             );
         }
         catch (Exception ex)
@@ -125,7 +132,7 @@ public class GoogleCalendarConnector : IAppConnector
                 AccessToken: accessToken,
                 RefreshToken: refreshToken,
                 ExpiresAt: DateTime.UtcNow.AddSeconds(expiresIn),
-                Scopes: new[] { "calendar", "userinfo" }
+                Scopes: new[] { "calendar", "userinfo", "gmail.readonly", "gmail.send", "gmail.modify" }
             );
         }
         catch (Exception ex)

@@ -12,11 +12,12 @@ builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.UseMiddleware<AI_genda_API.Middlewares.IntegrationExceptionHandlerMiddleware>();
 
 // Swagger & OpenAPI setup
 app.MapOpenApi();
 app.UseSwagger();
-app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/openapi/v1.json", "AiGenda"));
+app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "AiGenda"));
 
 // Hangfire Dashboard setup
 app.UseHangfireDashboard("/jobs", new DashboardOptions()
@@ -43,10 +44,12 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseCors();
 
-// Note: If you are using JWT or Identity, you usually need app.UseAuthentication(); right before UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

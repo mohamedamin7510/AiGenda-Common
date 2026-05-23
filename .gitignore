@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+# Ignore all security audit logs in the docs folder
+docs/Security_Audit_Log_*.md

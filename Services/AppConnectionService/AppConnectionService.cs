@@ -2,9 +2,9 @@ using AI_genda_API.Abstractions.Enums;
 using AI_genda_API.Abstractions.Errors;
 using AI_genda_API.Contracts.AppConnections;
 using AI_genda_API.Entities;
-using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
 
 namespace AI_genda_API.Services.AppConnectionService;
 
@@ -13,45 +13,103 @@ public class AppConnectionService : IAppConnectionService
     private readonly AppContext _context;
     private readonly IAppConnectorFactory _connectorFactory;
     private readonly IDataProtectionProvider _dataProtectionProvider;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<AppConnectionService> _logger;
-    private readonly IConfiguration _configuration;
 
     public AppConnectionService(
         AppContext context,
         IAppConnectorFactory connectorFactory,
         IDataProtectionProvider dataProtectionProvider,
-        IHttpContextAccessor httpContextAccessor,
-        ILogger<AppConnectionService> logger,
-        IConfiguration configuration)
+        ILogger<AppConnectionService> logger)
     {
         _context = context;
         _connectorFactory = connectorFactory;
         _dataProtectionProvider = dataProtectionProvider;
-        _httpContextAccessor = httpContextAccessor;
         _logger = logger;
-        _configuration = configuration;
     }
 
-    public string GetAuthorizationUrl(AppProvider provider, string state)
+    public async Task<Result<IntegrationsStatusResponse>> GetIntegrationsStatusAsync(string userId, CancellationToken cancellationToken = default)
     {
+        var activeConnections = await _context.AppConnections
+            .Where(x => x.UserId == userId && x.IsActive)
+            .Select(x => x.Provider)
+            .ToListAsync(cancellationToken);
+
+        bool githubActive = activeConnections.Contains(AppProvider.GitHub);
+        bool googleActive = activeConnections.Contains(AppProvider.Google);
+
+        return Result<IntegrationsStatusResponse>.Success(new IntegrationsStatusResponse(githubActive, googleActive, googleActive));
+    }
+
+    private class OAuthStatePayload
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string Provider { get; set; } = string.Empty;
+        public DateTime GeneratedAt { get; set; }
+    }
+
+    /// <summary>
+    /// Generates the provider authorization URL with a protected OAuth state.
+    /// The state is encrypted using IDataProtectionProvider to prevent tampering.
+    /// </summary>
+    public Task<Result<string>> GetOAuthConnectUrlAsync(AppProvider provider, string userId)
+    {
+        var protector = _dataProtectionProvider.CreateProtector("OAuthStateProtector_V1");
+
+        var statePayload = System.Text.Json.JsonSerializer.Serialize(new OAuthStatePayload
+        {
+            UserId = userId,
+            Provider = provider.ToString(),
+            GeneratedAt = DateTime.UtcNow
+        });
+
+        var encryptedState = protector.Protect(statePayload);
+
+        var connector = _connectorFactory.CreateConnector(provider);
+        var url = connector.GetAuthorizationUrl(encryptedState);
+
+        return System.Threading.Tasks.Task.FromResult(Result.Success(url));
+    }
+
+    /// <summary>
+    /// Handles OAuth callbacks by validating the protected state and creating a connection.
+    /// </summary>
+    public async Task<Result<AppConnectionResponse>> HandleOAuthCallbackAsync(string code, string state, string redirectUri)
+    {
+        OAuthStatePayload payload;
+
+        var protector = _dataProtectionProvider.CreateProtector("OAuthStateProtector_V1");
+
+        string decryptedState;
         try
         {
-            // Validate configuration
-            var baseUrl = _configuration["BaseUrl"];
-            if (string.IsNullOrEmpty(baseUrl))
-                throw new InvalidOperationException("BaseUrl is not configured in appsettings.json");
-
-            var connector = _connectorFactory.CreateConnector(provider);
-            return connector.GetAuthorizationUrl(state);
+            decryptedState = protector.Unprotect(state);
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.LogError(ex, "Failed to generate authorization URL for provider: {Provider}", provider);
-            throw;
+            throw new AI_genda_API.Exceptions.IntegrationUnauthorizedException("Invalid OAuth state parameter.");
         }
+
+        payload = JsonSerializer.Deserialize<OAuthStatePayload>(decryptedState)!;
+        if (payload == null || payload.GeneratedAt < DateTime.UtcNow.AddMinutes(-30))
+            throw new AI_genda_API.Exceptions.IntegrationUnauthorizedException("OAuth state expired or malformed.");
+
+        if (!Enum.TryParse<AppProvider>(payload.Provider, out var provider))
+            throw new AI_genda_API.Exceptions.IntegrationMissingException($"Unsupported integration provider: {payload.Provider}");
+
+        return await CreateConnectionAsync(
+             workspaceId: null,
+             userId: payload.UserId,
+             provider: provider,
+             code: code,
+             redirectUri: redirectUri,
+             metadata: null,
+             cancellationToken: default
+        );
     }
 
+    /// <summary>
+    /// Creates a new app connection. Tokens are stored in raw form and encrypted by EF Core value converters.
+    /// </summary>
     public async Task<Result<AppConnectionResponse>> CreateConnectionAsync(
         int? workspaceId,
         string userId,
@@ -65,7 +123,6 @@ public class AppConnectionService : IAppConnectionService
         {
             if (workspaceId.HasValue && workspaceId > 0)
             {
-                // Verify workspace access (because AuthCallbackController cannot use [HasPermission] route filters)
                 var workspace = await _context.WorkSpaces
                     .Where(w => w.Id == workspaceId && w.RemovedAt == null)
                     .Select(w => new { w.Id, w.CreatedById })
@@ -93,7 +150,6 @@ public class AppConnectionService : IAppConnectionService
                     return Result.Faluire<AppConnectionResponse>(WorkspaceMemberErrors.AccessDenied);
             }
 
-            // Check if connection already exists for this user/provider
             var existingConnection = await _context.AppConnections
                 .Where(c => c.UserId == userId && c.Provider == provider && c.IsActive)
                 .SingleOrDefaultAsync(cancellationToken);
@@ -101,21 +157,11 @@ public class AppConnectionService : IAppConnectionService
             if (existingConnection is not null)
                 return Result.Faluire<AppConnectionResponse>(AppConnectionErrors.ConnectionAlreadyExists);
 
-            // Exchange code for tokens
             var connector = _connectorFactory.CreateConnector(provider);
             var tokenResponse = await connector.ExchangeCodeForTokenAsync(code, redirectUri, cancellationToken);
 
-            // Get external account ID
             var externalAccountId = await connector.GetExternalAccountIdAsync(tokenResponse.AccessToken, cancellationToken);
 
-            // Encrypt tokens
-            var protector = _dataProtectionProvider.CreateProtector("AppConnection.Tokens");
-            var encryptedAccessToken = protector.Protect(tokenResponse.AccessToken);
-            var encryptedRefreshToken = tokenResponse.RefreshToken is not null 
-                ? protector.Protect(tokenResponse.RefreshToken) 
-                : null;
-
-            // Create connection
             var connection = new AppConnection
             {
                 Id = Guid.NewGuid().ToString(),
@@ -123,8 +169,10 @@ public class AppConnectionService : IAppConnectionService
                 WorkSpaceId = workspaceId > 0 ? workspaceId : null,
                 Provider = provider,
                 ExternalAccountId = externalAccountId,
-                AccessToken = encryptedAccessToken,
-                RefreshToken = encryptedRefreshToken,
+                AccessToken = tokenResponse.AccessToken,
+                RefreshToken = string.IsNullOrEmpty(tokenResponse.RefreshToken)
+                    ? string.Empty
+                    : tokenResponse.RefreshToken,
                 TokenExpiresAt = tokenResponse.ExpiresAt,
                 IsActive = true,
                 SyncFrequency = SyncFrequency.Daily,
@@ -258,7 +306,6 @@ public class AppConnectionService : IAppConnectionService
 
             try
             {
-                // Attempt to revoke access from external provider
                 var protector = _dataProtectionProvider.CreateProtector("AppConnection.Tokens");
                 var decryptedToken = protector.Unprotect(connection.AccessToken);
                 var connector = _connectorFactory.CreateConnector(connection.Provider);
@@ -267,10 +314,8 @@ public class AppConnectionService : IAppConnectionService
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Failed to revoke access for connection {ConnectionId}", connectionId);
-                // Continue with disconnection even if revocation fails
             }
 
-            // Delete connection and linked data
             _context.AppConnections.Remove(connection);
             var linkedData = await _context.LinkedData
                 .Where(ld => ld.AppConnectionId == connectionId)
@@ -279,7 +324,7 @@ public class AppConnectionService : IAppConnectionService
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Disconnected app connection {ConnectionId} provider {Provider}", 
+            _logger.LogInformation("Disconnected app connection {ConnectionId} provider {Provider}",
                 connectionId, connection.Provider);
 
             return Result.Success();
@@ -402,7 +447,7 @@ public class AppConnectionService : IAppConnectionService
 
             var connections = await query
                 .OrderBy(c => c.LastSyncAt ?? DateTime.MinValue)
-                .Take(10) // Limit concurrent syncs
+                .Take(10)
                 .ToListAsync(cancellationToken);
 
             int totalSynced = 0;
@@ -462,8 +507,6 @@ public class AppConnectionService : IAppConnectionService
         }
     }
 
-    // ===== Private Helpers =====
-
     private async Task<int> SyncConnectionAsync(
         AppConnection connection,
         bool forceFullSync,
@@ -477,7 +520,6 @@ public class AppConnectionService : IAppConnectionService
             var protector = _dataProtectionProvider.CreateProtector("AppConnection.Tokens");
             var accessToken = protector.Unprotect(connection.AccessToken);
 
-            // Check if token needs refresh
             if (connection.TokenExpiresAt.HasValue && connection.TokenExpiresAt <= DateTime.UtcNow.AddMinutes(5))
             {
                 if (connection.RefreshToken is not null)
@@ -492,7 +534,6 @@ public class AppConnectionService : IAppConnectionService
 
             if (syncResult.Success)
             {
-                // Store synced data
                 foreach (var item in syncResult.Data)
                 {
                     var linkedData = new LinkedData
@@ -600,7 +641,8 @@ public class AppConnectionService : IAppConnectionService
             connection.IsActive,
             connection.CreatedAt,
             connection.GrantedScopes,
-            connection.Metadata
+            connection.Metadata,
+            connection.TokenExpiresAt
         );
     }
 }

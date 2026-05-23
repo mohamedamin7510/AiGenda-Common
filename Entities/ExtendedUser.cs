@@ -14,8 +14,13 @@ public class ExtendedUser:IdentityUser
     public DateOnly? DateOfBirth { get; set; } = default;
     public bool IsDisabled { get; set; } = false;
 
+    public ICollection<AppConnection> AppConnections { get; set; } = [];
+    public ICollection<AppConnection> CreatedAppConnections { get; set; } = [];
+    public ICollection<AppConnection> UpdatedAppConnections { get; set; } = [];
+
     public List<WorkspaceMember> WorkSpaceMembers { get; set; } = [];
     public List<RefreshToken> RefreshTokens { get; set; } = []; 
+
 
  
 }

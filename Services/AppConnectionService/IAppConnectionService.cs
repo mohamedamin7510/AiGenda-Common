@@ -6,6 +6,11 @@ namespace AI_genda_API.Services.AppConnectionService;
 public interface IAppConnectionService
 {
     /// <summary>
+    /// Gets the current integration status mapping whether connections are active.
+    /// </summary>
+    Task<Result<IntegrationsStatusResponse>> GetIntegrationsStatusAsync(string userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Creates a new app connection after OAuth callback
     /// </summary>
     Task<Result<AppConnectionResponse>> CreateConnectionAsync(
@@ -67,9 +72,14 @@ public interface IAppConnectionService
         CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Gets the OAuth authorization URL for a provider
+    /// Gets the OAuth Connect authorization URL for a provider tracking secure state
     /// </summary>
-    string GetAuthorizationUrl(AppProvider provider, string state);
+    Task<Result<string>> GetOAuthConnectUrlAsync(AppProvider provider, string userId);
+
+    /// <summary>
+    /// Exchanges an OAuth callback code mapping securely back to the originating state parameter
+    /// </summary>
+    Task<Result<AppConnectionResponse>> HandleOAuthCallbackAsync(string code, string state, string redirectUri);
     
     /// <summary>
     /// Syncs all active connections (called by Hangfire jobs)

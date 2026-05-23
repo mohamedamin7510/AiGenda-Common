@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using AI_genda_API.Abstractions.Enums;
 
 namespace AI_genda_API.Contracts.AppConnections;
@@ -31,7 +32,8 @@ public record AppConnectionDetailResponse(
     bool IsActive,
     DateTime CreatedAt,
     string? GrantedScopes,
-    string? Metadata
+    string? Metadata,
+    DateTime? TokenExpiresAt
 );
 
 public record SyncStatusResponse(
@@ -46,6 +48,13 @@ public record SyncStatusResponse(
 
 public record ManualSyncRequest(
     bool ForceFullSync = false
+);
+
+// Note: the properties are strictly lower case naming to match expected payload mapping if required by default or use JSON property names.
+public record IntegrationsStatusResponse(
+    [property: JsonPropertyName("github")] bool Github,
+    [property: JsonPropertyName("gmail")] bool Gmail,
+    [property: JsonPropertyName("calendar")] bool Calendar
 );
 
 public record OAuthCallbackRequest(

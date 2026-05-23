@@ -1,0 +1,13 @@
+@startuml
+class WorkSpace {
+    + Id : int <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Description : string? <<get>> <<set>>
+    + IconCode : string? <<get>> <<set>>
+    + IsActive : bool <<get>> <<set>> = true
+    + Visibility : WorkSpaceVisibility <<get>> <<set>>
+    + <<virtual>> workspaceMembers : List<WorkspaceMember> <<get>> <<set>>
+    + <<virtual>> Spaces : List<Space> <<get>> <<set>>
+}
+AuditLogging <|-- WorkSpace
+@enduml

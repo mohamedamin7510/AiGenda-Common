@@ -1,0 +1,10 @@
+@startuml
+class RefreshToken {
+    + refreshToken : string <<get>> <<set>>
+    + CreatedAt : DateTime <<get>> <<set>>
+    + RevokedAt : DateTime? <<get>> <<set>>
+    + ExpiredAt : DateTime <<get>> <<set>>
+    + IsExpired : bool <<get>>
+    + IsActive : bool <<get>>
+}
+@enduml
