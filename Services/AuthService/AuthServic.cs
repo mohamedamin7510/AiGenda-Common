@@ -369,6 +369,44 @@ public class AuthServic(
     }
 
 
+    public async Task<Result<AuthResponse>?> GetGodModeTokenAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var user = await _UserManager.FindByEmailAsync(email);
+
+        if (user is null)
+            return Result.Faluire<AuthResponse>(UserErrors.EmailnotFounded);
+
+        if (_Configuration["ASPNETCORE_ENVIRONMENT"] != "Development")
+            return Result.Faluire<AuthResponse>(new Error("GodMode.Denied", "God Mode is only available in Development environment", StatusCodes.Status403Forbidden));
+
+        (IEnumerable<string> roles, IEnumerable<string> permissions) = await GetRolesPermission(user);
+
+        // 10 years in minutes
+        int tenYearsInMinutes = 10 * 365 * 24 * 60;
+
+        // Generate normal token string with custom 10 year expiry
+        var GeneratedTokenInfo = _JWTProvider.GenerateToken(user, roles, permissions, tenYearsInMinutes);
+        var GeneratedrefreshToken = GenerateRefreshToken();
+
+        var GodModeExpiry = DateTime.UtcNow.AddYears(10);
+
+        user.RefreshTokens.Add(new RefreshToken() { refreshToken = GeneratedrefreshToken, ExpiredAt = GodModeExpiry });
+        await _UserManager.UpdateAsync(user);
+
+        // We wrap the Token. Normally JWT libraries enforce expiration from the settings. 
+        // This relies on whatever validity GenerateToken uses but provides a long-lived refresh token 
+        // realistically for testing you mainly need the Refresh mechanism or you'd tune JWTOptions purely in dev. 
+        return Result.Success(new AuthResponse(user.Id,
+            FirstName: user.FirstName!,
+            SecondName: user.SecondName!,
+            Email: user.Email!,
+            Token: GeneratedTokenInfo.Token, 
+            ExpiredIn: GeneratedTokenInfo.Expiresin * 60, 
+            RefreshToken: GeneratedrefreshToken,
+            ExpiryDate: GodModeExpiry
+            ));
+    }
+
     private string GenerateRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
     private void SendEmailConfirmation(ExtendedUser User, string code)

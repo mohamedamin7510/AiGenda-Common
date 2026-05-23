@@ -1,7 +1,7 @@
 ﻿using AI_genda_API.Abstractions.Enums;
 using Task = System.Threading.Tasks.Task;
 
-namespace AI_genda_API.Services.FolderService;
+namespace AI_genda_API.Services.WorkSpaceService;
 
 public class WorkSpaceService(AppContext context, IHttpContextAccessor httpContextAccessor, IEmailSender emailSender) : IWorkSpaceService
 {

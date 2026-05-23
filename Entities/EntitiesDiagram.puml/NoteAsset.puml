@@ -1,0 +1,13 @@
+@startuml
+class NoteAsset {
+    + Id : string <<get>> <<set>>
+    + NoteId : string <<get>> <<set>>
+    + AssetType : NoteAssetType <<get>> <<set>>
+    + FileName : string <<get>> <<set>>
+    + StorageUrl : string <<get>> <<set>>
+    + MimeType : string <<get>> <<set>>
+    + SizeInBytes : long <<get>> <<set>>
+    + DurationSeconds : int? <<get>> <<set>>
+    + <<virtual>> Note : Note <<get>> <<set>>
+}
+@enduml

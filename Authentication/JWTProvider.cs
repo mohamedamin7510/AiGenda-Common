@@ -9,7 +9,7 @@ public class JWTProvider(IOptions<JWTOptions> JWToptions) : IJWTProvider
 {
      private JWTOptions _JWToptions { get; } = JWToptions.Value;
 
-    public (string Token , int Expiresin ) GenerateToken(ExtendedUser extendedUser , IEnumerable<string> roles , IEnumerable<string> permissions)
+    public (string Token , int Expiresin ) GenerateToken(ExtendedUser extendedUser , IEnumerable<string> roles , IEnumerable<string> permissions, int? customExpirationMinutes = null)
     {
         Claim[] claims = new Claim[] {
                 new Claim(JwtRegisteredClaimNames.Sub, extendedUser.Id),
@@ -25,15 +25,17 @@ public class JWTProvider(IOptions<JWTOptions> JWToptions) : IJWTProvider
 
          var SigningCredentials = new SigningCredentials(SymmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
+        var expiryMinutes = customExpirationMinutes ?? _JWToptions.ExpirtMiniuites;
+
         var jwtSecurityToken = new JwtSecurityToken(
             issuer: _JWToptions.Issuer,
             audience: _JWToptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_JWToptions.ExpirtMiniuites),
+            expires: DateTime.UtcNow.AddMinutes(expiryMinutes),
             signingCredentials: SigningCredentials
         );
 
-        return (new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),_JWToptions.ExpirtMiniuites);
+        return (new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken), expiryMinutes);
     }
 
     public string? ValidateToken(string token )

@@ -1,0 +1,9 @@
+@startuml
+class TaskAssignee {
+    + TaskId : string <<get>> <<set>>
+    + UserId : string <<get>> <<set>>
+    + AssignedAt : DateTime <<get>> <<set>>
+    + <<virtual>> Task : Task? <<get>> <<set>>
+    + <<virtual>> User : ExtendedUser? <<get>> <<set>>
+}
+@enduml

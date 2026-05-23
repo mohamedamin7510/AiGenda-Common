@@ -1,0 +1,14 @@
+@startuml
+class ExtendedUser {
+    + FirstName : string <<get>> <<set>>
+    + SecondName : string <<get>> <<set>>
+    + SubscriptionType : int <<get>> <<set>>
+    + JobTitle : string? <<get>> <<set>>
+    + AvatarUrl : string? <<get>> <<set>>
+    + DateOfBirth : DateOnly? <<get>> <<set>> = default
+    + IsDisabled : bool <<get>> <<set>> = false
+    + WorkSpaceMembers : List<WorkspaceMember> <<get>> <<set>>
+    + RefreshTokens : List<RefreshToken> <<get>> <<set>>
+}
+IdentityUser <|-- ExtendedUser
+@enduml

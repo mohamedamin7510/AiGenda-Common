@@ -1,0 +1,16 @@
+@startuml
+class Task {
+    + Id : string <<get>> <<set>>
+    + Title : string <<get>> <<set>>
+    + Description : string? <<get>> <<set>>
+    + IsActive : bool <<get>> <<set>> = true
+    + Status : TaskStatuss <<get>> <<set>>
+    + Priority : TaskPriority <<get>> <<set>>
+    + DueDate : DateTime? <<get>> <<set>>
+    + SpaceId : string <<get>> <<set>>
+    + <<virtual>> Space : Space <<get>> <<set>>
+    + <<virtual>> TaskAssignees : List<TaskAssignee> <<get>> <<set>>
+    + <<virtual>> SubTasks : List<SubTask> <<get>> <<set>>
+}
+AuditLogging <|-- Task
+@enduml

@@ -92,6 +92,17 @@ public class AuthController(IAuthService authService) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
+    [HttpPost("god-mode")]
+    public async Task<IActionResult> GodModeLogin([FromQuery] string email, CancellationToken cancellationToken = default)
+    {
+        // Explicit hardcoded check to ensure this NEVER runs in Production
+        var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        if (!env.IsDevelopment())
+            return Forbid();
 
+        var result = await _AuthService.GetGodModeTokenAsync(email, cancellationToken);
+
+        return result!.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
 
 }

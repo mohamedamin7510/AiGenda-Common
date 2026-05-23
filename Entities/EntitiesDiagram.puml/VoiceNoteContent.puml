@@ -1,0 +1,7 @@
+@startuml
+class VoiceNoteContent {
+    + NoteId : string <<get>> <<set>>
+    + TranscriptText : string? <<get>> <<set>>
+    + <<virtual>> Note : Note <<get>> <<set>>
+}
+@enduml

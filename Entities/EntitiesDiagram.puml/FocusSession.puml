@@ -1,0 +1,26 @@
+@startuml
+class FocusSession {
+    + Id : string <<get>> <<set>>
+    + WorkspaceId : int <<get>> <<set>>
+    + SpaceId : string <<get>> <<set>>
+    + TaskId : string <<get>> <<set>>
+    + UserId : string <<get>> <<set>>
+    + TaskName : string <<get>> <<set>>
+    + TeamName : string <<get>> <<set>>
+    + DurationMinutes : int <<get>> <<set>>
+    + AmbientSound : string <<get>> <<set>>
+    + BreakAfter : bool <<get>> <<set>>
+    + BlockNotifications : bool <<get>> <<set>>
+    + StartedAt : DateTime <<get>> <<set>>
+    + EndedAt : DateTime? <<get>> <<set>>
+    + Status : FocusSessionStatus <<get>> <<set>>
+    + Interruptions : int <<get>> <<set>> = 0
+    + InitialCompletedSubtasks : int <<get>> <<set>> = 0
+    + InitialTotalSubtasks : int <<get>> <<set>> = 0
+    + CompletedSubtasks : int <<get>> <<set>> = 0
+    + TotalSubtasks : int <<get>> <<set>> = 0
+    + PausedAt : DateTime? <<get>> <<set>>
+    + TotalPausedSeconds : int <<get>> <<set>> = 0
+    + <<virtual>> Space : Space <<get>> <<set>>
+}
+@enduml

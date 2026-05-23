@@ -22,6 +22,89 @@ namespace AI_genda_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AI_genda_API.Entities.AppConnection", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ExternalAccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrantedScopes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastSyncAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastSyncError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Metadata")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Provider")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SyncFrequency")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SyncStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("TokenExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("WorkSpaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkSpaceId");
+
+                    b.ToTable("AppConnections");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
@@ -184,7 +267,7 @@ namespace AI_genda_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAMING7510@GMAIL.COM",
                             NormalizedUserName = "MAMING7510@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELoC3Ftr7L/ETjjZyLUxdqudicv4FkYoy7kjq8JONDzz1URghftfhl4WkiDDSJje9Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDkBEXtaA/Uz1ryzPXBJyltBWAnu8iOakLWuip/BlIU310BeNUKW9lMrqGG4To20Bg==",
                             PhoneNumber = "01015899741",
                             PhoneNumberConfirmed = true,
                             SecondName = "Amin",
@@ -305,6 +388,84 @@ namespace AI_genda_API.Migrations
                     b.HasKey("NoteId");
 
                     b.ToTable("ImageNoteContents");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.LinkedData", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppConnectionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Provider")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RawData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RemovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RemovedById")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SyncedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("WorkSpaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppConnectionId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkSpaceId");
+
+                    b.ToTable("LinkedData");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
@@ -982,6 +1143,38 @@ namespace AI_genda_API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AI_genda_API.Entities.AppConnection", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany("CreatedAppConnections")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany("UpdatedAppConnections")
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
+                        .WithMany("AppConnections")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.WorkSpace", "WorkSpace")
+                        .WithMany()
+                        .HasForeignKey("WorkSpaceId");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkSpace");
+                });
+
             modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
                 {
                     b.OwnsMany("AI_genda_API.Entities.RefreshToken", "RefreshTokens", b1 =>
@@ -1050,6 +1243,45 @@ namespace AI_genda_API.Migrations
                         .IsRequired();
 
                     b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("AI_genda_API.Entities.LinkedData", b =>
+                {
+                    b.HasOne("AI_genda_API.Entities.AppConnection", "AppConnection")
+                        .WithMany()
+                        .HasForeignKey("AppConnectionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.HasOne("AI_genda_API.Entities.ExtendedUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AI_genda_API.Entities.WorkSpace", "WorkSpace")
+                        .WithMany()
+                        .HasForeignKey("WorkSpaceId");
+
+                    b.Navigation("AppConnection");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkSpace");
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
@@ -1293,6 +1525,12 @@ namespace AI_genda_API.Migrations
 
             modelBuilder.Entity("AI_genda_API.Entities.ExtendedUser", b =>
                 {
+                    b.Navigation("AppConnections");
+
+                    b.Navigation("CreatedAppConnections");
+
+                    b.Navigation("UpdatedAppConnections");
+
                     b.Navigation("WorkSpaceMembers");
                 });
 

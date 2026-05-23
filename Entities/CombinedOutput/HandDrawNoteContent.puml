@@ -1,0 +1,8 @@
+@startuml
+class HandDrawNoteContent {
+    + NoteId : string <<get>> <<set>>
+    + DrawingJson : string <<get>> <<set>>
+    + ExtractedText : string? <<get>> <<set>>
+    + <<virtual>> Note : Note <<get>> <<set>>
+}
+@enduml

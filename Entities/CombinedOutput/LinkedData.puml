@@ -1,0 +1,20 @@
+@startuml
+class LinkedData {
+    + Id : string <<get>> <<set>>
+    + UserId : string <<get>> <<set>>
+    + WorkSpaceId : int? <<get>> <<set>>
+    + AppConnectionId : string <<get>> <<set>>
+    + Provider : AppProvider <<get>> <<set>>
+    + DataType : string <<get>> <<set>>
+    + ExternalId : string <<get>> <<set>>
+    + RawData : string <<get>> <<set>>
+    + SyncedAt : DateTime <<get>> <<set>>
+    + Summary : string? <<get>> <<set>>
+    + StartTime : DateTime? <<get>> <<set>>
+    + EndTime : DateTime? <<get>> <<set>>
+    + <<virtual>> User : ExtendedUser <<get>> <<set>>
+    + <<virtual>> WorkSpace : WorkSpace? <<get>> <<set>>
+    + <<virtual>> AppConnection : AppConnection <<get>> <<set>>
+}
+AuditLogging <|-- LinkedData
+@enduml

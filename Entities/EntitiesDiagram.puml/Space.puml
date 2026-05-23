@@ -1,0 +1,17 @@
+@startuml
+class Space {
+    + Id : string <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Description : string? <<get>> <<set>>
+    + IconCode : string <<get>> <<set>>
+    + IsActive : bool <<get>> <<set>> = true
+    + IsPublic : bool <<get>> <<set>> = true
+    + LastActivity : DateOnly <<get>> <<set>>
+    + WorkSpaceId : int <<get>> <<set>>
+    + <<virtual>> WorkSpace : WorkSpace <<get>> <<set>>
+    + <<virtual>> Tasks : List<Task> <<get>> <<set>>
+    + <<virtual>> Notes : List<Note> <<get>> <<set>>
+    + <<virtual>> FocusSessions : List<FocusSession> <<get>> <<set>>
+}
+AuditLogging <|-- Space
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+class AuditLogging {
+    + CreatedById : string <<get>> <<set>>
+    + CreatedAt : DateTime <<get>> <<set>>
+    + UpdatedById : string? <<get>> <<set>>
+    + UpdatedAt : DateTime? <<get>> <<set>>
+    + RemovedById : string? <<get>> <<set>>
+    + RemovedAt : DateTime? <<get>> <<set>>
+    + <<virtual>> CreatedBy : ExtendedUser <<get>> <<set>>
+    + <<virtual>> UpdatedBy : ExtendedUser? <<get>> <<set>>
+}
+@enduml
