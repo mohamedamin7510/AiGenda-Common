@@ -8,6 +8,8 @@ using AI_genda_API.Services.AppConnectionService;
 using AI_genda_API.Services.AppConnectionService.Connectors;
 using AI_genda_API.Services.AuthService;
 using AI_genda_API.Services.EmailService;
+using AI_genda_API.Services.Ai;
+using AI_genda_API.Extensions;
 using AI_genda_API.Services.FocusSessionService;
 using AI_genda_API.Services.NoteService;
 using AI_genda_API.Services.ProfileService;
@@ -85,8 +87,9 @@ public static class Dependenciynjections
 
                     return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new
                     {
-                        status = "error",
-                        message = message
+                        success = false,
+                        data = (object?)null,
+                        error = new { message }
                     });
                 }
                 return originalFactory(context);
@@ -103,8 +106,11 @@ public static class Dependenciynjections
         services.AddScoped<ISubTaskService, SubTaskService>();
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IFocusSessionService, FocusSessionService>();
+        services.AddScoped<IAiPersistenceService, AiPersistenceService>();
 
         services.AddOptions<MailSettings>().BindConfiguration(nameof(MailSettings)).ValidateDataAnnotations().ValidateOnStart();
+
+        services.AddAiService(configuration);
 
         // App Connection Services (Google Calendar integration)
         services.AddTransient<AI_genda_API.Middlewares.OAuthTokenRefreshHandler>();
@@ -146,7 +152,9 @@ public static class Dependenciynjections
 
     private static void AddCorsMethod(this IServiceCollection services, IConfiguration config)
     {
-        var AllowedOrigins = config.GetSection("AllowedOrigins").Get<string>();
+        var allowedOriginsSetting = config.GetSection("AllowedOrigins").Get<string>();
+        var allowedOrigins = (allowedOriginsSetting ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         services.AddCors(
             opts =>
@@ -154,7 +162,7 @@ public static class Dependenciynjections
                 opts.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins(AllowedOrigins!)
+                        builder.WithOrigins(allowedOrigins)
                                .AllowAnyMethod()
                                .AllowAnyHeader();
                     });

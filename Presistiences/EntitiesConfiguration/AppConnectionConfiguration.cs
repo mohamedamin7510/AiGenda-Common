@@ -9,6 +9,12 @@ public class AppConnectionConfiguration : IEntityTypeConfiguration<AppConnection
 {
     private readonly IDataProtectionProvider? _dataProtectionProvider;
 
+    // 1. تم إضافة الـ Parameterless Constructor هنا لحل مشكلة الـ Assembly Scanning وقت الـ Migration
+    public AppConnectionConfiguration()
+    {
+        _dataProtectionProvider = null;
+    }
+
     public AppConnectionConfiguration(IDataProtectionProvider? dataProtectionProvider)
     {
         _dataProtectionProvider = dataProtectionProvider;
@@ -23,7 +29,7 @@ public class AppConnectionConfiguration : IEntityTypeConfiguration<AppConnection
         builder.HasOne(x => x.User)
                .WithMany(x => x.AppConnections)
                .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.Restrict); 
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.CreatedBy)
                .WithMany(x => x.CreatedAppConnections)

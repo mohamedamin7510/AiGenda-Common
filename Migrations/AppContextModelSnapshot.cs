@@ -102,7 +102,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("WorkSpaceId");
 
-                    b.ToTable("AppConnections");
+                    b.ToTable("AppConnections", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.ApplicationRole", b =>
@@ -353,7 +353,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("SpaceId");
 
-                    b.ToTable("FocusSessions");
+                    b.ToTable("FocusSessions", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.HandDrawNoteContent", b =>
@@ -370,7 +370,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("HandDrawNoteContents");
+                    b.ToTable("HandDrawNoteContents", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.ImageNoteContent", b =>
@@ -387,7 +387,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("ImageNoteContents");
+                    b.ToTable("ImageNoteContents", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.LinkedData", b =>
@@ -465,7 +465,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("WorkSpaceId");
 
-                    b.ToTable("LinkedData");
+                    b.ToTable("LinkedData", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Note", b =>
@@ -519,7 +519,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("SpaceId", "RemovedAt", "CreatedAt");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Notes", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.NoteAsset", b =>
@@ -559,7 +559,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("NoteId", "AssetType");
 
-                    b.ToTable("NoteAssets");
+                    b.ToTable("NoteAssets", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Space", b =>
@@ -621,7 +621,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("WorkSpaceId");
 
-                    b.ToTable("Spaces");
+                    b.ToTable("Spaces", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.SubTask", b =>
@@ -669,7 +669,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SubTasks");
+                    b.ToTable("SubTasks", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.Task", b =>
@@ -730,7 +730,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.TaskAssignee", b =>
@@ -748,7 +748,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("TaskAssignees");
+                    b.ToTable("TaskAssignees", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.TextNoteContent", b =>
@@ -770,7 +770,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("TextNoteContents");
+                    b.ToTable("TextNoteContents", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.VoiceNoteContent", b =>
@@ -783,7 +783,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasKey("NoteId");
 
-                    b.ToTable("VoiceNoteContents");
+                    b.ToTable("VoiceNoteContents", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkSpace", b =>
@@ -839,7 +839,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("WorkSpaces");
+                    b.ToTable("WorkSpaces", (string)null);
                 });
 
             modelBuilder.Entity("AI_genda_API.Entities.WorkspaceMember", b =>
@@ -864,7 +864,7 @@ namespace AI_genda_API.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("WorkspaceMembers");
+                    b.ToTable("WorkspaceMembers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

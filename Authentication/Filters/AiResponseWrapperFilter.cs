@@ -5,8 +5,8 @@ using System.Text.Json.Serialization;
 namespace AI_genda_API.Abstractions.Filters;
 
 /// <summary>
-/// Enforces the strict {"status": "success/error", "data": {...}} JSON format
-/// globally required by the Google ADK AI Agent.
+/// Enforces the strict {"success": true, "data": {...}, "error": null} JSON format
+/// globally required by the AI integration.
 /// </summary>
 public class AiResponseWrapperFilter : IAsyncResultFilter
 {
@@ -31,9 +31,9 @@ public class AiResponseWrapperFilter : IAsyncResultFilter
             {
                 context.Result = new ObjectResult(new AiResponse
                 {
-                    Status = isSuccess ? "success" : "error",
+                    Success = isSuccess,
                     Data = isSuccess ? objectResult.Value : null,
-                    Message = !isSuccess ? objectResult.Value : null
+                    Error = !isSuccess ? objectResult.Value : null
                 })
                 {
                     StatusCode = statusCode
@@ -45,9 +45,9 @@ public class AiResponseWrapperFilter : IAsyncResultFilter
             bool isSuccess = statusCodeResult.StatusCode >= 200 && statusCodeResult.StatusCode < 300;
             context.Result = new ObjectResult(new AiResponse
             {
-                Status = isSuccess ? "success" : "error",
+                Success = isSuccess,
                 Data = isSuccess ? "Operation completed successfully" : null,
-                Message = !isSuccess ? "An error occurred" : null
+                Error = !isSuccess ? "An error occurred" : null
             })
             {
                 StatusCode = statusCodeResult.StatusCode
@@ -57,7 +57,7 @@ public class AiResponseWrapperFilter : IAsyncResultFilter
         {
             context.Result = new ObjectResult(new AiResponse
             {
-                Status = "success",
+                Success = true,
                 Data = "Operation completed successfully"
             })
             {
@@ -71,14 +71,14 @@ public class AiResponseWrapperFilter : IAsyncResultFilter
 
 public class AiResponse
 {
-    [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
 
     [JsonPropertyName("data")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Data { get; set; }
 
-    [JsonPropertyName("message")]
+    [JsonPropertyName("error")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? Message { get; set; }
+    public object? Error { get; set; }
 }
