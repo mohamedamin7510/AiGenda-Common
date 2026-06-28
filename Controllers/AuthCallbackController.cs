@@ -8,6 +8,7 @@ namespace AI_genda_API.Controllers;
 /// <summary>
 /// Handles OAuth callbacks from external providers (Google, GitHub, etc.)
 /// Exchanges authorization code for access tokens and creates app connections
+/// Supports both browser-based (redirect) and API-based (JSON) clients
 /// </summary>
 [Route("api/auth/callback")]
 [ApiController]
@@ -22,8 +23,7 @@ public class AuthCallbackController(
 
     /// <summary>
     /// Handles OAuth callbacks from all providers
-    /// 
-    /// Example: /api/auth/callback/google?code=4/xxxxx&state=abc123
+    /// Supports both mobile (Custom Tabs Redirect) and web browser (web redirect/JSON) flows
     /// </summary>
     [HttpGet("{provider}")]
     public async Task<IActionResult> HandleCallback(
@@ -32,107 +32,191 @@ public class AuthCallbackController(
         [FromQuery] string? state = null,
         [FromQuery] string? error = null,
         [FromQuery] string? error_description = null,
+        [FromQuery] bool? apiClient = null,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation(
-                "OAuth callback received. Provider: {Provider}, HasCode: {HasCode}, HasError: {HasError}",
-                provider, !string.IsNullOrEmpty(code), !string.IsNullOrEmpty(error));
+            bool isMobile = false;
+            bool returnJson = apiClient == true; // Explicit API client flag for web apps
 
-            // Validate any OAuth error responses returned by the provider.
+            // التحقق من بادئة الموبايل المخزنة داخل الـ state
+            if (!string.IsNullOrEmpty(state) && state.StartsWith("mobile_"))
+            {
+                isMobile = true;
+                state = state.Substring("mobile_".Length); // تنظيف الـ state لإكمال التحقق الأصلي
+            }
+
+            _logger.LogInformation(
+                "OAuth callback received. Provider: {Provider}, IsMobile: {IsMobile}, ReturnJson: {ReturnJson}, HasError: {HasError}",
+                provider, isMobile, returnJson, !string.IsNullOrEmpty(error));
+
+            // Handle OAuth provider errors
             if (!string.IsNullOrEmpty(error))
             {
-                _logger.LogWarning(
-                    "OAuth provider returned error. Provider: {Provider}, Error: {Error}, Description: {Description}",
-                    provider, error, error_description);
+                _logger.LogWarning("OAuth provider returned error: {Error}: {Description}", error, error_description);
 
-                var errorUrl = BuildErrorUrl("oauth_denied", $"{error}: {error_description}");
-                return Redirect(errorUrl);
-            }
-
-            // Validate required callback parameters.
-            if (string.IsNullOrEmpty(code))
-            {
-                _logger.LogWarning("OAuth callback missing code parameter. Provider: {Provider}", provider);
-                return Redirect(BuildErrorUrl("missing_code", "Authorization code not provided"));
-            }
-
-            if (string.IsNullOrEmpty(state))
-            {
-                _logger.LogWarning("OAuth callback missing state parameter. Provider: {Provider}", provider);
-                return Redirect(BuildErrorUrl("missing_state", "State parameter not provided"));
-            }
-
-            var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-            // Validate the provider name from the route parameter.
-            if (!Enum.TryParse<AppProvider>(provider, true, out var appProvider))
-            {
-                _logger.LogWarning("Unknown provider in callback. Provider: {Provider}", provider);
-                return env.IsDevelopment() 
-                    ? Ok(new { error = "unknown_provider", description = $"Unknown provider: {provider}" })
-                    : Redirect(BuildErrorUrl("unknown_provider", $"Unknown provider: {provider}"));
-            }
-
-            // Validate and decrypt the OAuth state using the shared IDataProtection purpose in the service.
-            _logger.LogInformation("Validating OAuth state and exchanging code. Provider: {Provider}", provider);
-            var result = await _appConnectionService.HandleOAuthCallbackAsync(code, state, BuildRedirectUri(provider));
-
-            // Handle the connection result.
-            if (result.IsSuccess)
-            {
-                _logger.LogInformation(
-                    "App connection created successfully. Provider: {Provider}, ConnectionId: {ConnectionId}",
-                    provider, result.Value.Id);
-
-                if (env.IsDevelopment())
+                if (isMobile)
                 {
-                    // Return JSON response for clients that expect API output instead of redirects.
-                    return Ok(new 
-                    { 
-                        Message = "Connection successful", 
-                        ConnectionId = result.Value.Id, 
-                        Provider = provider,
-                        Status = "Connected"
-                    });
+                    return Redirect($"aigenda://error?status=error&error={error}&message={Uri.EscapeDataString(error_description ?? "OAuth denied")}");
+                }
+                if (returnJson)
+                {
+                    return BadRequest(new OAuthCallbackErrorResponse(
+                        errorCode: error,
+                        errorMessage: error_description ?? "OAuth provider rejected the request",
+                        details: $"Provider: {provider}"
+                    ));
                 }
 
-                // Redirect to the frontend with a success status.
-                var successUrl = $"{GetFrontendBaseUrl()}/connected-apps?status=success&provider={provider}&connectionId={result.Value.Id}";
-                return Redirect(successUrl);
+                return Redirect(BuildErrorUrl("oauth_denied", $"{error}: {error_description}"));
+            }
+
+            // Validate required parameters
+            if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(state))
+            {
+                _logger.LogWarning("Missing required OAuth parameters. Code: {HasCode}, State: {HasState}",
+                    !string.IsNullOrEmpty(code), !string.IsNullOrEmpty(state));
+
+                if (isMobile)
+                {
+                    return Redirect("aigenda://error?status=error&error=bad_request&message=Parameters+missing");
+                }
+                if (returnJson)
+                {
+                    return BadRequest(new OAuthCallbackErrorResponse(
+                        errorCode: "bad_request",
+                        errorMessage: "Required OAuth parameters are missing",
+                        details: "state and code are required"
+                    ));
+                }
+
+                return Redirect(BuildErrorUrl("bad_request", "Required parameters are missing"));
+            }
+
+            // Validate provider
+            if (!Enum.TryParse<AppProvider>(provider, true, out var appProvider))
+            {
+                _logger.LogWarning("Unknown OAuth provider requested: {Provider}", provider);
+
+                if (isMobile)
+                {
+                    return Redirect($"aigenda://error?status=error&error=unknown_provider&message=Unknown+provider+{provider}");
+                }
+                if (returnJson)
+                {
+                    return BadRequest(new OAuthCallbackErrorResponse(
+                        errorCode: "unknown_provider",
+                        errorMessage: $"Unknown OAuth provider: {provider}"
+                    ));
+                }
+
+                return Redirect(BuildErrorUrl("unknown_provider", $"Unknown provider: {provider}"));
+            }
+
+            // Process OAuth callback
+            var result = await _appConnectionService.HandleOAuthCallbackAsync(
+                code, state, BuildRedirectUri(provider));
+
+            if (result.IsSuccess)
+            {
+                _logger.LogInformation("OAuth connection successful. Provider: {Provider}, ConnectionId: {ConnectionId}",
+                    provider, result.Value?.Id);
+
+                // فلو الموبايل الحتمي: ريدايركت صريح لإجبار الـ Custom Tabs على الإغلاق التلقائي
+                if (isMobile)
+                {
+                    return Redirect($"aigenda://success?status=success&connectionId={result.Value!.Id}");
+                }
+
+                if (returnJson)
+                {
+                    return Ok(new OAuthCallbackSuccessResponse(
+                        Status: "success",
+                        Provider: provider,
+                        ConnectionId: result.Value!.Id,
+                        ExternalAccountId: result.Value.ExternalAccountId ?? "unknown",
+                        Message: "Connection successfully established"
+                    ));
+                }
+
+                var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                if (env.IsDevelopment())
+                {
+                    return Ok(new OAuthCallbackSuccessResponse(
+                        Status: "success",
+                        Provider: provider,
+                        ConnectionId: result.Value!.Id,
+                        ExternalAccountId: result.Value.ExternalAccountId ?? "unknown"
+                    ));
+                }
+
+                return Redirect($"{GetFrontendBaseUrl()}/connected-apps?status=success&provider={provider}&connectionId={result.Value.Id}");
             }
             else
             {
-                _logger.LogWarning(
-                    "Failed to create app connection. Provider: {Provider}, Error: {Error}",
-                    provider, result.Error?.Code);
+                _logger.LogError("OAuth connection failed. Provider: {Provider}, Error: {ErrorCode}, Description: {ErrorDescription}",
+                    provider, result.Error?.Code, result.Error?.Descrption);
 
-                if (env.IsDevelopment())
+                if (isMobile)
                 {
-                    return Ok(new { error = result.Error?.Code, description = result.Error?.Descrption });
+                    return Redirect($"aigenda://error?status=error&error={result.Error?.Code ?? "connection_failed"}&message={Uri.EscapeDataString(result.Error?.Descrption ?? "Failed to create app connection")}");
                 }
 
-                var errorUrl = BuildErrorUrl("connection_failed", result.Error?.Descrption ?? "Failed to create connection");
-                return Redirect(errorUrl);
+                if (returnJson)
+                {
+                    return BadRequest(new OAuthCallbackErrorResponse(
+                        errorCode: result.Error?.Code ?? "connection_failed",
+                        errorMessage: result.Error?.Descrption ?? "Failed to create app connection",
+                        details: provider
+                    ));
+                }
+
+                var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                if (env.IsDevelopment())
+                {
+                    return BadRequest(new OAuthCallbackErrorResponse(
+                        errorCode: result.Error?.Code ?? "connection_failed",
+                        errorMessage: result.Error?.Descrption ?? "Failed to create app connection"
+                    ));
+                }
+
+                return Redirect(BuildErrorUrl(
+                    result.Error?.Code ?? "connection_failed",
+                    result.Error?.Descrption ?? "Failed to create connection"));
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception in OAuth callback handler. Provider: {Provider}", provider);
+            _logger.LogError(ex, "Unhandled exception in OAuth callback handler for provider: {Provider}", provider);
 
-            var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-            if (env.IsDevelopment())
+            bool isMobileException = HttpContext.Request.Query.TryGetValue("state", out var stateValue) &&
+                                     stateValue.ToString().StartsWith("mobile_");
+
+            if (isMobileException)
             {
-                 return StatusCode(500, new { error = "server_error", description = ex.Message, stackTrace = ex.StackTrace });
+                return Redirect($"aigenda://error?status=error&error=server_error&message={Uri.EscapeDataString(ex.Message)}");
             }
 
-            return Redirect(BuildErrorUrl("server_error", "An unexpected error occurred"));
+            if (apiClient == true)
+            {
+                return StatusCode(500, new OAuthCallbackErrorResponse(
+                    errorCode: "server_error",
+                    errorMessage: "An unexpected error occurred during OAuth callback processing",
+                    details: ex.Message
+                ));
+            }
+
+            var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+            return env.IsDevelopment()
+                ? StatusCode(500, new OAuthCallbackErrorResponse(
+                    errorCode: "server_error",
+                    errorMessage: "An unexpected error occurred",
+                    details: ex.Message))
+                : Redirect(BuildErrorUrl("server_error", "An unexpected error occurred"));
         }
     }
 
-    /// <summary>
-    /// Helper: Build error redirect URL for the frontend.
-    /// </summary>
     private string BuildErrorUrl(string errorCode, string errorMessage)
     {
         var baseUrl = GetFrontendBaseUrl();
@@ -140,27 +224,23 @@ public class AuthCallbackController(
         return $"{baseUrl}/connected-apps?status=error&error={errorCode}&message={encodedMessage}";
     }
 
-    /// <summary>
-    /// Helper: Resolve the frontend base URL from configuration.
-    /// </summary>
     private string GetFrontendBaseUrl()
     {
-        // Try to get from configuration, fallback to the local development default.
         var frontendUrl = _configuration["Frontend:BaseUrl"];
         if (!string.IsNullOrEmpty(frontendUrl))
             return frontendUrl;
 
-        // Development fallback.
         return "http://localhost:5173";
     }
 
-    /// <summary>
-    /// Helper: Build redirect URI for the OAuth provider.
-    /// Must match what is registered with the provider.
-    /// </summary>
     private string BuildRedirectUri(string provider)
     {
-        var baseUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host;
-        return $"{baseUrl}/api/auth/callback/{provider.ToLower()}";
+        var redirectUri = _configuration[$"OAuth:{provider}:RedirectUri"];
+        if (!string.IsNullOrEmpty(redirectUri))
+        {
+            return redirectUri;
+        }
+
+        return $"https://AigendaTest.runasp.net/api/auth/callback/{provider.ToLower()}";
     }
 }

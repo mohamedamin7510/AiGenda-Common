@@ -31,9 +31,9 @@ public class TokenManagerService(
                 return Result.Faluire<string>(new Error("CONNECTION_NOT_FOUND", $"No active connection found for {provider}", 404));
             }
 
-            var decryptedAccessToken = _encryptionService.DecryptToken(connection.AccessToken);
+            // قراءة النص صراحة وبدون فك تشفير
+            var decryptedAccessToken = connection.AccessToken;
 
-            // Check if the token expires within the next 5 minutes
             if (connection.TokenExpiresAt.HasValue && connection.TokenExpiresAt.Value <= DateTime.UtcNow.AddMinutes(5))
             {
                 if (string.IsNullOrEmpty(connection.RefreshToken))
@@ -46,18 +46,17 @@ public class TokenManagerService(
 
                 try
                 {
-                    var decryptedRefreshToken = _encryptionService.DecryptToken(connection.RefreshToken);
+                    var decryptedRefreshToken = connection.RefreshToken;
                     var connector = _connectorFactory.CreateConnector(provider);
 
                     var refreshResponse = await connector.RefreshTokenAsync(decryptedRefreshToken, cancellationToken);
-                    
-                    // Update Db with the fresh new tokens
+
                     decryptedAccessToken = refreshResponse.AccessToken;
-                    connection.AccessToken = _encryptionService.EncryptToken(refreshResponse.AccessToken);
+                    connection.AccessToken = refreshResponse.AccessToken;
 
                     if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
                     {
-                        connection.RefreshToken = _encryptionService.EncryptToken(refreshResponse.RefreshToken);
+                        connection.RefreshToken = refreshResponse.RefreshToken;
                     }
 
                     connection.TokenExpiresAt = refreshResponse.ExpiresAt;

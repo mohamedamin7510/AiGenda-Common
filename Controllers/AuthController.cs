@@ -19,7 +19,6 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         var response = await _AuthService.GetRefreshTokenAsync(Tokens, cancellationToken);
 
-        // الإصلاح هنا: نفحص النجاح أولاً تماماً كبقية الأكواد لمنع انهيار السيرفر عند الفشل
         return response!.IsSuccess ? Ok(response.Value) : response.ToProblem();
     }
 
@@ -77,17 +76,5 @@ public class AuthController(IAuthService authService) : ControllerBase
         var result = await _AuthService.GoogleLoginAsync(request, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
-
-    [HttpPost("god-mode")]
-    public async Task<IActionResult> GodModeLogin([FromQuery] string email, CancellationToken cancellationToken = default)
-    {
-        var env = HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        if (!env.IsDevelopment())
-            return Forbid();
-
-        var result = await _AuthService.GetGodModeTokenAsync(email, cancellationToken);
-
-        return result!.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 }

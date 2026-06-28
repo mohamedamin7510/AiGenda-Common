@@ -48,10 +48,12 @@ public class AppConnectionsController(IAppConnectionService appConnectionService
     /// <summary>
     /// Starts the OAuth flow to connect a new app.
     /// The OAuth state is generated and protected in the service using IDataProtectionProvider.
+    /// Passes 'client=mobile' query parameter to toggle mobile custom scheme redirect flow.
     /// </summary>
     [HttpPost("authorize/{provider}")]
     public async Task<IActionResult> GetAuthorizationUrl(
         [FromRoute] string provider,
+        [FromQuery] string client = "web", // القيمة الافتراضية هي الويب
         CancellationToken cancellationToken = default)
     {
         if (!Enum.TryParse<AppProvider>(provider, true, out var appProvider))
@@ -60,7 +62,21 @@ public class AppConnectionsController(IAppConnectionService appConnectionService
         var userId = User.GetUserId()!;
 
         var authUrlRs = await _AppConnectionService.GetOAuthConnectUrlAsync(appProvider, userId);
-        return Ok(new { authorizationUrl = authUrlRs.Value });
+
+        if (authUrlRs.IsSuccess)
+        {
+            var finalUrl = authUrlRs.Value;
+
+            // حقن البادئة لو الطلب مخصص للموبايل عشان الكولباك يفهم ويرجع لفلاتر
+            if (client.ToLower() == "mobile")
+            {
+                finalUrl = finalUrl.Replace("state=", "state=mobile_");
+            }
+
+            return Ok(new { authorizationUrl = finalUrl });
+        }
+
+        return authUrlRs.ToProblem();
     }
 
     /// <summary>
@@ -98,7 +114,7 @@ public class AppConnectionsController(IAppConnectionService appConnectionService
     }
 
     /// <summary>
-    /// Manually trigger a sync for a connection
+    /// Manually trigger a sync for a connectionِ
     /// </summary>
     [HttpPost("{connectionId}/sync")]
     public async Task<IActionResult> SyncNow(
@@ -110,22 +126,6 @@ public class AppConnectionsController(IAppConnectionService appConnectionService
             connectionId,
             User.GetUserId()!,
             request.ForceFullSync,
-            cancellationToken);
-
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
-
-    /// <summary>
-    /// Gets the sync status of a connection
-    /// </summary>
-    [HttpGet("{connectionId}/sync-status")]
-    public async Task<IActionResult> GetSyncStatus(
-        [FromRoute] string connectionId,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await _AppConnectionService.GetSyncStatusAsync(
-            connectionId,
-            User.GetUserId()!,
             cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();

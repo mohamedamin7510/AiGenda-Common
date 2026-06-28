@@ -47,10 +47,6 @@ public class AppConnectionService : IAppConnectionService
         public DateTime GeneratedAt { get; set; }
     }
 
-    /// <summary>
-    /// Generates the provider authorization URL with a protected OAuth state.
-    /// The state is encrypted using IDataProtectionProvider to prevent tampering.
-    /// </summary>
     public Task<Result<string>> GetOAuthConnectUrlAsync(AppProvider provider, string userId)
     {
         var protector = _dataProtectionProvider.CreateProtector("OAuthStateProtector_V1");
@@ -70,9 +66,6 @@ public class AppConnectionService : IAppConnectionService
         return System.Threading.Tasks.Task.FromResult(Result.Success(url));
     }
 
-    /// <summary>
-    /// Handles OAuth callbacks by validating the protected state and creating a connection.
-    /// </summary>
     public async Task<Result<AppConnectionResponse>> HandleOAuthCallbackAsync(string code, string state, string redirectUri)
     {
         OAuthStatePayload payload;
@@ -108,7 +101,7 @@ public class AppConnectionService : IAppConnectionService
     }
 
     /// <summary>
-    /// Creates a new app connection. Tokens are stored in raw form and encrypted by EF Core value converters.
+    /// Creates a new app connection or updates an existing one transparently (Upsert Pattern).
     /// </summary>
     public async Task<Result<AppConnectionResponse>> CreateConnectionAsync(
         int? workspaceId,
@@ -150,18 +143,44 @@ public class AppConnectionService : IAppConnectionService
                     return Result.Faluire<AppConnectionResponse>(WorkspaceMemberErrors.AccessDenied);
             }
 
+            // 1. تبادل الكود وجلب التوكنز والمعرف الخارجي أولاً
+            var connector = _connectorFactory.CreateConnector(provider);
+            var tokenResponse = await connector.ExchangeCodeForTokenAsync(code, redirectUri, cancellationToken);
+            var externalAccountId = await connector.GetExternalAccountIdAsync(tokenResponse.AccessToken, cancellationToken);
+
+            // 2. التحقق من وجود اتصال نشط قديم لنفس المستخدم ونفس المنصة
             var existingConnection = await _context.AppConnections
                 .Where(c => c.UserId == userId && c.Provider == provider && c.IsActive)
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (existingConnection is not null)
-                return Result.Faluire<AppConnectionResponse>(AppConnectionErrors.ConnectionAlreadyExists);
+            {
+                // حفظ كـ Plain text صافي ومباشر لتجنب مشاكل التشفير على السيرفر المشترك
+                existingConnection.AccessToken = tokenResponse.AccessToken;
+                existingConnection.RefreshToken = string.IsNullOrEmpty(tokenResponse.RefreshToken)
+                    ? existingConnection.RefreshToken
+                    : tokenResponse.RefreshToken;
+                existingConnection.TokenExpiresAt = tokenResponse.ExpiresAt;
+                existingConnection.ExternalAccountId = externalAccountId;
+                existingConnection.GrantedScopes = string.Join(" ", tokenResponse.Scopes);
 
-            var connector = _connectorFactory.CreateConnector(provider);
-            var tokenResponse = await connector.ExchangeCodeForTokenAsync(code, redirectUri, cancellationToken);
+                if (!string.IsNullOrEmpty(metadata))
+                    existingConnection.Metadata = metadata;
 
-            var externalAccountId = await connector.GetExternalAccountIdAsync(tokenResponse.AccessToken, cancellationToken);
+                existingConnection.UpdatedAt = DateTime.UtcNow;
+                existingConnection.UpdatedById = userId;
 
+                _context.AppConnections.Update(existingConnection);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation(
+                    "Updated existing app connection tokens for user {UserId} provider {Provider}",
+                    userId, provider);
+
+                return Result.Success(MapToResponse(existingConnection));
+            }
+
+            // 3. إذا لم يكن الحساب موجوداً، ننشئ اتصالاً جديداً بالكامل كـ Plain text
             var connection = new AppConnection
             {
                 Id = Guid.NewGuid().ToString(),
@@ -306,8 +325,7 @@ public class AppConnectionService : IAppConnectionService
 
             try
             {
-                var protector = _dataProtectionProvider.CreateProtector("AppConnection.Tokens");
-                var decryptedToken = protector.Unprotect(connection.AccessToken);
+                var decryptedToken = connection.AccessToken;
                 var connector = _connectorFactory.CreateConnector(connection.Provider);
                 await connector.RevokeAccessAsync(decryptedToken, cancellationToken);
             }
@@ -517,14 +535,13 @@ public class AppConnectionService : IAppConnectionService
 
         try
         {
-            var protector = _dataProtectionProvider.CreateProtector("AppConnection.Tokens");
-            var accessToken = protector.Unprotect(connection.AccessToken);
+            var accessToken = connection.AccessToken;
 
             if (connection.TokenExpiresAt.HasValue && connection.TokenExpiresAt <= DateTime.UtcNow.AddMinutes(5))
             {
                 if (connection.RefreshToken is not null)
                 {
-                    accessToken = await RefreshAccessTokenAsync(connection, protector, cancellationToken);
+                    accessToken = await RefreshAccessTokenAsync(connection, cancellationToken);
                 }
             }
 
@@ -589,17 +606,16 @@ public class AppConnectionService : IAppConnectionService
 
     private async Task<string> RefreshAccessTokenAsync(
         AppConnection connection,
-        IDataProtector protector,
         CancellationToken cancellationToken)
     {
         try
         {
-            var decryptedRefreshToken = protector.Unprotect(connection.RefreshToken!);
+            var decryptedRefreshToken = connection.RefreshToken!;
             var connector = _connectorFactory.CreateConnector(connection.Provider);
             var newTokenResponse = await connector.RefreshTokenAsync(decryptedRefreshToken, cancellationToken);
 
-            connection.AccessToken = protector.Protect(newTokenResponse.AccessToken);
-            connection.RefreshToken = protector.Protect(newTokenResponse.RefreshToken ?? decryptedRefreshToken);
+            connection.AccessToken = newTokenResponse.AccessToken;
+            connection.RefreshToken = newTokenResponse.RefreshToken ?? decryptedRefreshToken;
             connection.TokenExpiresAt = newTokenResponse.ExpiresAt;
             await _context.SaveChangesAsync(cancellationToken);
 
