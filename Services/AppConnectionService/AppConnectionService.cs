@@ -551,6 +551,7 @@ public class AppConnectionService : IAppConnectionService
 
             if (syncResult.Success)
             {
+                // 1. إضافة الداتا الجديدة بالكامل في ذاكرة الـ Context أولاً
                 foreach (var item in syncResult.Data)
                 {
                     var linkedData = new LinkedData
@@ -574,12 +575,20 @@ public class AppConnectionService : IAppConnectionService
                     await _context.LinkedData.AddAsync(linkedData, cancellationToken);
                 }
 
+                // 2. الداتا الجديدة تم تجهيزها بسلام في الميموري؛ الآن نسحب البيانات القديمة الخاصة بهذا الاتصال لتجهيزها للحذف
+                var oldData = await _context.LinkedData
+                    .Where(ld => ld.AppConnectionId == connection.Id)
+                    .ToListAsync(cancellationToken);
+
+                _context.LinkedData.RemoveRange(oldData);
+
+                // 3. تحديث بيانات حالة الاتصال بنجاح
                 connection.LastSyncAt = DateTime.UtcNow;
                 connection.SyncStatus = SyncStatus.Success;
                 connection.LastSyncError = null;
 
                 _logger.LogInformation(
-                    "Successfully synced {RecordCount} records from {Provider} for user {UserId}",
+                    "Successfully prepared {RecordCount} records for safe swap from {Provider} for user {UserId}",
                     syncResult.RecordsSynced, connection.Provider, connection.UserId);
             }
             else
@@ -592,6 +601,7 @@ public class AppConnectionService : IAppConnectionService
                     connection.Id, connection.Provider, connection.LastSyncError);
             }
 
+            // 4. هنا يتم تنفيذ الـ Transaction كاملة (حذف القديم وإضافة الجديد معاً) بسلام عبر الـ Database
             await _context.SaveChangesAsync(cancellationToken);
             return syncResult.RecordsSynced;
         }

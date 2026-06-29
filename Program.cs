@@ -83,3 +83,5 @@ catch (Exception ex)
     File.WriteAllText(logPath, $"[CRASH TIME: {DateTime.UtcNow}]\nException: {ex.Message}\nStackTrace: {ex.StackTrace}\nInner: {ex.InnerException?.Message}");
     throw;
 }
+
+public partial class Program { }

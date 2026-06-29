@@ -15,6 +15,7 @@
 docs/
 *.http
 backlog.md
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -39,6 +40,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -90,7 +92,8 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
-# but not Directory.Build.rsp, as it configures directory-level build defaults
+
+# but not Directory.Build.rsp, as it configures directory-level build defaults!
 !Directory.Build.rsp
 *.sbr
 *.tlb
@@ -192,6 +195,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
+
 # Note: Comment the next line if you want to checkin your web deploy settings,
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
@@ -204,14 +208,19 @@ PublishScripts/
 
 # NuGet Packages
 *.nupkg
+
 # NuGet Symbol Packages
 *.snupkg
+
 # The packages folder can be ignored because of Package Restore
 **/[Pp]ackages/*
+
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
+
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/[Pp]ackages/repositories.config
+
 # NuGet v3's project.json files produces more ignorable files
 *.nuget.props
 *.nuget.targets
@@ -236,8 +245,9 @@ _pkginfo.txt
 # Visual Studio cache files
 # files ending in .cache can be ignored
 *.[Cc]ache
-# but keep track of directories ending in .cache
-!?*.[Cc]ache/
+
+# but keep track of directories ending in .cache!?
+!*.[Cc]ache/
 
 # Others
 ClientBin/
@@ -408,12 +418,8 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/
 
-##
 ## Visual studio for Mac
-##
-
-
-# globs
+### globs
 Makefile.in
 *.userprefs
 *.usertasks
@@ -431,15 +437,11 @@ test-results/
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icon must end with two \r
 Icon
-
-
-# Thumbnails
+Thumbs.db
 ._*
 
-# Files that might appear in the root of a volume
+# Directories potentially created on remote AFP share
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -447,8 +449,6 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
@@ -457,7 +457,6 @@ Temporary Items
 
 # content below from: https://github.com/github/gitignore/blob/main/Global/Windows.gitignore
 # Windows thumbnail cache files
-Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
 
@@ -483,6 +482,19 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+# ==========================================
+# AiGenda Custom Project Exclusions
+# ==========================================
 
-# Ignore all security audit logs in the docs folder
-docs/Security_Audit_Log_*.md
+# Ignore ASP.NET Core Data Protection Keys folder and contents
+**/App_Data/
+**/App_Data/**
+
+# Ignore User-specific publish profiles configuration extensions
+*.pubxml.user
+
+# Ignore local IIS/Web hosting config file
+web.config
+
+# Ignore specific local user config preferences for csproj
+*.csproj.user
