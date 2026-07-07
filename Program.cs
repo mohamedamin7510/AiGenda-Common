@@ -11,27 +11,35 @@ builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
 
 var app = builder.Build();
 
-app.UseExceptionHandler();
 app.UseMiddleware<AI_genda_API.Middlewares.IntegrationExceptionHandlerMiddleware>();
+app.UseExceptionHandler("/api/error");
 
-// Swagger & OpenAPI setup
-app.MapOpenApi();
-app.UseSwagger();
-app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "AiGenda"));
-
-// Hangfire Dashboard setup
-app.UseHangfireDashboard("/jobs", new DashboardOptions()
+var enableDiagnostics = app.Configuration.GetValue<bool>("EnableDiagnostics");
+if (enableDiagnostics)
 {
-    Authorization =
-    [
-        new HangfireCustomBasicAuthenticationFilter()
-        {
-           User = app.Configuration.GetValue<string>("HangfireAuth:User"),
-           Pass = app.Configuration.GetValue<string>("HangfireAuth:Pass")
-        }
-    ],
-    DashboardTitle = "AiGenda-Jobs-DashBoard"
-});
+    // Swagger & OpenAPI setup
+    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(opts =>
+    {
+        opts.RoutePrefix = "swagger";
+        opts.SwaggerEndpoint("/swagger/v1/swagger.json", "AiGenda");
+    });
+
+    // Hangfire Dashboard setup
+    app.UseHangfireDashboard("/jobs", new DashboardOptions()
+    {
+        Authorization =
+        [
+            new HangfireCustomBasicAuthenticationFilter()
+            {
+               User = app.Configuration.GetValue<string>("HangfireAuth:User"),
+               Pass = app.Configuration.GetValue<string>("HangfireAuth:Pass")
+            }
+        ],
+        DashboardTitle = "AiGenda-Jobs-DashBoard"
+    });
+}
 
 // Register recurrent sync jobs
 var recurringJobManager = app.Services.GetRequiredService<IRecurringJobManager>();

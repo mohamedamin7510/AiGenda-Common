@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.6.11723.189 insiders
+VisualStudioVersion = 18.6.11723.189
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_genda_API", "AI_genda_API.csproj", "{CA9ADA4F-AA06-4439-A5C5-D0B72AF9044F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_genda_API.IntegrationTests", "AI_genda_API.IntegrationTests\AI_genda_API.IntegrationTests.csproj", "{CA9158DC-64EB-6B22-501C-8841929D9D2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI_genda_API.UnitTests", "..\AI_genda_API.UnitTests\AI_genda_API.UnitTests.csproj", "{E744CD86-D475-4050-ACBB-53433A42502B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CA9158DC-64EB-6B22-501C-8841929D9D2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA9158DC-64EB-6B22-501C-8841929D9D2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA9158DC-64EB-6B22-501C-8841929D9D2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E744CD86-D475-4050-ACBB-53433A42502B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E744CD86-D475-4050-ACBB-53433A42502B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E744CD86-D475-4050-ACBB-53433A42502B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E744CD86-D475-4050-ACBB-53433A42502B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
