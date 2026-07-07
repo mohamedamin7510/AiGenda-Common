@@ -153,13 +153,82 @@ public class GitHubConnector : IAppConnector
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var userElement = JsonSerializer.Deserialize<JsonElement>(content);
         
-        return userElement.GetProperty("id").GetInt32().ToString();
+        return userElement.GetProperty("id").GetInt64().ToString();
     }
 
-    public Task<SyncResult> SyncAsync(string accessToken, DateTime? lastSyncTime, string? metadata, CancellationToken cancellationToken)
+    public async Task<SyncResult> SyncAsync(string accessToken, DateTime? lastSyncTime, string? metadata, CancellationToken cancellationToken)
     {
-        // To be implemented in later phases for fetching Repos/Issues/PRs
-        throw new NotImplementedException("GitHub sync logic will be implemented in future phase.");
+        try
+        {
+            _logger.LogInformation("Starting MVP GitHub Sync processing...");
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var syncedItems = new List<LinkedDataItem>();
+
+            // 1. جلب المستودعات (Repositories) الخاصة بالمستخدم
+            var reposResponse = await _httpClient.GetAsync($"{GitHubApiBaseUrl}/user/repos?sort=updated&per_page=30", cancellationToken);
+            if (reposResponse.IsSuccessStatusCode)
+            {
+                var reposContent = await reposResponse.Content.ReadAsStringAsync(cancellationToken);
+                using var jsonDoc = JsonDocument.Parse(reposContent);
+                foreach (var repo in jsonDoc.RootElement.EnumerateArray())
+                {
+                    var externalId = repo.GetProperty("id").GetInt64().ToString();
+                    var fullName = repo.GetProperty("full_name").GetString() ?? "Unknown Repo";
+                    var rawData = JsonSerializer.Serialize(repo);
+
+                    syncedItems.Add(new LinkedDataItem(
+                        ExternalId: externalId,
+                        DataType: "GitHubRepository",
+                        Summary: fullName,
+                        StartTime: null,
+                        EndTime: null,
+                        RawData: rawData
+                    ));
+                }
+            }
+
+            // 2. جلب الـ Issues المفتوحة المرتبطة بالمستخدم
+            var issuesResponse = await _httpClient.GetAsync($"{GitHubApiBaseUrl}/user/issues?filter=all&state=open&per_page=30", cancellationToken);
+            if (issuesResponse.IsSuccessStatusCode)
+            {
+                var issuesContent = await issuesResponse.Content.ReadAsStringAsync(cancellationToken);
+                using var jsonDoc = JsonDocument.Parse(issuesContent);
+                foreach (var issue in jsonDoc.RootElement.EnumerateArray())
+                {
+                    var externalId = issue.GetProperty("id").GetInt64().ToString();
+                    var title = issue.GetProperty("title").GetString() ?? "Untitled Issue";
+                    var rawData = JsonSerializer.Serialize(issue);
+
+                    syncedItems.Add(new LinkedDataItem(
+                        ExternalId: externalId,
+                        DataType: "GitHubIssue",
+                        Summary: title,
+                        StartTime: null,
+                        EndTime: null,
+                        RawData: rawData
+                    ));
+                }
+            }
+
+            return new SyncResult(
+                Success: true,
+                RecordsSynced: syncedItems.Count,
+                Data: syncedItems,
+                Error: null
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GitHub Sync execution failed.");
+            return new SyncResult(
+                Success: false,
+                RecordsSynced: 0,
+                Data: new List<LinkedDataItem>(),
+                Error: ex.Message
+            );
+        }
     }
 
     public async Task<bool> ValidateTokenAsync(string accessToken, CancellationToken cancellationToken)

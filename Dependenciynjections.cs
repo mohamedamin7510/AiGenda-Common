@@ -22,6 +22,7 @@ using AI_genda_API.Api.Settings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
+using Hangfire.SqlServer;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -240,7 +241,10 @@ public static class Dependenciynjections
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+            {
+                DisableGlobalLocks = true
+            }));
 
         // Add the processing server as IHostedService
         services.AddHangfireServer();

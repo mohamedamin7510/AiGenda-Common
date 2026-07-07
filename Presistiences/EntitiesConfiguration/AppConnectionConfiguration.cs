@@ -1,5 +1,5 @@
 using AI_genda_API.Entities;
-using Microsoft.AspNetCore.DataProtection;
+using AI_genda_API.Services.TokenManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,23 +7,21 @@ namespace AI_genda_API.Presistiences.EntitiesConfiguration;
 
 public class AppConnectionConfiguration : IEntityTypeConfiguration<AppConnection>
 {
-    private readonly IDataProtectionProvider? _dataProtectionProvider;
+    private readonly ITokenEncryptionService? _tokenEncryptionService;
 
-    // 1. تم إضافة الـ Parameterless Constructor هنا لحل مشكلة الـ Assembly Scanning وقت الـ Migration
+    // الـ Parameterless Constructor هيفضل موجود عشان الـ Migration Scanning ميعملش مشاكل
     public AppConnectionConfiguration()
     {
-        _dataProtectionProvider = null;
+        _tokenEncryptionService = null;
     }
 
-    public AppConnectionConfiguration(IDataProtectionProvider? dataProtectionProvider)
+    public AppConnectionConfiguration(ITokenEncryptionService? tokenEncryptionService)
     {
-        _dataProtectionProvider = dataProtectionProvider;
+        _tokenEncryptionService = tokenEncryptionService;
     }
 
     public void Configure(EntityTypeBuilder<AppConnection> builder)
     {
-        IDataProtector? protector = _dataProtectionProvider?.CreateProtector("AppConnection.Tokens");
-
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.User)
@@ -41,15 +39,16 @@ public class AppConnectionConfiguration : IEntityTypeConfiguration<AppConnection
                .HasForeignKey(x => x.UpdatedById)
                .OnDelete(DeleteBehavior.Restrict);
 
+        // هنا تم استبدال الـ Protector بالـ Service الجديدة المتأمنة بـ AesGcm والـ Try-Catch الدفاعي
         builder.Property(x => x.AccessToken)
                .HasConversion(
-                   rawString => protector != null ? protector.Protect(rawString) : rawString,
-                   encryptedString => protector != null ? protector.Unprotect(encryptedString) : encryptedString)
+                   rawString => _tokenEncryptionService != null ? _tokenEncryptionService.EncryptToken(rawString) : rawString,
+                   encryptedString => _tokenEncryptionService != null ? _tokenEncryptionService.DecryptToken(encryptedString) : encryptedString)
                .IsRequired();
 
         builder.Property(x => x.RefreshToken)
                .HasConversion(
-                   rawString => string.IsNullOrEmpty(rawString) ? null : (protector != null ? protector.Protect(rawString) : rawString),
-                   encryptedString => string.IsNullOrEmpty(encryptedString) ? null : (protector != null ? protector.Unprotect(encryptedString) : encryptedString));
+                   rawString => string.IsNullOrEmpty(rawString) ? null : (_tokenEncryptionService != null ? _tokenEncryptionService.EncryptToken(rawString) : rawString),
+                   encryptedString => string.IsNullOrEmpty(encryptedString) ? null : (_tokenEncryptionService != null ? _tokenEncryptionService.DecryptToken(encryptedString) : encryptedString));
     }
 }

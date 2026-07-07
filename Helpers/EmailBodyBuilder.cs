@@ -1,22 +1,25 @@
-﻿namespace BucketSurvey.Api.Helpers;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+
+namespace BucketSurvey.Api.Helpers;
 
 public static class EmailBodyBuilder
 {
-    public static string  GenerateEmailBody(string Template , Dictionary<string,string> PlaceHolderValues)
+    public static string GenerateEmailBody(string Template, Dictionary<string, string> PlaceHolderValues)
     {
+        string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", $"{Template}.html");
 
-        string TemplatePath = $"{Directory.GetCurrentDirectory()}/Templates/{Template}.html";
-        
-        StreamReader SR = new StreamReader(TemplatePath);
+        using (StreamReader SR = new StreamReader(templatePath))
+        {
+            var Body = SR.ReadToEnd();
 
-        var Body = SR.ReadToEnd();
+            foreach (var item in PlaceHolderValues)
+            {
+                Body = Body.Replace(item.Key, item.Value);
+            }
 
-        SR.Close();
-
-        foreach (var item in PlaceHolderValues)
-           Body = Body.Replace(item.Key , item.Value) ;
-
-        return Body;
+            return Body;
+        }
     }
-
 }

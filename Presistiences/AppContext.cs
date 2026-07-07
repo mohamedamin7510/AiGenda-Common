@@ -4,25 +4,22 @@ using AI_genda_API.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Task = AI_genda_API.Entities.Task;
-
 using AI_genda_API.Presistiences.EntitiesConfiguration;
-using Microsoft.AspNetCore.DataProtection;
+using AI_genda_API.Services.TokenManagement; // تم تغيير الـ namespace الخاص بالتشفير هنا
 
 namespace AI_genda_API.Presistience;
 
 public class AppContext : IdentityDbContext<ExtendedUser, ApplicationRole, string>
 {
     private readonly IHttpContextAccessor _HttpContextAccessor;
-    private readonly IDataProtectionProvider? _dataProtectionProvider;
+    private readonly ITokenEncryptionService? _tokenEncryptionService; // تم التعديل هنا
 
-    public AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpContextAccessor httpContextAccessor, IDataProtectionProvider? dataProtectionProvider = null) 
+    public AppContext(DbContextOptions<AppContext> dbContextOptions, IHttpContextAccessor httpContextAccessor, ITokenEncryptionService? tokenEncryptionService = null)
         : base(dbContextOptions)
     {
         _HttpContextAccessor = httpContextAccessor;
-        _dataProtectionProvider = dataProtectionProvider;
+        _tokenEncryptionService = tokenEncryptionService; // تم التعديل هنا
     }
-
-    public DbSet<ExtendedUser> Users { get; set; }
     public DbSet<WorkSpace> WorkSpaces { get; set; }
     public DbSet<WorkspaceMember> WorkspaceMembers { get; set; }
     public DbSet<Space> Spaces { get; set; }
@@ -107,8 +104,8 @@ public class AppContext : IdentityDbContext<ExtendedUser, ApplicationRole, strin
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // Custom Configuration Injection with DP
-        modelBuilder.ApplyConfiguration(new AppConnectionConfiguration(_dataProtectionProvider));
+        // تم ربط الـ Configuration بالـ Service الجديدة المتوافقة مع التيم
+        modelBuilder.ApplyConfiguration(new AppConnectionConfiguration(_tokenEncryptionService));
 
         var CascadeFks = modelBuilder.Model
             .GetEntityTypes().SelectMany(f => f.GetForeignKeys())

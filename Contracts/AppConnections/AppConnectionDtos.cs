@@ -63,3 +63,28 @@ public record OAuthCallbackRequest(
     string? Error = null,
     string? ErrorDescription = null
 );
+
+/// <summary>
+/// OAuth callback success response for mobile and API clients
+/// </summary>
+public record OAuthCallbackSuccessResponse(
+    [property: JsonPropertyName("status")] string Status,
+    [property: JsonPropertyName("provider")] string Provider,
+    [property: JsonPropertyName("connectionId")] string ConnectionId,
+    [property: JsonPropertyName("externalAccountId")] string ExternalAccountId,
+    [property: JsonPropertyName("message")] string Message = "Connection successfully established"
+);
+
+/// <summary>
+/// OAuth callback error response for mobile and API clients
+/// </summary>
+public record OAuthCallbackErrorResponse(
+    [property: JsonPropertyName("status")] string Status,
+    [property: JsonPropertyName("error")] string ErrorCode,
+    [property: JsonPropertyName("message")] string ErrorMessage,
+    [property: JsonPropertyName("details")] string? Details = null
+)
+{
+    public OAuthCallbackErrorResponse(string errorCode, string errorMessage, string? details = null) 
+        : this("error", errorCode, errorMessage, details) { }
+};
